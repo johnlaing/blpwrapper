@@ -7,7 +7,8 @@ blpGetData.default <- function(x, ...){
 }
 
 blpGetData.BlpCOMConnect <- function(x, securities, fields, start=NULL, end=NULL,
-                                     barsize=NULL, barfields=NULL, retval=NULL, ...){
+                                     barsize=NULL, barfields=NULL, retval=NULL, 
+                                     override_fields = NULL, overrides = NULL, ...){
   ## x is an RDCOM object, after all..
   class(x) <- "COMIDispatch"
   ## Is call ok?
@@ -42,7 +43,7 @@ blpGetData.BlpCOMConnect <- function(x, securities, fields, start=NULL, end=NULL
     BLP <- blpGetHistoricalData(x, securities, fields, start, end,
                        barsize, barfields)
   }else{
-    BLP <- blpSubscribe(x, securities, fields)
+    BLP <- blpSubscribe(x, securities, fields, override_fields, overrides)
   }
   ## Coerce to desired mode
   if(is.null(retval[1])){
