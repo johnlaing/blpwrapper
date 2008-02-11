@@ -32,7 +32,12 @@ blpGetData(x, \dots)
        \code{fields} times \code{barfields}.}
   \item{retval}{"matrix","data.frame", "zoo", or "raw". If NULL, return a zoo
     for timeseries requests and a data.frame for snapshot
-    requests; "raw" will return the uncoerced, nested list.}
+    requests; "raw" will return the uncoerced, nested list.
+    "zoo" and "data.frame" will fail for three dimensional data, i.e.
+    multiple securities, multiple fields and multiple dates in the same request.
+    In this situation, specify a retval of "matrix" or "raw". Specifying
+    "matrix" will in this case return a three dimensional array rather than
+    a true matrix. Date conversion is not handled automatically as yet.}
   \item{\dots}{other args.}
 }
 \details{
@@ -94,19 +99,30 @@ conn <- blpConnect()
 ## Snapshot 
 eda <- blpGetData(conn, c("ED5 Comdty","ED6 Comdty","ED7 Comdty",
 "ED8 Comdty"), "BID")
+stopifnot(is.data.frame(eda))
 
 ## Historical (last 30 days)
 edb <- blpGetData(conn, "ED1 Comdty", "PX_LAST",
 start=as.chron(Sys.time() - 86400 * 30))
+stopifnot(is.zoo(edb))
 
 ## Intraday bars (last hour in 2 min bars)
 edc <- blpGetData(conn, "ED1 Comdty", c("BID","ASK"),
 start=as.chron(Sys.time() - 3600), barfields="OPEN", barsize=2)
+stopifnot(is.zoo(edc))
 
 ## Tick-by-tick (3 minutes starting an hour ago)
 edd <- blpGetData(conn, "ED1 Comdty", c("BID"),
 start=as.chron(Sys.time() - 3600),
 end=as.chron(Sys.time() - 3420), barsize=0)
+stopifnot(is.zoo(edd))
+
+# Example of 3D data. Note ugly dates.
+ede <- blpGetData(conn, c("ED5 Comdty","ED6 Comdty","ED7 Comdty",
+"ED8 Comdty"), c("BID","ASK"),
+start=as.chron(Sys.time() - 86400 * 5),
+retval="matrix")
+stopifnot(is.array(ede))
 
 blpDisconnect(conn)
 }
