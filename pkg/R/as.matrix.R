@@ -17,20 +17,22 @@ as.matrix.BlpCOMReturn <- function(x){
     flds <- f
   }
   if(length(secs) > 1 && length(flds) > 1 && ndat > 0){
-    stop("3-dimensional return values currently unsupported.")
     ## This code should enable 3-dimensional support
-    ## d3 <- length(flds) + 1
-    ## d2 <- length(secs) 
-    ## d1 <- length(vec) / (d2 * d3)
-    ## dim(vec) <- c(d1,d2,d3)
-    ## dimnames(vec) <- list(NULL,secs,c("[DATETIME]",flds))
-    ## return(vec)
+    ## There is no support at this time for converting dates back to chron
+    ## objects for 3D arrays since zoo only supports 2D data and currently
+    ## zoo handles date converstion for the matrix retval.
+    d3 <- length(flds) + 1
+    d2 <- length(secs) 
+    d1 <- length(vec) / (d2 * d3)
+    dim(vec) <- c(d1,d2,d3)
+    dimnames(vec) <- list(NULL,secs,c("[DATETIME]",flds))
+    return(vec)
   }
   ## convert to matrix
   if(length(secs) > 1 && ndat > 0){
-    cols <- secs
+    cols <- secs # We have multiple securities and only 1 field.
   }else{
-    cols <- flds
+    cols <- flds # We have multiple fields and only 1 security.
   }
   nc <- length(cols) + ndat
   nr <- length(vec) / nc

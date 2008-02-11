@@ -54,13 +54,10 @@ blpGetData.BlpCOMConnect <- function(x, securities, fields, start=NULL, end=NULL
   }
   if(retval[1] == "matrix"){
     y <- as.matrix.BlpCOMReturn(BLP)
-    class(y) <- retval
   }else if(retval[1] == "data.frame"){
     y <- as.data.frame.BlpCOMReturn(BLP)
-    class(y) <- retval
   }else if(retval[1] == "zoo"){
     y <- as.zoo.BlpCOMReturn(BLP)
-    class(y) <- retval
   }else if(retval[1] == "raw"){
     y <- BLP
   }

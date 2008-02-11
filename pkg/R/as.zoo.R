@@ -1,5 +1,10 @@
 as.zoo.BlpCOMReturn <- function(x, suppress=TRUE, bbfields=.bbfields, ...){
   mtx <- as.matrix.BlpCOMReturn(x)
+  if(!is.matrix(mtx)){
+    # If mtx is not a matrix, this is most likely because it is 3D data.
+    # Matrices, and hence zoo objects, can only be 2D.
+    stop("3D data is not supported by zoo. Specify retval=\"matrix\" or \"raw\".")
+  }
   cols <- colnames(mtx)[2:ncol(mtx)]
   if(attr(x,"num.of.date.cols") != 0){
     dtime <- as.chron.COMDate(mtx[,1])
