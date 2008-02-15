@@ -6,7 +6,6 @@ as.matrix.BlpCOMReturn <- function(x){
   flds <- attr(x, "fields")
   blds <- attr(x, "barfields")
   ndat <- attr(x, "num.of.date.cols")
-  
   if(!"character" %in% dataType(flds)){
     vec <- as.numeric(vec)
   }
@@ -27,15 +26,7 @@ as.matrix.BlpCOMReturn <- function(x){
     d1 <- length(vec) / (d2 * d3)
     dim(vec) <- c(d1,d2,d3)
     dimnames(vec) <- list(NULL,secs,c("[DATETIME]",flds))
-
-    if (!is.null(attr(x, "end")) && (attr(x, "start") == attr(x, "end"))){
-      # We are only returning a single date. Get rid of this date and treat
-      # remaining data as a 2D array.
-      vec <- vec[,,-1]
-      return (vec)
-    } else {
-      return(vec)
-    }
+    return(vec)
   }
   ## convert to matrix
   if(length(secs) > 1 && ndat > 0){

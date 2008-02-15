@@ -6,20 +6,11 @@ as.data.frame.BlpCOMReturn <- function(x, row.names = NULL, optional =
   bbfields <- .bbfields
   lst <- list()
   mtx <- as.matrix.BlpCOMReturn(x)
-  
   cols <- colnames(mtx)
   flds <- attr(x, "fields")
   secs <- attr(x, "securities")
   blds <- attr(x, "barfields")
   ndat <- attr(x, "num.of.date.cols")
-  
-  # Nasty 6pm Friday hack to change num.of.date.cols to 0 if we have a single
-  # historical date. Otherwise 1st data column is converted to a date which
-  # we don't want.
-  if (!is.null(attr(x, "end")) && (attr(x, "end") == attr(x, "start"))) {
-    ndat <- 0
-  }
-  
   ## if date column exists, convert it to chron
   if(ndat != 0){
     dtime <- as.chron.COMDate(mtx[,1])

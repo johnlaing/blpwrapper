@@ -6,4 +6,4 @@ Author: Robert Sams <robert@sanctumfi.com>
 Maintainer: Robert Sams <robert@sanctumfi.com>
 Description: Fetch data from Bloomberg 
 License: GPL
-Depends: RDCOMClient, zoo, chron, bitops, RUnit
+Depends: RDCOMClient, zoo, chron
