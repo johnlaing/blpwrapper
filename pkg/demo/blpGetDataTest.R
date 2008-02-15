@@ -1,5 +1,6 @@
-# runTestFile(paste(system.file("examples", package="RBloomberg"), "blpGetDataTest.R", sep="/"))
-# runTestFile("blpGetDataTest.R")
+# We have to bundle more tests together than I would like because we don't want
+# to call blpConnect too often. There's a setup and teardown but they are run
+# in between each test and there's no global option.
 
 test.basic <- function() {
   conn <- blpConnect()

@@ -68,6 +68,10 @@ blpGetHistoricalData <- function(conn,securities,fields,start,end=NULL,barsize=N
   if(!is.null(barfields)){
     attr(lst,"barfields") <- barfields
   }
+  attr(lst, "start") <- start
+  if(!is.null(end)){
+    attr(lst, "end") <- end
+  }
   return(lst)
 }
 

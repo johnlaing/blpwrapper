@@ -77,6 +77,11 @@ read.bbfields <- function(path="C:/blp/API"){
   }
 }
 
+read.ovr <- function(path="C:/blp/API"){
+    path <- paste(path,"/bbfields.ovr",sep="")
+    ovr <- readLines(path) # Get a vector, now need to parse each element.
+}
+
 dataType <- function(mnemonic, bbfields=.bbfields){
   mnemonic <- toupper(mnemonic)
   b.typ <- c()
@@ -94,3 +99,78 @@ dataType <- function(mnemonic, bbfields=.bbfields){
   }   
 }
 
+# Tried this as a replacement for dataType but merge seems to be slower than building a vector.
+dataTypeUsingMerge <- function(mnemonic, bbfields=.bbfields){
+  b.typ <- as.vector(merge(data.frame(field.mnemonic=toupper(mnemonic)), bbfields)$data.type)
+  r.typ <- c("character","double","double","character",
+              "chron","chron","chron","character","character",
+              "logical","character")
+  x <- r.typ[b.typ]
+  if(length(x) == 0){
+    return(NULL)
+  }else{
+    return(x)
+  }   
+}
+
+# Case insensitive
+field.info <- function(mnemonic, bbfields=.bbfields){
+  return(bbfields[which(bbfields$field.mnemonic %in% toupper(mnemonic)),])
+}
+
+field.name          <- function(mnemonic) { field.info(mnemonic)$field.name }
+data.bitmask        <- function(mnemonic) { field.info(mnemonic)$data.bitmask }
+market.bitmask      <- function(mnemonic) { field.info(mnemonic)$mkt.bitmask }
+category            <- function(mnemonic) { field.info(mnemonic)$category }
+category.name       <- function(mnemonic) { field.info(mnemonic)$category.name }
+
+# IDs are recycled, so we need to exclude obsolete mnemonics which are in category 999.
+field.mnemonic <- function(id, bbfields=.bbfields){
+  return(bbfields[which( (bbfields$field.id %in% toupper(id)) & (999!=bbfields$category) ),]$field.mnemonic)
+}
+
+# Why don't they have this in bitops?
+# Returns a boolean.
+isPowerOfTwo <- function(pwr) {
+  return(bitAnd(pwr, pwr-1) == 0)
+}
+
+# Why don't they have this in bitops?
+# Returns a boolean.
+matchesBitMask <- function(arg, pwr) {
+  if(!isPowerOfTwo(pwr)){
+    stop("Argument must be a power of 2!")
+  }
+  return(bitAnd(arg, pwr) == pwr)
+}
+
+check.market <- function(mnemonic, market.code) {
+  matchesBitMask(market.bitmask(mnemonic), market.code)
+}
+
+market.commodity   <- function(mnemonic) {check.market(mnemonic, 2)}
+market.equity      <- function(mnemonic) {check.market(mnemonic, 4)}
+market.muni        <- function(mnemonic) {check.market(mnemonic, 8)}
+market.pdf         <- function(mnemonic) {check.market(mnemonic, 16)}
+market.client      <- function(mnemonic) {check.market(mnemonic, 32)}
+market.money       <- function(mnemonic) {check.market(mnemonic, 64)}
+market.govt        <- function(mnemonic) {check.market(mnemonic, 125)}
+market.corp        <- function(mnemonic) {check.market(mnemonic, 256)}
+market.index       <- function(mnemonic) {check.market(mnemonic, 512)}
+market.currency    <- function(mnemonic) {check.market(mnemonic, 1024)}
+market.mortgage    <- function(mnemonic) {check.market(mnemonic, 2048)}
+
+check.data <- function(mnemonic, data.code) {
+  matchesBitMask(data.bitmask(mnemonic), data.code)
+}
+
+data.header             <- function(mnemonic) {check.data(mnemonic, 1)}
+data.realtime           <- function(mnemonic) {check.data(mnemonic, 2)}
+data.static             <- function(mnemonic) {check.data(mnemonic, 4)}
+data.historical         <- function(mnemonic) {check.data(mnemonic, 8)}
+data.intraday           <- function(mnemonic) {check.data(mnemonic, 16)}
+data.enable.feature     <- function(mnemonic) {check.data(mnemonic, 32)}
+data.market.depth       <- function(mnemonic) {check.data(mnemonic, 64)}
+data.greeks             <- function(mnemonic) {check.data(mnemonic, 128)}
+data.condition.code     <- function(mnemonic) {check.data(mnemonic, 256)}
+data.bid.ask.only       <- function(mnemonic) {check.data(mnemonic, 512)}

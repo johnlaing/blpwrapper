@@ -1,0 +1,1 @@
+allTests <- defineTestSuite("All Tests", system.file("demo", package="RBloomberg"), testFileRegexp="Test.R$")
