@@ -82,21 +82,21 @@ read.ovr <- function(path="C:/blp/API"){
   readLines(path)
 }
 
-what.i.override <- function(mnemonic) {
+what.i.override <- function(mnemonic, ovr=.ovr) {
   stopifnot(length(mnemonic)==1)
-  field.mnemonic(gsub("^([0-9|A-Z]{2,4})\\|.*$", "\\1", grep(field.id(mnemonic), .ovr, value=TRUE), extended=TRUE))
+  field.mnemonic(gsub("^([0-9|A-Z]{2,4})\\|.*$", "\\1", grep(field.id(mnemonic), ovr, value=TRUE), extended=TRUE))
 }
 
-what.we.override <- function(mnemonic) {
+what.we.override <- function(mnemonic, ovr=.ovr) {
   lapply(mnemonic, what.i.override)
 }
 
-what.overrides.me <- function(mnemonic) {
+what.overrides.me <- function(mnemonic, ovr=.ovr) {
   stopifnot(length(mnemonic)==1)
-  field.mnemonic(unlist(strsplit(grep(sprintf("^%s", field.id(mnemonic)), .ovr, value=TRUE), "[|]"))[-1])
+  field.mnemonic(unlist(strsplit(grep(sprintf("^%s", field.id(mnemonic)), ovr, value=TRUE), "[|]"))[-1])
 }
 
-what.overrides.us <- function(mnemonic) {
+what.overrides.us <- function(mnemonic, ovr=.ovr) {
   lapply(mnemonic, what.overrides.me)
 }
 
@@ -149,14 +149,26 @@ field.id            <- function(mnemonic) { field.info(mnemonic)$field.id }
 field.name          <- function(mnemonic) { field.info(mnemonic)$field.name }
 data.bitmask        <- function(mnemonic) { field.info(mnemonic)$data.bitmask }
 market.bitmask      <- function(mnemonic) { field.info(mnemonic)$mkt.bitmask }
-category            <- function(mnemonic) { field.info(mnemonic)$category }
+category.number     <- function(mnemonic) { field.info(mnemonic)$category } # "category" clashes with base, so call this category.number
 category.name       <- function(mnemonic) { field.info(mnemonic)$category.name }
 
 fieldName <- function(mnemonic) { field.name(mnemonic) }
 
+# Use letters[] to get a quick char conversion 1=a, 2=b etc.
+pad.4 <- function(str) {
+  switch( 
+    letters[nchar(str)],
+    b=paste("00", str, sep=""),
+    c=paste("0", str, sep=""),
+    d=str,
+    stop(paste(str, "should only have 2-4 chars!"))
+  )
+}
+
 # IDs are recycled, so we need to exclude obsolete mnemonics which are in category 999.
 field.mnemonic <- function(id, bbfields=.bbfields){
-  return(bbfields[which( (bbfields$field.id %in% toupper(id)) & (999!=bbfields$category) ),]$field.mnemonic)
+  id <- lapply(toupper(id), pad.4)
+  return(bbfields[which( (bbfields$field.id %in% id) & (999!=bbfields$category) ),]$field.mnemonic)
 }
 
 # Why don't they have this in bitops?

@@ -12,30 +12,25 @@ test.is.power.of.two <- function() {
 test.field.name.for.single.field <- function() {
   checkEquals(field.name("PX_LAST"), "Last Price")
 }
+
 test.field.name.for.list.of.fields <- function() {
   checkEquals(
     field.name(multiple.fields), 
     c("Last Price", "Bid Price", "Ask Price", "Name", "Trading Date")
   )
 }
+
 test.data.type.for.single.field <- function() {
   checkEquals(dataType("PX_LAST"), "double")
 }
+
 test.data.type.for.list.of.fields <- function() {
   checkEquals(
     dataType(multiple.fields),
     c("double", "double", "double", "character", "chron")
   )
 }
-# cnames <- c("category","category.name","subcategory","subcategory.name",
-#         "field.id","field.name","field.mnemonic","mkt.bitmask",
-#         "data.bitmask","data.type")
-test.category <- function() {
-  checkEquals(
-    category(multiple.fields),
-    c(195,10,10,185,10)
-  )
-}
+
 test.category.name <- function() {
   checkEquals(
     category.name(multiple.fields),
@@ -55,10 +50,10 @@ test.what.i.override <- function() {
   checkEquals(
     what.i.override("EQY_BETA_OVERRIDE_END_DT"),
     c(
-    "EQY_BETA_ADJ_OVERRIDABLE"        , "EQY_BETA_RAW_OVERRIDABLE"      , 
-    "EQY_ALPHA_OVERRIDABLE"           , "EQY_CORR_COEF"                 , 
-    "EQY_COEF_DETER_R_SQUARED"        , "EQY_STD_DEV_ERR_OVERRIDABLE"   , 
-    "EQY_BETA_STD_DEV_ERR_OVERRIDABLE", "EQY_BETA_POINTS"               , 
+    "EQY_BETA_ADJ_OVERRIDABLE"          , "EQY_BETA_RAW_OVERRIDABLE"      , 
+    "EQY_ALPHA_OVERRIDABLE"             , "EQY_CORR_COEF"                 , 
+    "EQY_COEF_DETER_R_SQUARED"          , "EQY_STD_DEV_ERR_OVERRIDABLE"   , 
+    "EQY_BETA_STD_DEV_ERR_OVERRIDABLE"  , "EQY_BETA_POINTS"               , 
     "EQY_BETA_T_TEST")
   )
   
@@ -70,7 +65,12 @@ test.what.i.override <- function() {
 test.what.overides.me <- function() {
   checkEquals(
     what.overrides.me("EQY_CORR_COEF"),
-    c("EQY_BETA_OVERRIDE_START_DT",  "EQY_BETA_OVERRIDE_END_DT",
-      "EQY_BETA_OVERRIDE_REL_INDEX", "EQY_BETA_OVERRIDE_PERIOD")
-    )
+    c("EQY_BETA_OVERRIDE_START_DT"  ,  "EQY_BETA_OVERRIDE_END_DT",
+      "EQY_BETA_OVERRIDE_REL_INDEX" ,  "EQY_BETA_OVERRIDE_PERIOD")
+  )
+  
+  checkEquals(
+    what.overrides.me("CRNCY_ADJ_MKT_CAP"),
+    c("EQY_FUND_CRNCY")
+  )
 }
