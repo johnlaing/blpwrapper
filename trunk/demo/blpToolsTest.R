@@ -1,6 +1,7 @@
-# setUp <- function() {
-#   multiple.fields <<- c("px_last", "bid", "ask", "NAME", "TRADING_DT_REALTIME")
-# }
+.setUp <- function() {
+  cat("setting up...")
+  multiple.fields <<- c("px_last", "bid", "ask", "NAME", "TRADING_DT_REALTIME")
+}
 
 test.is.power.of.two <- function() {
   checkTrue(isPowerOfTwo(2))
@@ -13,7 +14,6 @@ test.field.name.for.single.field <- function() {
   checkEquals(field.name("PX_LAST"), "Last Price")
 }
 test.field.name.for.list.of.fields <- function() {
-  multiple.fields <- c("px_last", "bid", "ask", "NAME", "TRADING_DT_REALTIME")
   checkEquals(
     field.name(multiple.fields), 
     c("Last Price", "Bid Price", "Ask Price", "Name", "Trading Date")
@@ -23,7 +23,6 @@ test.data.type.for.single.field <- function() {
   checkEquals(dataType("PX_LAST"), "double")
 }
 test.data.type.for.list.of.fields <- function() {
-  multiple.fields <- c("px_last", "bid", "ask", "NAME", "TRADING_DT_REALTIME")
   checkEquals(
     dataType(multiple.fields),
     c("double", "double", "double", "character", "chron")
@@ -33,14 +32,12 @@ test.data.type.for.list.of.fields <- function() {
 #         "field.id","field.name","field.mnemonic","mkt.bitmask",
 #         "data.bitmask","data.type")
 test.category <- function() {
-  multiple.fields <- c("px_last", "bid", "ask", "NAME", "TRADING_DT_REALTIME")
   checkEquals(
     category(multiple.fields),
     c(195,10,10,185,10)
   )
 }
 test.category.name <- function() {
-  multiple.fields <- c("px_last", "bid", "ask", "NAME", "TRADING_DT_REALTIME")
   checkEquals(
     category.name(multiple.fields),
     c("Pricing", "Real Time Quotes", "Real Time Quotes", "Descriptive Info", "Real Time Quotes")
@@ -64,6 +61,10 @@ test.what.i.override <- function() {
     "EQY_COEF_DETER_R_SQUARED"        , "EQY_STD_DEV_ERR_OVERRIDABLE"   , 
     "EQY_BETA_STD_DEV_ERR_OVERRIDABLE", "EQY_BETA_POINTS"               , 
     "EQY_BETA_T_TEST")
+  )
+  
+  checkException(
+    what.i.override(multiple.fields)
   )
 }
 

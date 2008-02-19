@@ -83,11 +83,21 @@ read.ovr <- function(path="C:/blp/API"){
 }
 
 what.i.override <- function(mnemonic) {
+  stopifnot(length(mnemonic)==1)
   field.mnemonic(gsub("^([0-9|A-Z]{2,4})\\|.*$", "\\1", grep(field.id(mnemonic), .ovr, value=TRUE), extended=TRUE))
 }
 
+what.we.override <- function(mnemonic) {
+  lapply(mnemonic, what.i.override)
+}
+
 what.overrides.me <- function(mnemonic) {
+  stopifnot(length(mnemonic)==1)
   field.mnemonic(unlist(strsplit(grep(sprintf("^%s", field.id(mnemonic)), .ovr, value=TRUE), "[|]"))[-1])
+}
+
+what.overrides.us <- function(mnemonic) {
+  lapply(mnemonic, what.overrides.me)
 }
 
 dataType <- function(mnemonic, bbfields=.bbfields){
