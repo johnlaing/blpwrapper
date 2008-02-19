@@ -1,9 +1,0 @@
-These are RUnit test files. They need to go in a folder called "demo" since if
-they went in "tests" they would be run by default and would fail since I'm
-assuming r-forge doesn't have 20k a year (or whatever it costs these days)
-for a dedicated Bloomberg terminal. I'd like to put them in something called
-"examples" but that gets ditched when you make a package since it's not one
-of the standard R package directories.
-
-So, "demo" will have to do for now. Even though it's not an interactive demo.
-Sorry. Real programmers look at tests for documentation anyway.
