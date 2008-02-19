@@ -1,5 +1,4 @@
 .setUp <- function() {
-  cat("setting up...")
   multiple.fields <<- c("px_last", "bid", "ask", "NAME", "TRADING_DT_REALTIME")
 }
 
