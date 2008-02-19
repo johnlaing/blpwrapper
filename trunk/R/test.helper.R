@@ -1,1 +1,3 @@
-allBloombergTests <- defineTestSuite("All Tests", system.file("examples", package="RBloomberg"), testFileRegexp="Test.R$")
+# To run all unit tests:
+# runTestSuite(allBloombergTests)
+allBloombergTests <- defineTestSuite("All Tests", system.file("runit-tests", package="RBloomberg"), testFileRegexp="Test.R$")
