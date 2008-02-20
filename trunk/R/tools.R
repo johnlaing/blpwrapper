@@ -120,7 +120,11 @@ dataType <- function(mnemonic, bbfields=.bbfields){
 field.info <- function(mnemonic, bbfields=.bbfields){
   mnemonic <- toupper(mnemonic)
   for(i in 1:length(mnemonic)){
-    r <- bbfields[which(mnemonic[i]==bbfields$field.mnemonic),]
+    row_number <- which(mnemonic[i]==bbfields$field.mnemonic)
+    if (length(row_number)!=1) {
+      stop(paste("mnemonic", mnemonic, "not found in bbfields"))
+    }
+    r <- bbfields[row_number,]
     if (i==1) {
       b <- r
     } else {

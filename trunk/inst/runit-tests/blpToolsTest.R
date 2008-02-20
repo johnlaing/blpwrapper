@@ -2,6 +2,12 @@
   multiple.fields <<- c("px_last", "bid", "ask", "NAME", "TRADING_DT_REALTIME")
 }
 
+test.field.info.raises.error.on.invalid.mnemonic <- function() {
+  checkException(
+    field.info("NOT_A_VALID_MNEMONIC")
+  ) 
+}
+
 test.is.power.of.two <- function() {
   checkTrue(isPowerOfTwo(2))
   checkTrue(!isPowerOfTwo(3))
