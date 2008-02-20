@@ -11,6 +11,17 @@ blpGetHistoricalData <- function(conn,securities,fields,start,end=NULL,barsize=N
   if(length(securities) == 0 || length(fields) == 0){
     stop("Need at least one security and one field")
   }
+  
+  # Convenience methods to convert, e.g., "2008-01-01" to a chron.
+  # Not sure if GMT is appropriate everywhere, will this give the correct
+  # date in a non-GMT environment?
+  if (is.character(start)){
+    start <- as.chron(as.POSIXct(start, tz="GMT"))
+  }
+  if (is.character(end)){
+    end <- as.chron(as.POSIXct(end, tz="GMT"))
+  }
+  
   comStart <-  as.COMDate.chron(start);
   if(!is.null(end)){
     comEnd <- as.COMDate.chron(end);

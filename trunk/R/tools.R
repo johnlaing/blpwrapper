@@ -117,21 +117,6 @@ dataType <- function(mnemonic, bbfields=.bbfields){
   }   
 }
 
-# Tried this as a replacement for dataType but merge seems to be slower than building a vector.
-dataTypeUsingMerge <- function(mnemonic, bbfields=.bbfields){
-  b.typ <- as.vector(merge(data.frame(field.mnemonic=toupper(mnemonic)), bbfields)$data.type)
-  r.typ <- c("character","double","double","character",
-              "chron","chron","chron","character","character",
-              "logical","character")
-  x <- r.typ[b.typ]
-  if(length(x) == 0){
-    return(NULL)
-  }else{
-    return(x)
-  }   
-}
-
-# Case insensitive
 field.info <- function(mnemonic, bbfields=.bbfields){
   mnemonic <- toupper(mnemonic)
   for(i in 1:length(mnemonic)){
