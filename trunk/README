@@ -1,10 +1,15 @@
 TODO:
-- Read .bbfields first time blpGetData is called, not when first.lib
-  is called.
+- Find out why we get an error when reading those four COM properties.
 
-- Problem with requesting large number of secs.. see Tom Joy's email.
+WISH LIST:
+- Website containing FAQ, etc.
+- Support for multi-currencies via GetHistoricalData2()
+- Support for bulk data calls
+- Support for asynchronous realtime feeds
+- Field lookup tool
 
 THANKS:
+Ana Nelson <nelson.ana@gmail.com>
 John Marsland <john.marsland@cantab.net>
 David Reiner <davidr@rhotrading.com> 
 John Gavin <john.gavin@ubs.com> 
