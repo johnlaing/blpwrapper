@@ -40,7 +40,7 @@ comGetHistoricalData <- function(conn, securities, fields, start, end=NULL, bars
   x
 }
 
-BloombergErrors2NA <- function(x){
+ColumnMaker <- function(x, index, security, field, namestyle="field", doc.errors=TRUE){
   err.codes <- c("#N/A Fld","#N/A Tim","#N/A Com","#N/A Auth",
                  "#N/A Security","#N/A Intraday","#N/A History","#N/A N.A.",
                  "#N/A N Ap","#N/A Neg","#N/A Sec","#N/A Trd",
@@ -48,90 +48,70 @@ BloombergErrors2NA <- function(x){
                  "#N/A Limit","#N/A MD Limit","#N/A Dly Lmt","#N/A Mth Lmt",
                  "#N/A Sls Auth","#N/A Unknown","#N/A Hist Fld","#N/A Rte",
                  "#N/A RTbl","#N/A InvalidReq","#N/A Restart","#N/A DBTimeOut")
-  y <- x$data
-  for(i in 1:length(x$securities)){
-    z <- c()
-    Errors <- c()
-    for(j in 1:length(x$fields)){
-      if(length(y[[1+j]][[i]]) != length(unlist(y[[1+j]][[i]]))) ## any NULLs?
-        y[[1+j]][[i]] <- lapply(y[[1+j]][[i]], function(x){if(is.null(unlist(x))) return(NA) else return(unlist(x))})
+  y <- c()
+  Replacer <- function(x){
+    x <- unlist(x)
+    if(is.null(x)){
+      if(doc.errors)
+        y <<- c(y, "NULL")
+      return(NA)
     }
-    if(any(unlist(y[[1+j]][[i]]) %in% err.codes))              ## any bloomberg errors?
-      for(k in which(unlist(y[[1+j]][[i]]) %in% err.codes)){
-        Errors <- rbind(Errors, data.frame(Index=format(as.chron.COMDate(unlist(y[[1]][[i]][[k]]))), 
-                                           Security=x$securities[i],
-                                           Field=x$fields[j],
-                                           ErrorCode=unlist(y[[1+j]][[i]][[k]])))
-        y[[1+j]][[i]][[k]] <- NA
-      }
+    if(x %in% err.codes){
+      if(doc.errors)
+        y <<- c(y, x)
+      return(NA)
+    }
+    x
   }
-  x$data <- y
-  if(length(Errors) == 0)
-    Errors <- NULL
-  else
-    rownames(Errors) <- 1:nrow(Errors)
-  x$errors <- Errors
-  x
-}
-
-as.matrix.comBlpDaysData <- function(x, ...){
-  dTypes <- dataType(x$fields)
-  if(length(unique(dTypes)) > 1)
-    stop("all fields must share the same data type")
-  x <- BloombergErrors2NA(x)
-  if(ncol(m <- matrix(unlist(x$data[[1]]), ncol=length(x$data[[1]]))) > 1) ## if indices don't match convert via "safe" dataframe method
-    if(sum(diff(t(m))) != 0)
-      return(as.matrix(as.data.frame.comBlpDaysData(x, ...)))
-  y <- matrix(unlist(x$data[-1]), ncol=(length(x$securities) * length(x$fields))) 
-  rownames(y) <- format(as.chron.COMDate(m[, 1]))
-  if(length(x$securities) > 1 & length(x$fields) > 1){ ## add colnames
-    cnames <- expand.grid(x$securities, x$fields)
-    colnames(y) <- paste(cnames[[1]], cnames[[2]], sep=".")
-  }else if(length(x$securities) > 1){
-    colnames(y) <- x$securities
-  }else{
-    colnames(y) <- x$fields
-  }
-  attr(y, "BloombergErrors") <- x$errors
-  y
-}
-
-as.data.frame.comBlpDaysData <- function(x, ...){
-  x <- BloombergErrors2NA(x)
-  for(i in 1:length(x$securities)){
-    Indx <- as.chron.COMDate(unlist(x$data[[1]][[i]]))
-    y <- c()
-    for(j in 1:length(x$fields))
-      y <- cbind(y, unlist(x$data[[1+j]][[i]]))
-    if(i == 1)
-      z <- zoo(y, order.by=Indx)
-    else
-      z <- merge(z, y, all = TRUE, fill = NA, retclass="data.frame")
-  }
-  if(length(x$securities) > 1 & length(x$fields) > 1){ ## add colnames
-    cnames <- expand.grid(x$securities, x$fields)
-    colnames(z) <- paste(cnames[[1]], cnames[[2]], sep=".")
-  }else if(length(x$securities) > 1){
-    colnames(z) <- x$securities
-  }else{
-    colnames(z) <- x$fields
-  }
-  attr(z, "BloombergErrors") <- x$errors
+  index <- as.chron.COMDate(index)
+  z <- matrix(unlist(lapply(x, Replacer)), ncol=1)
+  if(namestyle == "field")
+    colnames(z) <- field
+  else if(namestyle == "security")
+    colnames(z) <- security
+  else ## style 'both'
+    colnames(z) <- paste(security, field, sep=".")
+  z <- zoo(z, order.by=index)
+  if(doc.errors)
+    if(any(is.na(z)))
+      attr(z, "BloombergErrors") <- data.frame(Index=index[is.na(z)], Security=security, Field=field, ErrorCode=y)
   z
 }
 
-as.matrix.comBlpTickData <- function(x, ...){
+as.zoo.comBlpDaysData <- function(x, doc.errors=TRUE, ...){
+  if(length(unique(dataType(x$fields))) > 1)
+    stop("all fields must share the same data type")
+  if(length(x$securities) > 1 & length(x$fields) > 1)
+    namestyle <- "both"
+  else if(length(x$securities) > 1)
+    namestyle <- "security"
+  else
+    namestyle <- "field"
+  z <- NULL
+  Errors <- c()
+  for(i in 1:length(x$securities)){
+    for(j in 1:length(x$fields)){
+      y <- ColumnMaker(x$data[[1+j]][[i]], x$data[[1]][[i]], x$securities[i], x$fields[j], namestyle, doc.errors)
+      if(is.null(z))
+        z <- y
+      else
+        z <- merge(z, y, all=TRUE, fill=NA)
+      if(doc.errors)
+        if(!is.null(attr(y, "BloombergErrors")))
+          Errors <- rbind(Errors, attr(y, "BloombergErrors"))
+    }
+  }
+  if(doc.errors)
+    if(length(Errors) > 0)
+      attr(z, "BloombergErrors") <- Errors
+  z
+}
+
+as.zoo.comBlpTickData <- function(x, doc.errors=TRUE, ...){
   ## !! CODE ME !!
 }
 
-as.data.frame.comBlpTickData <- function(x, ...){
+as.zoo.comBlpBarsData <- function(x, doc.errors=TRUE, ...){
   ## !! CODE ME !!
 }
 
-as.matrix.comBlpBarsData <- function(x, ...){
-  ## !! CODE ME !!
-}
-
-as.data.frame.comBlpBarsData <- function(x, ...){
-  ## !! CODE ME !!
-}

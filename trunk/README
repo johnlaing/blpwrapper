@@ -1,5 +1,7 @@
 TODO:
-- Code as.matrix and as.data.frame methods for intraday tick and bars calls.
+- Code as.zoo methods for intraday tick and bars calls.
+- Code comSubscribe.
+- Add new interface 'blp'.
 - Find out why we get an error when reading those four COM properties.
 
 WISH LIST:
