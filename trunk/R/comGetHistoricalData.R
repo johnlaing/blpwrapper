@@ -27,7 +27,7 @@ comGetHistoricalData <- function(conn, securities, fields, start, end=NULL, bars
       warning(paste("not intraday field(s):", paste(fields[!bitmask], collapse=",")))
     if(is.null(barfields[1]))
       stop("barfields must be passed a non-null value when barsize > 0.")
-    if(!toupper(barfields[1]) %in% ValidBF)
+    if(any(!toupper(barfields) %in% ValidBF))
       stop(paste("barfields must be one or more of:", paste(ValidBF, collapse=",")))
     if(is.null(end))
       x$data <- conn$BLPGetHistoricalData(Security=securities, Fields=fields, StartDate=start, 
@@ -95,10 +95,42 @@ as.zoo.comBlpDaysData <- function(x, doc.errors=TRUE, ...){
       if(is.null(z))
         z <- y
       else
-        z <- merge(z, y, all=TRUE, fill=NA)
+        z <- merge(z, y, all=TRUE, fill=NA, suffixes="foo")
       if(doc.errors)
         if(!is.null(attr(y, "BloombergErrors")))
           Errors <- rbind(Errors, attr(y, "BloombergErrors"))
+    }
+  }
+  if(doc.errors)
+    if(length(Errors) > 0)
+      attr(z, "BloombergErrors") <- Errors
+  z
+}
+
+as.zoo.comBlpBarsData <- function(x, doc.errors=TRUE, ...){
+  if(length(unique(dataType(x$fields))) > 1)
+    stop("all fields must share the same data type")
+  if(length(x$securities) > 1 & length(x$fields) > 1)
+    namestyle <- "both"
+  else if(length(x$securities) > 1)
+    namestyle <- "security"
+  else
+    namestyle <- "field"
+  z <- NULL
+  Errors <- c()
+  for(i in 1:length(x$securities)){
+    for(j in 1:length(x$barfields)){
+      for(k in 1:length(x$fields)){
+        y <- ColumnMaker(x$data[[1+j]][[k]][[i]], x$data[[1]][[1]][[i]], x$securities[i],
+                         paste(x$barfields[j], x$fields[k], sep="."), namestyle, doc.errors)
+        if(is.null(z))
+          z <- y
+        else
+          z <- merge(z, y, all=TRUE, fill=NA)
+        if(doc.errors)
+          if(!is.null(attr(y, "BloombergErrors")))
+            Errors <- rbind(Errors, attr(y, "BloombergErrors"))
+      }
     }
   }
   if(doc.errors)
@@ -111,7 +143,4 @@ as.zoo.comBlpTickData <- function(x, doc.errors=TRUE, ...){
   ## !! CODE ME !!
 }
 
-as.zoo.comBlpBarsData <- function(x, doc.errors=TRUE, ...){
-  ## !! CODE ME !!
-}
 

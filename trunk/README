@@ -1,6 +1,6 @@
 TODO:
-- Code as.zoo methods for intraday tick and bars calls.
-- Code comSubscribe.
+- Code as.zoo.comBlpTickData 
+- Code comSubscribe and as.data.frame method
 - Add new interface 'blp'.
 - Find out why we get an error when reading those four COM properties.
 
