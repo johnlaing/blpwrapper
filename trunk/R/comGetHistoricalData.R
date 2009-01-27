@@ -95,7 +95,7 @@ as.zoo.comBlpDaysData <- function(x, doc.errors=TRUE, ...){
       if(is.null(z))
         z <- y
       else
-        z <- merge(z, y, all=TRUE, fill=NA, suffixes="foo")
+        z <- merge(z, y, all=TRUE, fill=NA)
       if(doc.errors)
         if(!is.null(attr(y, "BloombergErrors")))
           Errors <- rbind(Errors, attr(y, "BloombergErrors"))

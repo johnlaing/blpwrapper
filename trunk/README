@@ -1,8 +1,12 @@
 TODO:
 - Code as.zoo.comBlpTickData.
-- Add new interface 'blp'.
+- Tidy-up blpReadFields.
 - Find out why we get an error when reading those four COM properties.
 - Rename dataType() to something more package-specific.
+- Write COM.Rd (comSubscribe, comGetHistoricalData and their methods) and depricate the blp functions.
+- Write blp.Rd and depricate blpGetData.Rd.
+- Write blpConn.Rd and depricate blpConnect.RD.
+- Remove lowlevel.Rd
 
 WISH LIST:
 - Website containing FAQ, etc.
