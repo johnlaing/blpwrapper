@@ -1,8 +1,8 @@
 TODO:
-- Code as.zoo.comBlpTickData 
-- Code comSubscribe and as.data.frame method
+- Code as.zoo.comBlpTickData.
 - Add new interface 'blp'.
 - Find out why we get an error when reading those four COM properties.
+- Rename dataType() to something more package-specific.
 
 WISH LIST:
 - Website containing FAQ, etc.
