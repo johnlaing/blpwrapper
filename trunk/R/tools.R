@@ -65,18 +65,6 @@ replaceBloombergErrors <- function(x, suppress=TRUE){
 ## 10 = Boolean
 ## 11 = ISO Currency Code (ASCII string)
 
-read.bbfields <- function(path="C:/blp/API"){
-  path <- paste(path,"/bbfields.tbl",sep="")
-  cnames <- c("category","category.name","subcategory","subcategory.name",
-          "field.id","field.name","field.mnemonic","mkt.bitmask",
-          "data.bitmask","data.type")
-  df <- try(read.table(path,sep="|",col.names=cnames,
-                       fill=TRUE,as.is=TRUE,quote=""))
-  if(!class(df)=="try-error"){
-    return(df)
-  }
-}
-
 read.ovr <- function(path="C:/blp/API"){
   path <- paste(path,"/bbfields.ovr",sep="")
   readLines(path)

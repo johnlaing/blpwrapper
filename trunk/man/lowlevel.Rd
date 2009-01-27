@@ -7,7 +7,6 @@
 \alias{as.data.frame.BlpCOMReturn}
 \alias{as.zoo.BlpCOMReturn}
 \alias{replaceBloombergErrors}
-\alias{read.bbfields}
 \alias{dataType}
 \title{Low Level Functions}
 \description{
@@ -19,7 +18,6 @@ blpGetHistoricalData(conn, securities, fields, start, end, barsize = NULL,
                      barfields = NULL)
 blpSubscribe(conn, securities, fields)
 replaceBloombergErrors(x, suppress = TRUE)
-read.bbfields(path = "C:/blp/API")
 dataType(mnemonic, bbfields = .bbfields)
 \method{as.COMDate}{chron}(x, date1904 = FALSE)
 \method{as.chron}{COMDate}(x, date1904 = FALSE, \dots)
@@ -39,7 +37,6 @@ FALSE, \dots)
   \item{date1904}{see below}
   \item{suppress}{logical. do not raise warnings when Bloomberg error codes are
     converted to NA's}
-  \item{path}{path to bbfields file user's workstation}
   \item{mnemonic}{Bloomberg field mnemonic, as documented in bbfields}
   \item{bbfields}{dataframe containing data in bbfields}
   \item{row.names}{ignored}

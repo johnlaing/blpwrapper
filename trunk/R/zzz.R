@@ -3,7 +3,6 @@
     warning("RBloomberg currently supports only the COM API (windows-only).
 Future support for platform independent API's is envisioned.")
   }else{
-    #bb <- read.bbfields()
     bb <- blpReadFields()
     if(is.null(bb)){
       warning("I can't find your bbfields file.. see ?blpReadFields")
