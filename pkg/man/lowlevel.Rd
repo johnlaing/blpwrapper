@@ -23,7 +23,7 @@ read.bbfields(path = "C:/blp/API")
 dataType(mnemonic, bbfields = .bbfields)
 \method{as.COMDate}{chron}(x, date1904 = FALSE)
 \method{as.chron}{COMDate}(x, date1904 = FALSE, \dots)
-\method{as.matrix}{BlpCOMReturn}(x)
+\method{as.matrix}{BlpCOMReturn}(x, \dots)
 \method{as.data.frame}{BlpCOMReturn}(x, row.names = NULL, optional =
 FALSE, \dots)
 \method{as.zoo}{BlpCOMReturn}(x, suppress = TRUE, bbfields = .bbfields, \dots)
