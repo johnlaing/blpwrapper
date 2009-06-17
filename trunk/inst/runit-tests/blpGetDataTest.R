@@ -7,51 +7,28 @@ test.basic <- function() {
   
   # Fetch static data for multiple securities and multiple fields.
   checkEquals(
-    blpGetData(conn, c("RYA ID Equity", "BSC US Equity"), c("NAME", "COUNTRY")),
+    blpGetData(conn, c("RYA ID Equity", "OCN US Equity"), c("NAME", "COUNTRY")),
     data.frame(
-      NAME=c("RYANAIR HOLDINGS PLC", "BEAR STEARNS COMPANIES INC"), 
+      NAME=c("RYANAIR HOLDINGS PLC", "OCWEN FINANCIAL CORP"), 
       COUNTRY=c("IR", "US"),
-      row.names = c("RYA ID EQUITY", "BSC US EQUITY")
+      row.names = c("RYA ID EQUITY", "OCN US EQUITY")
     )
   )
   
   checkEquals(
     # We are cheating here and returning a "matrix" since that is easier for
     # us to construct than the default zoo return type.
-    blpGetData(conn, c("RYA ID Equity", "BSC US Equity", "YHOO US Equity"), "CUR_MKT_CAP", 
+    blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "CUR_MKT_CAP", 
     start=as.chron(as.POSIXct("2008-02-01", tz="GMT")), 
     end=as.chron(as.POSIXct("2008-02-04", tz="GMT")), retval="matrix"),
     
     data.matrix(data.frame(
       "[DATETIME]" = c(39479, 39482),
       "RYA ID EQUITY" = c(5366.891, 5277.443),
-      "BSC US EQUITY" = c(12647.49, 12390.16),
+      "OCN US EQUITY" = c(390.1707, 408.3037),
       "YHOO US EQUITY" = c(37928.28, 39197.90),
       check.names = FALSE
     )),
-    tolerance = 0.000005
-  )
-  
-  checkEquals(
-    # We are cheating here and returning a "matrix" since that is easier for
-    # us to construct than the default zoo return type.
-    blpGetData(
-      conn, 
-      c("RYA ID Equity", "BSC US Equity", "YHOO US Equity"),
-      "CUR_MKT_CAP", 
-      start="2008-02-01", 
-      end="2008-02-04",
-      retval="matrix"
-    ),
-    
-    data.matrix(data.frame(
-      "[DATETIME]" = c(39479, 39482),
-      "RYA ID EQUITY" = c(5366.891, 5277.443),
-      "BSC US EQUITY" = c(12647.49, 12390.16),
-      "YHOO US EQUITY" = c(37928.28, 39197.90),
-      check.names = FALSE
-    )),
-    
     tolerance = 0.000005
   )
   
@@ -66,14 +43,14 @@ test.overrides <- function() {
   checkEquals(
     blpGetData(
          conn, 
-         c("RYA ID Equity", "BSC US Equity"), 
+         c("RYA ID Equity", "OCN US Equity"), 
          c("CUST_TRR_RETURN_HOLDING_PER"), 
          override_fields = c("CUST_TRR_START_DT", "CUST_TRR_END_DT", "CUST_TRR_CRNCY"), 
          overrides = c("20080103", "20080110", "PRC")
     ),
     data.frame(
-      CUST_TRR_RETURN_HOLDING_PER=c(-9.8266, -7.2528), 
-      row.names = c("RYA ID EQUITY", "BSC US EQUITY")
+      CUST_TRR_RETURN_HOLDING_PER=c(-9.8266, -17.2962), 
+      row.names = c("RYA ID EQUITY", "OCN US EQUITY")
     )
   )
   
@@ -83,14 +60,18 @@ test.overrides <- function() {
   # for companies with different fiscal year ends, you will get results
   # relating to different dates.
   checkEquals(
-    blpGetData(conn, c("RYA ID Equity", "BSC US Equity", "YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
+    blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
     override_fields = c("EQY_FUND_DT"),
     overrides = c("20051231")),
     data.frame(
-      LT_DEBT_TO_COM_EQY=c(76.53, 408.54, 8.76), 
-      row.names = c("RYA ID EQUITY", "BSC US EQUITY", "YHOO US EQUITY")
+      LT_DEBT_TO_COM_EQY=c(76.53, 44.42, 8.76), 
+      row.names = c("RYA ID EQUITY", "OCN US EQUITY", "YHOO US EQUITY")
     )
   )
+  
+  
+  # Code to look up year end dates:
+  # blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "EQY_FISCAL_YR_END")
   
   # Ryanair year end is at the end of March.
   # Hence EQY_FUND_DT of 20051231 returns the value reported by Ryanair
@@ -102,17 +83,6 @@ test.overrides <- function() {
     76.5275
   )
     
-  # Bear Stearns year end is at the end of November. WTF November!?!?
-  # Hence EQY_FUND_DT of 20051231 returns the value reported by Ryanair
-  # at the end of November 2006, since 2005-12-31 falls into this fiscal year.
-  
-  checkEquals(
-    max(blpGetData(conn, c("BSC US Equity"), "LT_DEBT_TO_COM_EQY",
-    start=as.chron(as.POSIXct("2006-11-29", tz="GMT")), 
-    end=as.chron(as.POSIXct("2006-12-01", tz="GMT"))), na.rm=TRUE),
-    408.5385
-  )
-  
   # Yahoo! year end is at the end of December. Like a sensible company.
   # Hence EQY_FUND_DT of 20051231 returns the value reported by Yahoo!
   # at the end of December 2005, since 2005-12-31 falls into this fiscal year.
@@ -141,12 +111,12 @@ test.overrides <- function() {
 
   # Omitting EQY_FUND_RELATIVE_PERIOD is equivalent to a code of "-0AY"
   checkEquals(
-    blpGetData(conn, c("RYA ID Equity", "BSC US Equity", "YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
+    blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
     override_fields = c("EQY_FUND_DT", "EQY_FUND_RELATIVE_PERIOD"),
     overrides = c("20051231", "-0AY")),
     data.frame(
-      LT_DEBT_TO_COM_EQY=c(76.53, 408.54, 8.76), 
-      row.names = c("RYA ID EQUITY", "BSC US EQUITY", "YHOO US EQUITY")
+      LT_DEBT_TO_COM_EQY=c(76.53, 44.42, 8.76), 
+      row.names = c("RYA ID EQUITY", "OCN US EQUITY", "YHOO US EQUITY")
     )
   )
   
@@ -154,45 +124,45 @@ test.overrides <- function() {
   # to the passed date. This would be 2005-12-31 for Yahoo!, 2005-11-30 for
   # Bear Stearns and 2005-03-31 for Ryanair.
   checkEquals(
-    blpGetData(conn, c("RYA ID Equity", "BSC US Equity", "YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
+    blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
     override_fields = c("EQY_FUND_DT", "EQY_FUND_RELATIVE_PERIOD"),
     overrides = c("20051231", "-0FY")),
     data.frame(
-      LT_DEBT_TO_COM_EQY=c(74.6, 417.4, 8.76),
-      row.names = c("RYA ID EQUITY", "BSC US EQUITY", "YHOO US EQUITY")
+      LT_DEBT_TO_COM_EQY=c(74.6, 44.42, 8.76),
+      row.names = c("RYA ID EQUITY", "OCN US EQUITY", "YHOO US EQUITY")
     )
   )
   
   # Passing "-0CQ" returns data for the current calendar quarter.
   checkEquals(
-    blpGetData(conn, c("RYA ID Equity", "BSC US Equity", "YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
+    blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
     override_fields = c("EQY_FUND_DT", "EQY_FUND_RELATIVE_PERIOD"),
     overrides = c("20051231", "-0CQ")),
     data.frame(
-      LT_DEBT_TO_COM_EQY=c(71.52, 417.4, 8.76),
-      row.names = c("RYA ID EQUITY", "BSC US EQUITY", "YHOO US EQUITY")
+      LT_DEBT_TO_COM_EQY=c(71.52, 44.42, 8.76),
+      row.names = c("RYA ID EQUITY", "OCN US EQUITY", "YHOO US EQUITY")
     )
   )
   
   # And we can verify that these 3 data points were all reported in this
   # calendar quarter.
   checkEquals(
-    as.vector(sapply(blpGetData(conn, c("RYA ID Equity", "BSC US Equity", "YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
+    as.vector(sapply(blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
     start=as.chron(as.POSIXct("2005-10-15", tz="GMT")), 
     end=as.chron(as.POSIXct("2005-12-31", tz="GMT"))), max, na.rm=TRUE)),
-    c(71.5221, 417.4026, 8.7551)
+    c(71.5221, 44.4231, 8.7551)
   )
   
   # EQY_FUND_YEAR and EQY_FUND_PER are relative to each company's
   # fiscal year. This query returns the Q4 results for what each company
   # defines to be fiscal year 2005. This is equivalent to 20051231 and "-0FY"
   checkEquals(
-    blpGetData(conn, c("RYA ID Equity", "BSC US Equity", "YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
+    blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
     override_fields = c("EQY_FUND_YEAR", "EQY_FUND_PER"),
     overrides = c("2005", "Q4")),
     data.frame(
-      LT_DEBT_TO_COM_EQY=c(74.6, 417.4, 8.76),
-      row.names = c("RYA ID EQUITY", "BSC US EQUITY", "YHOO US EQUITY")
+      LT_DEBT_TO_COM_EQY=c(74.6, 44.42, 8.76),
+      row.names = c("RYA ID EQUITY", "OCN US EQUITY", "YHOO US EQUITY")
     )
   )
   
