@@ -95,7 +95,7 @@ dataType <- function(mnemonic, bbfields=.bbfields){
     b.typ <- c(b.typ, bbfields[which(i==bbfields$field.mnemonic),]$data.type)
   }
   r.typ <- c("character","double","double","character",
-              "chron","chron","chron","character","character",
+              "datetime","datetime","datetime","character","character",
               "logical","character")
   x <- r.typ[b.typ]
   if(length(x) == 0){
