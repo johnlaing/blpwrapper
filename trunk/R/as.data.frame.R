@@ -22,7 +22,7 @@ as.data.frame.BlpCOMReturn <- function(x, row.names = NULL, optional =
   
   ## if date column exists, convert it to chron
   if(ndat != 0){
-    dtime <- as.POSIXct(mtx[,1], origin="1970-01-01")
+    dtime <- as.POSIXct(mtx[,1], tz=Sys.timezone(), origin="1970-01-01")
     mtx <- matrix(mtx[, 2:ncol(mtx)], ncol=ncol(mtx) - 1)
   }
   ## convert all other columns to appropriate datatype
@@ -41,7 +41,7 @@ as.data.frame.BlpCOMReturn <- function(x, row.names = NULL, optional =
     }else if(typ[n] == "logical"){
       lst <- append(lst, list(as.logical(vec)))
     }else if(typ[n] == "datetime"){
-      lst <- append(lst, list(as.POSIXct(vec, origin="1970-01-01")))
+      lst <- append(lst, list(as.POSIXct(vec, tz=Sys.timezone(), origin="1970-01-01")))
     }
   }
   if(ndat != 0){

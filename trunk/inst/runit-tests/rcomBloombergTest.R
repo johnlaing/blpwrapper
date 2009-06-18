@@ -31,4 +31,7 @@ test.bloomberg <- function() {
   checkEquals(4.5, length(daily_hist) / length(weekly_hist), tolerance = 0.5)
   checkEquals(20, length(daily_hist) / length(monthly_hist), tolerance = 3)
   
+  # Examples of fetching prices in different currencies using BLPGetHistoricalData2
+  comGetProperty(conn, "BLPGetHistoricalData", Security = "RYA ID Equity", Fields = "PX_LAST", StartDate = as.POSIXct("2009-01-01"), EndDate = as.POSIXct("2009-02-01"))
+  comGetProperty(conn, "BLPGetHistoricalData2", Security = "RYA ID Equity", Fields = "PX_LAST", StartDate = as.POSIXct("2009-01-01"), Currency = "USD", EndDate = as.POSIXct("2009-02-01"))
 }

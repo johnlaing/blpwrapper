@@ -7,7 +7,7 @@
 
 ## Bloomberg WAPI Reference: FRP003, DP015, and timebarflds.
 
-blpGetHistoricalData <- function(conn,securities,fields,start,end=NULL,barsize=NULL,barfields=NULL){
+blpGetHistoricalData <- function(conn,securities,fields,start,end=NULL,barsize=NULL,barfields=NULL, currency = NULL){
   if(length(securities) == 0 || length(fields) == 0){
     stop("Need at least one security and one field")
   }
@@ -26,9 +26,17 @@ blpGetHistoricalData <- function(conn,securities,fields,start,end=NULL,barsize=N
   if (is.null(barsize)) { # historical
 
     if (is.null(end)) {
-      lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields, StartDate=start)
+       if (is.null(currency)) {
+          lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields, StartDate=start)
+       } else {
+          lst <- comGetProperty(conn, "BLPGetHistoricalData2", Security=securities, Fields=fields, StartDate=start, Currency=currency)
+       }
     } else {
-      lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields, StartDate=start, EndDate=end)
+       if (is.null(currency)) {
+          lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields, StartDate=start, EndDate=end)
+       } else {
+          lst <- comGetProperty(conn, "BLPGetHistoricalData2", Security=securities, Fields=fields, StartDate=start, Currency=currency, EndDate=end)
+       }
     }
 
     if (is.null(lst)) stop("Call to BLPSubscribe did not return any data!")
@@ -39,6 +47,8 @@ blpGetHistoricalData <- function(conn,securities,fields,start,end=NULL,barsize=N
     if (!is.null(barfields)) {
       stop("You are making an intraday *tick* call.. don't pass anything to barfields.")
     }
+    
+    if (!is.null(currency)) stop("currency not supported for intraday tick") # TODO implement and remove this
     
     if (is.null(end)) {
       lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields, StartDate=start, BarSize=as.integer(0))
@@ -54,6 +64,8 @@ blpGetHistoricalData <- function(conn,securities,fields,start,end=NULL,barsize=N
     if (is.null(barfields)) { # Nothing passed to barfields arg.. assume all fields
       barfields <- c("OPEN","HIGH","LOW","LAST_TRADE","NUMBER_TICKS","VOLUME")
     }
+    
+    if (!is.null(currency)) stop("currency not supported for intraday bars") # TODO implement and remove this
     
     if (is.null(end)) {
       lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields,StartDate=start, BarSize=as.integer(barsize), BarFields=barfields)

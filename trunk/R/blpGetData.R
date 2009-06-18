@@ -8,7 +8,7 @@ blpGetData.default <- function(x, ...){
 
 blpGetData.COMObject <- function(x, securities, fields, start=NULL, end=NULL,
                                      barsize=NULL, barfields=NULL, retval=NULL, 
-                                     override_fields = NULL, overrides = NULL, ...){
+                                     override_fields = NULL, overrides = NULL, currency = NULL, ...){
 
   ## Is call ok?
   if(is.null(securities) || is.null(fields)){
@@ -40,7 +40,7 @@ blpGetData.COMObject <- function(x, securities, fields, start=NULL, end=NULL,
   ## Make the underlying call to COM
   if(!is.null(start)){
     BLP <- blpGetHistoricalData(x, securities, fields, start, end,
-                       barsize, barfields)
+                       barsize, barfields, currency)
   }else{
     BLP <- blpSubscribe(x, securities, fields, override_fields, overrides)
   }

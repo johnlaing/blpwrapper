@@ -12,8 +12,6 @@ test.basic <- function() {
   )
   
   checkEquals(
-    # We are cheating here and returning a "matrix" since that is easier for
-    # us to construct than the default zoo return type.
     blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "CUR_MKT_CAP", start="2008-02-01", end="2008-02-04", retval="matrix"),
     
     data.matrix(data.frame(
@@ -25,6 +23,10 @@ test.basic <- function() {
     )),
     tolerance = 0.000005
   )
+  
+  # Not run: examples of using currency parameter.
+  # blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "PX_LAST", start="2008-02-01", end="2008-02-04", currency="GBP")
+  # blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "PX_LAST", start="2008-02-01", end="2008-02-04")
   
   blpDisconnect(conn)
 }
