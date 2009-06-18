@@ -26,7 +26,7 @@ as.matrix.BlpCOMReturn <- function(x){
     d2 <- length(secs) 
     d1 <- length(vec) / (d2 * d3)
     dim(vec) <- c(d1,d2,d3)
-    dimnames(vec) <- list(NULL,secs,c("[DATETIME]",flds))
+    dimnames(vec) <- list(NULL,secs,c("DATETIME",flds))
 
     if (!is.null(attr(x, "end")) && (attr(x, "start") == attr(x, "end"))){
       # We are only returning a single date. Get rid of this date and treat
@@ -37,11 +37,14 @@ as.matrix.BlpCOMReturn <- function(x){
       return(vec)
     }
   }
-  ## convert to matrix
-  if(length(secs) > 1 && ndat > 0){
-    cols <- secs # We have multiple securities and only 1 field.
-  }else{
-    cols <- flds # We have multiple fields and only 1 security.
+  
+  # convert to 2D matrix
+  if (length(secs) > 1 && ndat > 0) {
+    # We have multiple securities and only 1 field.
+    cols <- secs
+  } else {
+    # We have multiple fields and only 1 security.
+    cols <- flds
   }
   nc <- length(cols) + ndat
   nr <- length(vec) / nc
@@ -53,7 +56,7 @@ as.matrix.BlpCOMReturn <- function(x){
   }
   ## dimnames
   if(ndat > 0){
-    cols <- c("[DATETIME]", cols)
+    cols <- c("DATETIME", cols)
   }else{
     rownames(mtx) <- secs
   }

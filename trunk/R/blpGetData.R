@@ -3,14 +3,13 @@ blpGetData <- function(x, ...){
 }
 
 blpGetData.default <- function(x, ...){
-  blpGetData.BlpCOMConnect(x, ...)
+  blpGetData.COMObject(x, ...)
 }
 
-blpGetData.BlpCOMConnect <- function(x, securities, fields, start=NULL, end=NULL,
+blpGetData.COMObject <- function(x, securities, fields, start=NULL, end=NULL,
                                      barsize=NULL, barfields=NULL, retval=NULL, 
                                      override_fields = NULL, overrides = NULL, ...){
-  ## x is an RDCOM object, after all..
-  class(x) <- "COMIDispatch"
+
   ## Is call ok?
   if(is.null(securities) || is.null(fields)){
     stop("x, securities, and fields are all required parameters.")
@@ -45,14 +44,16 @@ blpGetData.BlpCOMConnect <- function(x, securities, fields, start=NULL, end=NULL
   }else{
     BLP <- blpSubscribe(x, securities, fields, override_fields, overrides)
   }
-  ## Coerce to desired mode
-  if(is.null(retval[1])){
-    if(!is.null(start)){
+  
+  # If not specified, default to a data frame, or zoo for time series.
+  if (is.null(retval[1])) {
+    if (!is.null(start)) {
       retval <- "zoo"
-    }else{
+    } else {
       retval <- "data.frame"
     }
   }
+  
   if(retval[1] == "matrix"){
     y <- as.matrix.BlpCOMReturn(BLP)
   }else if(retval[1] == "data.frame"){

@@ -1,7 +1,3 @@
-# We have to bundle more tests together than I would like because we don't want
-# to call blpConnect too often. There's a setup and teardown but they are run
-# in between each test and there's no global option.
-
 test.basic <- function() {
   conn <- blpConnect()
   
@@ -18,12 +14,10 @@ test.basic <- function() {
   checkEquals(
     # We are cheating here and returning a "matrix" since that is easier for
     # us to construct than the default zoo return type.
-    blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "CUR_MKT_CAP", 
-    start=as.chron(as.POSIXct("2008-02-01", tz="GMT")), 
-    end=as.chron(as.POSIXct("2008-02-04", tz="GMT")), retval="matrix"),
+    blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "CUR_MKT_CAP", start="2008-02-01", end="2008-02-04", retval="matrix"),
     
     data.matrix(data.frame(
-      "[DATETIME]" = c(39479, 39482),
+      "DATETIME" = c(1201824000, 1202083200),
       "RYA ID EQUITY" = c(5366.891, 5277.443),
       "OCN US EQUITY" = c(390.1707, 408.3037),
       "YHOO US EQUITY" = c(37928.28, 39197.90),
@@ -78,8 +72,7 @@ test.overrides <- function() {
   # at the end of March 2006, since 2005-12-31 falls into this fiscal year.
   checkEquals(
     max(blpGetData(conn, c("RYA ID Equity"), "LT_DEBT_TO_COM_EQY",
-    start=as.chron(as.POSIXct("2006-03-30", tz="GMT")), 
-    end=as.chron(as.POSIXct("2006-04-02", tz="GMT"))), na.rm=TRUE),
+    start="2006-03-30", end="2006-04-02"), na.rm=TRUE),
     76.5275
   )
     
@@ -88,8 +81,7 @@ test.overrides <- function() {
   # at the end of December 2005, since 2005-12-31 falls into this fiscal year.
   checkEquals(
     max(blpGetData(conn, c("YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
-    start=as.chron(as.POSIXct("2005-12-29", tz="GMT")), 
-    end=as.chron(as.POSIXct("2006-01-01", tz="GMT"))), na.rm=TRUE),
+    start="2005-12-29", end="2006-01-01"), na.rm=TRUE),
     8.7551
   )
   
@@ -148,8 +140,7 @@ test.overrides <- function() {
   # calendar quarter.
   checkEquals(
     as.vector(sapply(blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "LT_DEBT_TO_COM_EQY",
-    start=as.chron(as.POSIXct("2005-10-15", tz="GMT")), 
-    end=as.chron(as.POSIXct("2005-12-31", tz="GMT"))), max, na.rm=TRUE)),
+    start="2005-10-15", end="2005-12-31"), max, na.rm=TRUE)),
     c(71.5221, 44.4231, 8.7551)
   )
   

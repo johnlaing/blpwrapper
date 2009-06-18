@@ -12,78 +12,77 @@ blpGetHistoricalData <- function(conn,securities,fields,start,end=NULL,barsize=N
     stop("Need at least one security and one field")
   }
   
-  # Convenience methods to convert, e.g., "2008-01-01" to a chron.
   # Not sure if GMT is appropriate everywhere, will this give the correct
   # date in a non-GMT environment?
   if (is.character(start)){
-    start <- as.chron(as.POSIXct(start, tz="GMT"))
+    start <- as.POSIXct(start, tz="GMT")
   }
   if (is.character(end)){
-    end <- as.chron(as.POSIXct(end, tz="GMT"))
+    end <- as.POSIXct(end, tz="GMT")
   }
   
-  comStart <-  as.COMDate.chron(start);
-  if(!is.null(end)){
-    comEnd <- as.COMDate.chron(end);
-  }
-  ## Call COM
-  if(is.null(barsize)){
-                                        # historical
-    if(is.null(end)){
-      lst <- try(conn$BLPGetHistoricalData(Security=securities,
-                                           Fields=fields,StartDate=comStart),silent=TRUE)
-    }else{
-      lst <- try(conn$BLPGetHistoricalData(Security=securities,
-                                         Fields=fields,StartDate=comStart,EndDate=comEnd),silent=TRUE)
+  # TODO write test for valid date format.
+
+  if (is.null(barsize)) { # historical
+
+    if (is.null(end)) {
+      lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields, StartDate=start)
+    } else {
+      lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields, StartDate=start, EndDate=end)
     }
+
+    if (is.null(lst)) stop("Call to BLPSubscribe did not return any data!")
     attr(lst,"num.of.date.cols") <- 1
-  }else if(barsize == 0){
-                                        # intraday tick
-    if(!is.null(barfields)){
+    
+  } else if (barsize == 0) { # intraday tick
+                                        
+    if (!is.null(barfields)) {
       stop("You are making an intraday *tick* call.. don't pass anything to barfields.")
     }
-    if(is.null(end)){
-      lst <- try(conn$BLPGetHistoricalData(Security=securities,
-                                           Fields=fields,StartDate=comStart,
-                                           BarSize=as.integer(0)),silent=TRUE)    
-    }else{
-      lst <- try(conn$BLPGetHistoricalData(Security=securities,
-                                           Fields=fields,StartDate=comStart,
-                                           EndDate=comEnd,BarSize=as.integer(0)),silent=TRUE)    
+    
+    if (is.null(end)) {
+      lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields, StartDate=start, BarSize=as.integer(0))
+    } else {
+      lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields, StartDate=start, EndDate=end, BarSize=as.integer(0))
     }
+    
+    if (is.null(lst)) stop("Call to BLPSubscribe did not return any data!")
     attr(lst,"num.of.date.cols") <- length(fields)
-  }else if(barsize > 0){
-                                        # intraday bars
-    if(is.null(barfields)){
-                                        # Nothing passed to barfields arg.. assume all fields
+    
+  } else if (barsize > 0) { # intraday bars
+
+    if (is.null(barfields)) { # Nothing passed to barfields arg.. assume all fields
       barfields <- c("OPEN","HIGH","LOW","LAST_TRADE","NUMBER_TICKS","VOLUME")
     }
-    if(is.null(end)){
-      lst <- try(conn$BLPGetHistoricalData(Security=securities,
-                                           Fields=fields,StartDate=comStart,
-                                           BarSize=as.integer(barsize),BarFields=barfields),silent=TRUE)
-    }else{
-      lst <- try(conn$BLPGetHistoricalData(Security=securities,
-                                           Fields=fields,StartDate=comStart,
-                                           EndDate=comEnd,BarSize=as.integer(barsize),BarFields=barfields),silent=TRUE)
+    
+    if (is.null(end)) {
+      lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields,StartDate=start, BarSize=as.integer(barsize), BarFields=barfields)
+    } else {
+      lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields,StartDate=start, EndDate=end, BarSize=as.integer(barsize), BarFields=barfields)
     }
+    
+    if (is.null(lst)) stop("Call to BLPSubscribe did not return any data!")
     attr(lst,"num.of.date.cols") <- 1
   }
-  ## Set more properties of the return value
-  if(length(securities) > 1 && length(fields) == 1){
-    attr(lst,"num.of.date.cols") <- length(securities)    
-  }
+  
   class(lst) <- "BlpCOMReturn"
+
+  # Set attributes of BlpCOMReturn object.
+  if (length(securities) > 1 && length(fields) == 1) {
+    attr(lst,"num.of.date.cols") <- length(securities)
+  }
+
   attr(lst,"securities") <- securities
   attr(lst,"fields") <- fields
-  if(!is.null(barfields)){
+  
+  if (!is.null(barfields)) {
     attr(lst,"barfields") <- barfields
   }
+  
   attr(lst, "start") <- start
-  if(!is.null(end)){
+  if (!is.null(end)) {
     attr(lst, "end") <- end
   }
+
   return(lst)
 }
-
-

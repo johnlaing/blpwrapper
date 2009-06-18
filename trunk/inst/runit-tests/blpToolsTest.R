@@ -33,7 +33,7 @@ test.data.type.for.single.field <- function() {
 test.data.type.for.list.of.fields <- function() {
   checkEquals(
     dataType(multiple.fields),
-    c("double", "double", "double", "character", "chron")
+    c("double", "double", "double", "character", "datetime")
   )
 }
 
