@@ -12,17 +12,13 @@ blpGetHistoricalData <- function(conn,securities,fields,start,end=NULL,barsize=N
     stop("Need at least one security and one field")
   }
   
-  # Not sure if GMT is appropriate everywhere, will this give the correct
-  # date in a non-GMT environment?
-  if (is.character(start)){
-    start <- as.POSIXct(start, tz="GMT")
-  }
-  if (is.character(end)){
-    end <- as.POSIXct(end, tz="GMT")
+  # This shouldn't harm things that are already POSIXcts.
+  # Important to convert since invalid dates make R GUI crash.
+  start <- as.POSIXct(start, tz=system.timezone())
+  if (!is.null(end)) {
+     end <- as.POSIXct(end, tz=system.timezone())
   }
   
-  # TODO write test for valid date format.
-
   if (is.null(barsize)) { # historical
 
     if (is.null(end)) {
@@ -48,12 +44,19 @@ blpGetHistoricalData <- function(conn,securities,fields,start,end=NULL,barsize=N
       stop("You are making an intraday *tick* call.. don't pass anything to barfields.")
     }
     
-    if (!is.null(currency)) stop("currency not supported for intraday tick") # TODO implement and remove this
-    
     if (is.null(end)) {
-      lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields, StartDate=start, BarSize=as.integer(0))
+       if(is.null(currency)) {
+          # TODO why do we need to fudge a value for EndDate here?
+          lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields, StartDate=start, EndDate=Sys.time(), BarSize=as.integer(0))
+       } else {
+          lst <- comGetProperty(conn, "BLPGetHistoricalData2", Security=securities, Fields=fields, StartDate=start, Currency=currency, EndDate=Sys.time(), BarSize=as.integer(0))
+       }
     } else {
-      lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields, StartDate=start, EndDate=end, BarSize=as.integer(0))
+       if(is.null(currency)) {
+          lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields, StartDate=start, EndDate=end, BarSize=as.integer(0))
+       } else {
+          lst <- comGetProperty(conn, "BLPGetHistoricalData2", Security=securities, Fields=fields, StartDate=start, Currency=currency, EndDate=end, BarSize=as.integer(0))
+       }
     }
     
     if (is.null(lst)) stop("Call to BLPSubscribe did not return any data!")
@@ -65,12 +68,18 @@ blpGetHistoricalData <- function(conn,securities,fields,start,end=NULL,barsize=N
       barfields <- c("OPEN","HIGH","LOW","LAST_TRADE","NUMBER_TICKS","VOLUME")
     }
     
-    if (!is.null(currency)) stop("currency not supported for intraday bars") # TODO implement and remove this
-    
     if (is.null(end)) {
-      lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields,StartDate=start, BarSize=as.integer(barsize), BarFields=barfields)
+       if(is.null(currency)) {
+          lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields,StartDate=start, EndDate=Sys.time(), BarSize=as.integer(barsize), BarFields=barfields)
+       } else {
+          lst <- comGetProperty(conn, "BLPGetHistoricalData2", Security=securities, Fields=fields,StartDate=start, Currency=currency, EndDate=Sys.time(), BarSize=as.integer(barsize), BarFields=barfields)
+       }
     } else {
-      lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields,StartDate=start, EndDate=end, BarSize=as.integer(barsize), BarFields=barfields)
+       if (is.null(currency)) {
+          lst <- comGetProperty(conn, "BLPGetHistoricalData", Security=securities, Fields=fields,StartDate=start, EndDate=end, BarSize=as.integer(barsize), BarFields=barfields)
+       } else {
+          lst <- comGetProperty(conn, "BLPGetHistoricalData2", Security=securities, Fields=fields,StartDate=start, EndDate=end, Currency=currency, BarSize=as.integer(barsize), BarFields=barfields)
+       }
     }
     
     if (is.null(lst)) stop("Call to BLPSubscribe did not return any data!")

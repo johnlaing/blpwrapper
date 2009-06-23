@@ -14,14 +14,15 @@
 blpGetData(x, \dots)
 \method{blpGetData}{default}(x, \dots)
 \method{blpGetData}{BlpCOMConnect}(x, securities, fields, start = NULL, end = NULL,
-           barsize = NULL, barfields = NULL, retval = NULL, \dots)
+           barsize = NULL, barfields = NULL, retval = NULL,
+           override_fields = NULL, overrides = NULL, currency = NULL, \dots)
 }
 \arguments{
   \item{x}{connection object.}
   \item{securities}{vector of Bloomberg tickers.}
   \item{fields}{vector of field mnumonics. For intraday requests, this
     must be one or more of "BID", "ASK", and "LAST\_PRICE".}
-  \item{start,end}{chron object defining data window.}
+  \item{start,end}{A POSIX date or string in YYYY-MM-DD format}
   \item{barsize}{integer representing the duration (in clock minutes)
        of the bar intervals in an intraday bar timeseries request. If
        set to 0, the request is for intraday tick resolution. If NULL,
@@ -38,6 +39,11 @@ blpGetData(x, \dots)
     In this situation, specify a retval of "matrix" or "raw". Specifying
     "matrix" will in this case return a three dimensional array rather than
     a true matrix. Date conversion is not handled automatically as yet.}
+  \item{override_fields, overrides}{Override values and the corresponding override
+    fields.}
+  \item{currency}{For the blpGetHistoricalData2 function, specify currency for
+    historical data. Consider whether specifying EQY_FUND_CRNCY as an override
+    field may be more appropriate.}
   \item{\dots}{other args.}
 }
 \details{
@@ -97,40 +103,33 @@ blpGetData(x, \dots)
 conn <- blpConnect()
 
 ## Snapshot 
-eda <- blpGetData(conn, c("ED5 Comdty","ED6 Comdty","ED7 Comdty",
+blpGetData(conn, c("ED5 Comdty","ED6 Comdty","ED7 Comdty",
 "ED8 Comdty"), "BID")
-stopifnot(is.data.frame(eda))
 
 ## Historical (last 30 days)
-edb <- blpGetData(conn, "ED1 Comdty", "PX_LAST",
-start=as.chron(Sys.time() - 86400 * 30))
-stopifnot(is.zoo(edb))
+blpGetData(conn, "ED1 Comdty", "PX_LAST",
+start=Sys.Date() - 30)
 
 ## Intraday bars (last hour in 2 min bars)
-edc <- blpGetData(conn, "ED1 Comdty", c("BID","ASK"),
-start=as.chron(Sys.time() - 3600), barfields="OPEN", barsize=2)
-stopifnot(is.zoo(edc))
+blpGetData(conn, "ED1 Comdty", c("BID","ASK"),
+start=Sys.time() - 3600, barfields="OPEN", barsize=2)
 
 ## Tick-by-tick (3 minutes starting an hour ago)
-edd <- blpGetData(conn, "ED1 Comdty", c("BID"),
-start=as.chron(Sys.time() - 3600),
-end=as.chron(Sys.time() - 3420), barsize=0)
-stopifnot(is.zoo(edd))
+blpGetData(conn, "ED1 Comdty", c("BID"),
+start=Sys.time() - 3600,
+end=Sys.time() - 3420, barsize=0)
 
 # Example of 3D data. Note ugly dates.
-ede <- blpGetData(conn, c("ED5 Comdty","ED6 Comdty","ED7 Comdty",
+blpGetData(conn, c("ED5 Comdty","ED6 Comdty","ED7 Comdty",
 "ED8 Comdty"), c("BID","ASK"),
-start=as.chron(Sys.time() - 86400 * 5),
+start=Sys.time() - 86400 * 5,
 retval="matrix")
-stopifnot(is.array(ede))
 
 blpDisconnect(conn)
+
+## Please consult the unit tests in inst/runit-tests for more examples.
+
 }
 }
 \keyword{math}
 \author{Robert Sams \email{robert@sanctumfi.com}}
-
-
-
-
-

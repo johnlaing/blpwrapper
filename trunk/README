@@ -2,16 +2,12 @@ TODO:
 - Code as.zoo.comBlpTickData.
 - Tidy-up blpReadFields.
 - Rename .ovr object to .bbfields.ovr.
-- Find out why we get an error when reading those four COM properties.
+- Find out why we get an error when reading those four COM properties. # It's the Bloomberg API
 - Rename dataType() to something more package-specific.
-- Write COM.Rd (comSubscribe, comGetHistoricalData and their methods) and depricate the blp functions.
-- Write blp.Rd and depricate blpGetData.Rd.
-- Write blpConn.Rd and depricate blpConnect.RD.
 - Remove lowlevel.Rd.
 
 WISH LIST:
 - Website containing FAQ, etc.
-- Support for multi-currencies via GetHistoricalData2()
 - Support for bulk data calls
 - Support for asynchronous realtime feeds
 - Field lookup tool

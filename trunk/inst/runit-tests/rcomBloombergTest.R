@@ -34,4 +34,7 @@ test.bloomberg <- function() {
   # Examples of fetching prices in different currencies using BLPGetHistoricalData2
   comGetProperty(conn, "BLPGetHistoricalData", Security = "RYA ID Equity", Fields = "PX_LAST", StartDate = as.POSIXct("2009-01-01"), EndDate = as.POSIXct("2009-02-01"))
   comGetProperty(conn, "BLPGetHistoricalData2", Security = "RYA ID Equity", Fields = "PX_LAST", StartDate = as.POSIXct("2009-01-01"), Currency = "USD", EndDate = as.POSIXct("2009-02-01"))
+  
+  # Intraday tick example.
+  comGetProperty(conn, "BLPGetHistoricalData", Security="ED1 Comdty", Fields=c("BID","ASK"), StartDate=Sys.time() - 3600, EndDate = Sys.time(), BarSize=as.integer(0))
 }

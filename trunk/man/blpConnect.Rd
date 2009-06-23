@@ -24,7 +24,7 @@ blpDisconnect(conn)
   Connection to other API's provided by Bloomberg (e.g., C Desktop API
   and C Server API) will be accessable via this function in future
   releases of this package. Currently, the object returned is of class
-  'BlpCOMConnect'.
+  'COMObject'.
 
   \#\# FIX ME \#\#
 }
