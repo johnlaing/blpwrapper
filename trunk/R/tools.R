@@ -70,6 +70,10 @@ read.ovr <- function(path="C:/blp/API"){
   readLines(path)
 }
 
+search.mnemonics <- function(string) {
+   grep(string, .bbfields$field.mnemonic, value=TRUE)
+}
+
 what.i.override <- function(mnemonic, ovr=.ovr) {
   stopifnot(length(mnemonic)==1)
   field.mnemonic(gsub("^([0-9|A-Z]{2,4})\\|.*$", "\\1", grep(field.id(mnemonic), ovr, value=TRUE), extended=TRUE))
@@ -122,7 +126,7 @@ field.info <- function(mnemonic, bbfields=.bbfields){
   return(b)
 }
 
-field.id            <- function(mnemonic) { field.info(mnemonic)$field.id }
+field.id            <- function(mnemonic) { as.character(as.hexmode(field.info(mnemonic)$field.id), upper.case=TRUE) } # field IDs cannot have leading zeros to look up in Bloomberg data files
 field.name          <- function(mnemonic) { field.info(mnemonic)$field.name }
 data.bitmask        <- function(mnemonic) { field.info(mnemonic)$data.bitmask }
 market.bitmask      <- function(mnemonic) { field.info(mnemonic)$mkt.bitmask }
