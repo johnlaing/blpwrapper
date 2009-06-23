@@ -7,8 +7,17 @@ filter:
   - idio
   - textile
 ---
-h1. <%= @page.title %>
+<br />
 
-Homepage of RBloomberg.
+h1. <a href="/"><%= @page.title %></a>
 
-<%= idio("examples/hello-world.R") %>
+RBloomberg handles fetching data from the Bloomberg financial data application.
+
+Documentation on this site refers to the latest development version of RBloomberg, which is available to install with:
+
+<textarea style="width:600px;height:30px;">install.packages("RBloomberg", repos="http://R-Forge.R-project.org")</textarea>
+
+<a href="rbloomberg-manual.pdf">PDF Manual</a>
+
+<a href="http://r-forge.r-project.org/projects/rbloomberg/">R-Forge Project Page</a>
+

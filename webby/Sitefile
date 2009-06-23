@@ -5,3 +5,24 @@ SITE.output_dir = '../www/'
 task :clobber do
   raise "Clobber not available, breaks SVN."
 end
+
+EXAMPLES_DIRECTORY = "/private/tmp/569/C/work/rbloomberg-examples/"
+
+task :run_examples do
+  # Export the examples directory to Windows VM or other R-accessible directory specified by EXAMPLES_DIRECTORY
+  `svn export content/examples #{EXAMPLES_DIRECTORY} --force`
+  
+  # Strip out any Idiopidae comment lines so they don't get executed.
+  # They do no harm if they are executed, but they clutter up output.
+  `ls #{EXAMPLES_DIRECTORY}/*.R`.chomp.split.each do |f|
+    data = File.read(f)
+    data = data.gsub(/^\#\#\#.*$\n/, "")
+    
+    File.open(f, "w") do |file|
+      file.write data
+    end
+  end
+  
+  # TODO automatically run examples
+  puts "files exported, now run them in R"
+end

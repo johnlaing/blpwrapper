@@ -2,11 +2,66 @@
 title:      RBloomberg Manual
 author:     Ana Nelson
 created_at: 2009-01-30 13:08:32.468894 +00:00
-layout: book
+dirty: true
 filter:
   - erb
   - idio
 ---
 
-<%= lidio("examples/hello-world.R") %>
+\section{About RBloomberg} % (fold)
+\label{sec:about}
+
+RBloomberg is an R package which handles fetching data from the Bloomberg financial data application. RBloomberg was written by Robert Sams, see the package README for additional contributors and acknowledgements. RBloomberg is released under a GPL open source license.
+
+% section about (end)
+
+\section{Installation and Requirements} % (fold)
+\label{sec:installation_and_requirements}
+
+\subsection{Installation} % (fold)
+\label{sub:installation}
+
+RBloomberg will only work on a Bloomberg workstation, using the Desktop COM API. This version requires the rcom R package, which in turn depends on \href{http://rcom.univie.ac.at/}{statconnDCOM} which is a COM server that, while free, is not open source. Support for the Bloomberg Version 3 Java API is in development. When rcom is installed, it will give instructions on how to install statconnDCOM. If you install RBloomberg via
+
+\begin{verbatim}
+  install.packages("RBloomberg", repos="http://R-Forge.R-project.org")
+\end{verbatim}
+
+then rcom will automatically be installed for you if you don't have it.
+
+% subsection installation (end)
+
+\subsection{Hello, World} % (fold)
+\label{sub:hello_world}
+
+Once you have RBloomberg installed, load the library just like any other via:
+<%= lidio("examples/hello-world.R", "library") %>
+
+The first order of business is to connect to the Bloomberg data application, and store a reference to this connection object. You will use this in all subsequent calls:
+<%= lidio("examples/hello-world.R", "connect") %>
+
+Then we can make a simple request to ensure that the connection is working:
+<%= lidio("examples/hello-world.R", "basic-request") %>
+
+The result of running these three commands should be something like this:
+<%= lidio(File.join(EXAMPLES_DIRECTORY, "hello-world.Rout")) %>
+
+% subsection hello_world (end)
+
+\subsection{Unit Tests} % (fold)
+\label{sub:unit_tests}
+
+Tests are live code examples that are tested for the expected output. They are useful to developers as a code quality tool, and they can also be very useful to users to help ensure everything is running smoothly and also as an extra source of reference material. Should you not be able to find the information you need in formal documentation (this is general advice, not just pertaining to RBloomberg), look for tests and study the syntax of examples there.
+
+To ensure that everything is running smoothly, we recommend that you run the RUnit test suite:
+<%= lidio("examples/run-unit-tests.R", "run") %>
+
+The output of printTextProtocol should look like this:
+<%= lidio(File.join(EXAMPLES_DIRECTORY, "unit-test-results.txt")) %>
+
+In particular, take note of any errors or failures. Hopefully you will have none of either.
+
+% subsection unit_tests (end)
+
+% section installation_and_requirements (end)
 
