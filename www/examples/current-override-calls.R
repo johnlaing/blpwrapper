@@ -30,9 +30,8 @@ sink()
 
 sink("override-total-return.out")
 ### @export "total-return"
-blpGetData(conn, "MSFT US Equity", 
-   c("CUST_TRR_RETURN"), 
-   override_fields = c("CUST_TRR_START_DT", "CUST_TRR_END_DT", 
+blpGetData(conn, "MSFT US Equity", c("CUST_TRR_RETURN"),
+   override_fields = c("CUST_TRR_START_DT", "CUST_TRR_END_DT"), 
    overrides = c("20080215", "20080602")
 )
 

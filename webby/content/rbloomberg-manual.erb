@@ -106,6 +106,7 @@ Once we know the fields, we can construct our call to fetch the desired data:
 <%= lidio("examples/current-override-calls.R", "total-return") %>
 <%= lidio(File.join(EXAMPLES_DIRECTORY, "override-total-return.out")) %>
 
+As you can see from this example, it is possible to specify multiple overrides in a single request. The only restriction is to list the overrides in corresponding order to the fields passed to override_fields.
 
 % subsection using_overrides (end)
 

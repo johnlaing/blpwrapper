@@ -178,7 +178,7 @@ printTextProtocol(testResults)
 The output of printTextProtocol should look like this:
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-RUNIT TEST PROTOCOL -- Tue Jun 23 16:53:54 2009 
+RUNIT TEST PROTOCOL -- Tue Jun 23 16:58:32 2009 
 *********************************************** 
 Number of test functions: 14 
 Number of errors: 0 
@@ -199,8 +199,8 @@ Involved directory:
 C:/DOCUME~1/nelsona/LOCALS~1/Temp/Rinst109275280/RBloomberg/runit-tests 
 --------------------------- 
 Test file: C:/DOCUME~1/nelsona/LOCALS~1/Temp/Rinst109275280/RBloomberg/runit-tests/blpGetDataTest.R 
-test.basic: (2 checks) ... OK (2.01 seconds)
-test.overrides: (9 checks) ... OK (2.16 seconds)
+test.basic: (2 checks) ... OK (2.6 seconds)
+test.overrides: (9 checks) ... OK (1.97 seconds)
 --------------------------- 
 Test file: C:/DOCUME~1/nelsona/LOCALS~1/Temp/Rinst109275280/RBloomberg/runit-tests/blpToolsTest.R 
 test.category.name: (1 checks) ... OK (0.03 seconds)
@@ -208,15 +208,15 @@ test.data.type.for.list.of.fields: (1 checks) ... OK (0.01 seconds)
 test.data.type.for.single.field: (1 checks) ... OK (0 seconds)
 test.field.info.raises.error.on.invalid.mnemonic: (1 checks) ... OK (0 seconds)
 test.field.name.for.list.of.fields: (1 checks) ... OK (0.03 seconds)
-test.field.name.for.single.field: (1 checks) ... OK (0.01 seconds)
+test.field.name.for.single.field: (1 checks) ... OK (0 seconds)
 test.historical: (1 checks) ... OK (0 seconds)
 test.is.power.of.two: (4 checks) ... OK (0 seconds)
 test.static: (1 checks) ... OK (0.02 seconds)
-test.what.i.override: (2 checks) ... OK (0 seconds)
-test.what.overides.me: (2 checks) ... OK (0.02 seconds)
+test.what.i.override: (2 checks) ... OK (0.02 seconds)
+test.what.overides.me: (2 checks) ... OK (0.03 seconds)
 --------------------------- 
 Test file: C:/DOCUME~1/nelsona/LOCALS~1/Temp/Rinst109275280/RBloomberg/runit-tests/rcomBloombergTest.R 
-test.bloomberg: (3 checks) ... OK (3.3 seconds)
+test.bloomberg: (3 checks) ... OK (3.01 seconds)
 \end{Verbatim}
 
     
@@ -269,10 +269,10 @@ The data returned from these calls will look something like this:
               PX_LAST
 RYA ID EQUITY   3.168
                                       NAME PX_LAST
-IBM US EQUITY  INTL BUSINESS MACHINES CORP 104.453
-MSFT US EQUITY              MICROSOFT CORP  23.550
+IBM US EQUITY  INTL BUSINESS MACHINES CORP  104.35
+MSFT US EQUITY              MICROSOFT CORP   23.49
                               NAME PX_LAST  OPEN
-ED1 COMDTY Generic 1st 'ED' Future   99.26 99.25
+ED1 COMDTY Generic 1st 'ED' Future  99.265 99.25
 \end{Verbatim}
 
     
@@ -305,9 +305,9 @@ RYA ID EQUITY   3.168
               CRNCY_ADJ_PX_LAST
 RYA ID EQUITY             3.168
               CRNCY_ADJ_PX_LAST
-RYA ID EQUITY          34.44668
+RYA ID EQUITY          34.44791
               CRNCY_ADJ_PX_LAST
-RYA ID EQUITY          2.719388
+RYA ID EQUITY          2.719485
 \end{Verbatim}
 
     
@@ -345,9 +345,8 @@ find our which fields are overridden by CUST_TRR_CRNCY
 Once we know the fields, we can construct our call to fetch the desired data:
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=28,stepnumber=1]
-blpGetData(conn, @PYaB["]@PYaB[MSFT US Equity"], 
-   c(@PYaB["]@PYaB[CUST_TRR_RETURN"]), 
-   override_fields @PYbd[=] c(@PYaB["]@PYaB[CUST_TRR_START_DT"], @PYaB["]@PYaB[CUST_TRR_END_DT"], 
+blpGetData(conn, @PYaB["]@PYaB[MSFT US Equity"], c(@PYaB["]@PYaB[CUST_TRR_RETURN"]),
+   override_fields @PYbd[=] c(@PYaB["]@PYaB[CUST_TRR_START_DT"], @PYaB["]@PYaB[CUST_TRR_END_DT"]), 
    overrides @PYbd[=] c(@PYaB["]@PYaB[20080215"], @PYaB["]@PYaB[20080602"])
 )
 
@@ -361,7 +360,10 @@ blpGetData(conn, @PYaB["]@PYaB[MSFT US Equity"],
     
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-
+               CUST_TRR_RETURN
+MSFT US EQUITY         -4.7736
+               CUST_TRR_RETURN
+MSFT US EQUITY         -5.9796
 \end{Verbatim}
 
     
