@@ -1,0 +1,25 @@
+---
+extension: tex
+filter:    erb
+---
+\documentclass[a4paper, twocolumn]{article}
+\usepackage{fullpage}
+\usepackage{fancyvrb}
+\usepackage{color}
+\usepackage[ascii]{inputenc}
+\usepackage{hyperref}
+\usepackage[pdftex]{graphicx}
+
+<%= pygments_latex_styles %>
+
+
+\title{<%= @page.title %>}
+\author{<%= @page.author %>}
+
+\begin{document}
+
+\maketitle
+
+<%= @content %>
+
+\end{document}

@@ -1,0 +1,6 @@
+---
+filter: erb
+extension: css
+layout: false
+---
+<%= `pygmentize -S perldoc -f html` %>

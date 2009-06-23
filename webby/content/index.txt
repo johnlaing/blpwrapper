@@ -1,0 +1,14 @@
+---
+title:  RBloomberg
+author: Ana Nelson
+layout:  web
+filter:
+  - erb
+  - idio
+  - textile
+---
+h1. <%= @page.title %>
+
+Homepage of RBloomberg.
+
+<%= idio("examples/hello-world.R") %>

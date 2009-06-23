@@ -1,0 +1,7 @@
+task :default => :pdf
+
+SITE.output_dir = '../www/'
+
+task :clobber do
+  raise "Clobber not available, breaks SVN."
+end
