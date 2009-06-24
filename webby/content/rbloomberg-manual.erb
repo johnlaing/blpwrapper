@@ -70,7 +70,11 @@ In particular, take note of any errors or failures. Hopefully you will have none
 \section{Getting Current Data} % (fold)
 \label{sec:getting_current_data}
 
-This section covers getting current, i.e. non-historical, data from Bloomberg. This may be live (or delayed as per your availability) market data, or static descriptive data.
+This section covers getting current, i.e. non-historical, data from Bloomberg. This may be live (or delayed as per your availability) market data, or static descriptive data. All such data is called using the blpGetData() function, as defined below:
+
+<%= lidio("../../pkg/R/blpGetData.R", "blpGetData-definition") %>
+
+As we will always be passing a connection object, securities and fields, these are typically not named parameters. It is usually more convenient to name later parameters, except perhaps for start and end, rather than trying to remember the order of them all.
 
 Note that the fields employed here are the same fields you may be familiar with using the Excel add-in, and the FLDS function within your Bloomberg terminal is a convenient way to search for fields.
 
@@ -139,6 +143,20 @@ Once you know the mnemonic you wish to use, you can get more information about i
 \section{Historical Data} % (fold)
 \label{sec:historical_data}
 
+The same blpGetData() function is used for historical interday and intraday data requests:
 
+<%= lidio("../../pkg/R/blpGetData.R", "blpGetData-definition") %>
+
+\subsection{Intraday Data} % (fold)
+\label{sub:intraday_data}
+
+If you want daily or less frequent periodic data, or data for a specific day, then you want to make an intraday request.
+
+<%= lidio("examples/historical-calls.R", "basic-intraday") %>
+<%= lidio(File.join(EXAMPLES_DIRECTORY, "basic-intraday.out")) %>
+
+If you pass just a start date, then all data from that start date up until the present is returned. You can also pass both a start and end date and this will determine the range of dates for which to return data.
+
+% subsection intraday_data (end)
 
 % section historical_data (end)

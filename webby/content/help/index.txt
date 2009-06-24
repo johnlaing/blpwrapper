@@ -10,13 +10,13 @@ filter:
 
 Please remember that anyone providing help to you is a volunteer. Please show respect for their time by making your request as informative as possible, and doing as much homework as you reasonably can to try to solve the problem yourself before asking for help.
 
-h2. Search the Mailing List Archives
-
-Check out our "custom search":/search.
-
 h2. Read the Frequently Asked Questions
 
 PLEASE read the "FAQs":/faq. You might not be alone in your troubles and someone might have already solved this problem for you. If you don't find your question there, and you think we should add it, then contact us as described below.
+
+h2. Search the Mailing List Archives
+
+Check out our "custom search":/search.
 
 h2. Read the Documentation
 

@@ -6,9 +6,11 @@ blpGetData.default <- function(x, ...){
   blpGetData.COMObject(x, ...)
 }
 
+### @export "blpGetData-definition"
 blpGetData.COMObject <- function(x, securities, fields, start=NULL, end=NULL,
                                      barsize=NULL, barfields=NULL, retval=NULL, 
                                      override_fields = NULL, overrides = NULL, currency = NULL, ...){
+### @end
 
   ## Is call ok?
   if(is.null(securities) || is.null(fields)){
