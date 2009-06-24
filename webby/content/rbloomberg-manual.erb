@@ -70,7 +70,7 @@ In particular, take note of any errors or failures. Hopefully you will have none
 \section{Getting Current Data} % (fold)
 \label{sec:getting_current_data}
 
-This section covers getting current, i.e. non-historical, data from Bloomberg. This may be live (or delayed as per your availability) market data, or static descriptive data. All such data is called using the blpGetData() function, as defined below:
+This section covers getting current, i.e. non-historical, data from Bloomberg. This may be live (or delayed as per your availability) market data, or static descriptive data. All such data is called using the blp() function, as defined below:
 
 <%= lidio("../../pkg/R/blpGetData.R", "blpGetData-definition") %>
 
@@ -152,7 +152,7 @@ Once you know the mnemonic you wish to use, you can get more information about i
 \section{Historical Data} % (fold)
 \label{sec:historical_data}
 
-The same blpGetData() function is used for historical interday and intraday data requests:
+The same blp() function is used for historical interday and intraday data requests:
 
 <%= lidio("../../pkg/R/blpGetData.R", "blpGetData-definition") %>
 

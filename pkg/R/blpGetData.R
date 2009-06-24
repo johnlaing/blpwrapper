@@ -1,15 +1,20 @@
-blpGetData <- function(x, ...){
-  UseMethod("blpGetData", x)
+blpGetData <- function(x, ...) {
+  cat("blpGetData is deprecated, please update your code to call blp() instead. blpGetData will be removed in an upcoming version of RBloomberg.")
+  blp(x, ...)
 }
 
-blpGetData.default <- function(x, ...){
+blp <- function(x, ...) {
+   UseMethod("blp", x)
+}
+
+blp.default <- function(x, ...) {
   blpGetData.COMObject(x, ...)
 }
 
 ### @export "blpGetData-definition"
-blpGetData.COMObject <- function(x, securities, fields, start=NULL, end=NULL,
-                                     barsize=NULL, barfields=NULL, retval=NULL, 
-                                     override_fields = NULL, overrides = NULL, currency = NULL, ...){
+blp.COMObject <- function(x, securities, fields, start=NULL, end=NULL,
+                                barsize=NULL, barfields=NULL, retval=NULL, 
+                                override_fields = NULL, overrides = NULL, currency = NULL, ...) {
 ### @end
 
   ## Is call ok?

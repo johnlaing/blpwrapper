@@ -242,13 +242,13 @@ In particular, take note of any errors or failures. Hopefully you will have none
 \section{Getting Current Data} % (fold)
 \label{sec:getting_current_data}
 
-This section covers getting current, i.e. non-historical, data from Bloomberg. This may be live (or delayed as per your availability) market data, or static descriptive data. All such data is called using the blpGetData() function, as defined below:
+This section covers getting current, i.e. non-historical, data from Bloomberg. This may be live (or delayed as per your availability) market data, or static descriptive data. All such data is called using the blp() function, as defined below:
 
 
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=9,stepnumber=1]
-blpGetData.COMObject @PYbd[<-] @PYap[function](x, securities, fields, start@PYbd[=]@PYaD[NULL], end@PYbd[=]@PYaD[NULL],
-                                     barsize@PYbd[=]@PYaD[NULL], barfields@PYbd[=]@PYaD[NULL], retval@PYbd[=]@PYaD[NULL], 
-                                     override_fields @PYbd[=] @PYaD[NULL], overrides @PYbd[=] @PYaD[NULL], currency @PYbd[=] @PYaD[NULL], ...){
+\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=14,stepnumber=1]
+blp.COMObject @PYbd[<-] @PYap[function](x, securities, fields, start@PYbd[=]@PYaD[NULL], end@PYbd[=]@PYaD[NULL],
+                                barsize@PYbd[=]@PYaD[NULL], barfields@PYbd[=]@PYaD[NULL], retval@PYbd[=]@PYaD[NULL], 
+                                override_fields @PYbd[=] @PYaD[NULL], overrides @PYbd[=] @PYaD[NULL], currency @PYbd[=] @PYaD[NULL], ...) {
 \end{Verbatim}
 
     
@@ -465,13 +465,13 @@ field.info(@PYaB["]@PYaB[PX_LAST"])
 \section{Historical Data} % (fold)
 \label{sec:historical_data}
 
-The same blpGetData() function is used for historical interday and intraday data requests:
+The same blp() function is used for historical interday and intraday data requests:
 
 
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=9,stepnumber=1]
-blpGetData.COMObject @PYbd[<-] @PYap[function](x, securities, fields, start@PYbd[=]@PYaD[NULL], end@PYbd[=]@PYaD[NULL],
-                                     barsize@PYbd[=]@PYaD[NULL], barfields@PYbd[=]@PYaD[NULL], retval@PYbd[=]@PYaD[NULL], 
-                                     override_fields @PYbd[=] @PYaD[NULL], overrides @PYbd[=] @PYaD[NULL], currency @PYbd[=] @PYaD[NULL], ...){
+\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=14,stepnumber=1]
+blp.COMObject @PYbd[<-] @PYap[function](x, securities, fields, start@PYbd[=]@PYaD[NULL], end@PYbd[=]@PYaD[NULL],
+                                barsize@PYbd[=]@PYaD[NULL], barfields@PYbd[=]@PYaD[NULL], retval@PYbd[=]@PYaD[NULL], 
+                                override_fields @PYbd[=] @PYaD[NULL], overrides @PYbd[=] @PYaD[NULL], currency @PYbd[=] @PYaD[NULL], ...) {
 \end{Verbatim}
 
     
