@@ -29,6 +29,7 @@ filter:    erb
 <div id="menu">
 <ul>
     <% [
+        ['/search', 'Search'],
         ['/faq', "FAQ"],
         ['/installation', "Installation"],
         ['/help', "Help"]
@@ -48,6 +49,7 @@ filter:    erb
 <ul id="nav">
     <li><a href="rbloomberg-manual.pdf">Download PDF Manual</a></li>
 	<li><a href="http://r-forge.r-project.org/projects/rbloomberg">R-Forge Project Page</a></li>
+	<li><a href="https://stat.ethz.ch/mailman/listinfo/r-sig-finance">R Sig Finance Mailing List</a></li>
 </ul>
 	<div class="box">
 		<h2 style="margin-top:17px">Recent Entries</h2>

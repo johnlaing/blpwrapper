@@ -126,6 +126,8 @@ field.info <- function(mnemonic, bbfields=.bbfields){
   return(b)
 }
 
+# TODO implement verbose field.description method to interpret market bitmasks etc.
+
 field.id            <- function(mnemonic) { as.character(as.hexmode(field.info(mnemonic)$field.id), upper.case=TRUE) } # field IDs cannot have leading zeros to look up in Bloomberg data files
 field.name          <- function(mnemonic) { field.info(mnemonic)$field.name }
 data.bitmask        <- function(mnemonic) { field.info(mnemonic)$data.bitmask }
