@@ -190,7 +190,7 @@ printTextProtocol(testResults)
 The output of printTextProtocol should look like this:
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-RUNIT TEST PROTOCOL -- Wed Jun 24 12:03:55 2009 
+RUNIT TEST PROTOCOL -- Wed Jun 24 13:12:12 2009 
 *********************************************** 
 Number of test functions: 14 
 Number of errors: 0 
@@ -211,24 +211,24 @@ Involved directory:
 C:/DOCUME~1/nelsona/LOCALS~1/Temp/Rinst21292065/RBloomberg/runit-tests 
 --------------------------- 
 Test file: C:/DOCUME~1/nelsona/LOCALS~1/Temp/Rinst21292065/RBloomberg/runit-tests/blpGetDataTest.R 
-test.basic: (2 checks) ... OK (1.89 seconds)
-test.overrides: (9 checks) ... OK (2.95 seconds)
+test.basic: (2 checks) ... OK (1.65 seconds)
+test.overrides: (9 checks) ... OK (7.14 seconds)
 --------------------------- 
 Test file: C:/DOCUME~1/nelsona/LOCALS~1/Temp/Rinst21292065/RBloomberg/runit-tests/blpToolsTest.R 
 test.category.name: (1 checks) ... OK (0.03 seconds)
-test.data.type.for.list.of.fields: (1 checks) ... OK (0.01 seconds)
+test.data.type.for.list.of.fields: (1 checks) ... OK (0.03 seconds)
 test.data.type.for.single.field: (1 checks) ... OK (0 seconds)
-test.field.info.raises.error.on.invalid.mnemonic: (1 checks) ... OK (0 seconds)
-test.field.name.for.list.of.fields: (1 checks) ... OK (0.01 seconds)
+test.field.info.raises.error.on.invalid.mnemonic: (1 checks) ... OK (0.02 seconds)
+test.field.name.for.list.of.fields: (1 checks) ... OK (0.04 seconds)
 test.field.name.for.single.field: (1 checks) ... OK (0 seconds)
-test.historical: (1 checks) ... OK (0 seconds)
+test.historical: (1 checks) ... OK (0.03 seconds)
 test.is.power.of.two: (4 checks) ... OK (0 seconds)
 test.static: (1 checks) ... OK (0 seconds)
-test.what.i.override: (2 checks) ... OK (0.01 seconds)
+test.what.i.override: (2 checks) ... OK (0.04 seconds)
 test.what.overides.me: (2 checks) ... OK (0.03 seconds)
 --------------------------- 
 Test file: C:/DOCUME~1/nelsona/LOCALS~1/Temp/Rinst21292065/RBloomberg/runit-tests/rcomBloombergTest.R 
-test.bloomberg: (3 checks) ... OK (1.92 seconds)
+test.bloomberg: (3 checks) ... OK (2.4 seconds)
 \end{Verbatim}
 
     
@@ -290,12 +290,12 @@ The data returned from these calls will look something like this:
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
               PX_LAST
-RYA ID EQUITY   3.297
+RYA ID EQUITY    3.29
                                       NAME PX_LAST
 IBM US EQUITY  INTL BUSINESS MACHINES CORP  104.44
 MSFT US EQUITY              MICROSOFT CORP   23.34
                               NAME PX_LAST   OPEN
-ED1 COMDTY Generic 1st 'ED' Future   99.28 99.275
+ED1 COMDTY Generic 1st 'ED' Future   99.27 99.275
 \end{Verbatim}
 
     
@@ -324,13 +324,13 @@ blpGetData(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[CRNCY_ADJ_PX_LAST"
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
               PX_LAST
-RYA ID EQUITY   3.297
+RYA ID EQUITY    3.29
               CRNCY_ADJ_PX_LAST
-RYA ID EQUITY             3.297
+RYA ID EQUITY              3.29
               CRNCY_ADJ_PX_LAST
-RYA ID EQUITY          35.96095
+RYA ID EQUITY          35.78388
               CRNCY_ADJ_PX_LAST
-RYA ID EQUITY          2.798488
+RYA ID EQUITY          2.792202
 \end{Verbatim}
 
     
@@ -393,7 +393,16 @@ MSFT US EQUITY         -5.9796
 
 As you can see from this example, it is possible to specify multiple overrides in a single request. Take care to list the overrides in corresponding order to the fields passed to override\_fields.
 
+Note that dates must be passed as strings in the form ``YYYYMMDD''. If you pass an invalid override field, or one that doesn't apply to the main field you are requesting, this will be silently ignored. So, make sure you know that your request is valid before you count on the returned value being correct. This is a feature rather than a bug since it makes it possible to specify override fields which only apply to 1 field requested. So, you can ask for CRNCY\_ADJ\_PX\_LAST and NAME in the same request, and you don't get an error saying that EQY\_FUND\_CRNCY doesn't apply to the NAME field.
+
 % subsection using_overrides (end)
+
+\subsection{Format of Returned Data} % (fold)
+\label{sub:format_of_returned_data}
+
+By default, RBloomberg returns a data frame for current requests and a zoo for historical data. You can specify a particular format using the retval parameter. retval can take options "raw", "matrix", "zoo" or "data.frame". Remember that for a matrix, all values must be of the same data type. Hence, dates will not appear in date format in a matrix. The "raw" retval is useful for troubleshooting if you receive an error message which originated in the data conversion process.
+
+% subsection format_of_returned_data (end)
 
 % section getting_current_data (end)
 
@@ -489,7 +498,7 @@ blpGetData(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[PX_LAST"], @PYaB["
 2009-06-18 23:00:00   3.220
 2009-06-21 23:00:00   3.136
 2009-06-22 23:00:00   3.220
-2009-06-23 23:00:00   3.297
+2009-06-23 23:00:00   3.290
                     PX_LAST
 2008-12-31 22:00:00      NA
 2009-01-01 23:00:00   3.150
@@ -500,9 +509,13 @@ blpGetData(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[PX_LAST"], @PYaB["
 
     
 
-If you pass just a start date, then all data from that start date up until the present is returned. You can also pass both a start and end date and this will determine the range of dates for which to return data.
+If you pass just a start date, then all data from that start date up until the present is returned. You can also pass both a start and end date and this will determine the range of dates for which to return data. Dates can be passed as POSIX dates, strings in the form YYYY-MM-DD or any other format which can be coerced via a call to as.POSIXct().
+
+Overrides can be passed in the same manner as for current data calls. Also there is a currency parameter, as documented in the Bloomberg API for the blpGetHistoricalData2 function. Again, test to be sure this is giving you what you expect as it does not apply to all fields.
 
 % subsection intraday_data (end)
+
+
 
 % section historical_data (end)
 

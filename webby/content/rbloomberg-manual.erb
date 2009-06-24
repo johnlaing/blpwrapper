@@ -114,7 +114,16 @@ Once we know the fields, we can construct our call to fetch the desired data:
 
 As you can see from this example, it is possible to specify multiple overrides in a single request. Take care to list the overrides in corresponding order to the fields passed to override\_fields.
 
+Note that dates must be passed as strings in the form ``YYYYMMDD''. If you pass an invalid override field, or one that doesn't apply to the main field you are requesting, this will be silently ignored. So, make sure you know that your request is valid before you count on the returned value being correct. This is a feature rather than a bug since it makes it possible to specify override fields which only apply to 1 field requested. So, you can ask for CRNCY\_ADJ\_PX\_LAST and NAME in the same request, and you don't get an error saying that EQY\_FUND\_CRNCY doesn't apply to the NAME field.
+
 % subsection using_overrides (end)
+
+\subsection{Format of Returned Data} % (fold)
+\label{sub:format_of_returned_data}
+
+By default, RBloomberg returns a data frame for current requests and a zoo for historical data. You can specify a particular format using the retval parameter. retval can take options "raw", "matrix", "zoo" or "data.frame". Remember that for a matrix, all values must be of the same data type. Hence, dates will not appear in date format in a matrix. The "raw" retval is useful for troubleshooting if you receive an error message which originated in the data conversion process.
+
+% subsection format_of_returned_data (end)
 
 % section getting_current_data (end)
 
@@ -155,8 +164,12 @@ If you want daily or less frequent periodic data, or data for a specific day, th
 <%= lidio("examples/historical-calls.R", "basic-intraday") %>
 <%= lidio(File.join(EXAMPLES_DIRECTORY, "basic-intraday.out")) %>
 
-If you pass just a start date, then all data from that start date up until the present is returned. You can also pass both a start and end date and this will determine the range of dates for which to return data.
+If you pass just a start date, then all data from that start date up until the present is returned. You can also pass both a start and end date and this will determine the range of dates for which to return data. Dates can be passed as POSIX dates, strings in the form YYYY-MM-DD or any other format which can be coerced via a call to as.POSIXct().
+
+Overrides can be passed in the same manner as for current data calls. Also there is a currency parameter, as documented in the Bloomberg API for the blpGetHistoricalData2 function. Again, test to be sure this is giving you what you expect as it does not apply to all fields.
 
 % subsection intraday_data (end)
+
+
 
 % section historical_data (end)

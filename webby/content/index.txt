@@ -1,5 +1,5 @@
 ---
-title: RBloomberg
+title: Welcome
 layout:  web
 filter:
   - erb
