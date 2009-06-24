@@ -71,7 +71,7 @@ read.ovr <- function(path="C:/blp/API"){
 }
 
 search.mnemonics <- function(string) {
-   grep(string, .bbfields$field.mnemonic, value=TRUE)
+   sort(grep(string, .bbfields$field.mnemonic, value=TRUE))
 }
 
 what.i.override <- function(mnemonic, ovr=.ovr) {
