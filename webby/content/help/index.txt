@@ -1,0 +1,29 @@
+---
+title: Help
+layout: web
+created_at: 2009-06-24 10:20:27.133115 +01:00
+filter:
+  - erb
+  - idio
+  - textile
+---
+
+Please remember that anyone providing help to you is a volunteer. Please show respect for their time by making your request as informative as possible, and doing as much homework as you reasonably can to try to solve the problem yourself before asking for help.
+
+h2. Read the Frequently Asked Questions
+
+PLEASE read the "FAQs":/faq. You might not be alone in your troubles and someone might have already solved this problem for you. If you don't find your question there, and you think we should add it, then contact us as described below.
+
+h2. Read the Documentation
+
+There is an extensive PDF manual available "here":/rbloomberg-manual.pdf.
+
+h2. Browse the Source
+
+RBloomberg is an R package, and an R package is just a bunch of files written in R, so you might find the answer to your question by just looking at the source itself. It's worth a try. Download one of the zip or tgz files from "here":http://r-forge.r-project.org/R/?group_id=145 and take a look inside. The good stuff is in the @R/@ directory but also take a look at the unit tests in @inst/runit-tests@ which might have some helpful examples.
+
+h2. Ask Nicely for Help
+
+If all else fails, then you are welcome to send a note to the "R-Sig-Finance mailing list":https://stat.ethz.ch/mailman/listinfo/r-sig-finance. This is an R mailing list for people with an interest in finance, not specific to RBloomberg but there are a lot of RBloomberg users on there. Please explain your problem clearly, including the version of R and RBloomberg you are using, and be patient.
+
+Another option is to submit a bug report or support request via R-Forge. Visit the "forums":http://r-forge.r-project.org/tracker/?group_id=145 page there and send us a patch, make a request for a new feature, tell us about a bug you've found or ask for help on a specific issue.

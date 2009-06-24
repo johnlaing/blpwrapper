@@ -30,7 +30,8 @@ filter:    erb
 <ul>
     <% [
         ['/faq', "FAQ"],
-        ['/installation', "Installation"]
+        ['/installation', "Installation"],
+        ['/help', "Help"]
         ].each do |a, t| -%>
     <li><a href="<%= a %>"><%= t %></a></li>
     <% end -%>

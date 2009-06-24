@@ -13,7 +13,7 @@ end
 
 task :run_examples do
   # Export the examples directory to Windows VM or other R-accessible directory specified by EXAMPLES_DIRECTORY
-  `svn export content/examples #{EXAMPLES_DIRECTORY} --force`
+  `cp content/examples/* #{EXAMPLES_DIRECTORY}`
   
   # Strip out any Idiopidae comment lines so they don't get executed.
   # They do no harm if they are executed, but they clutter up output.
