@@ -1,55 +1,71 @@
 blpGetData <- function(x, ...) {
-  cat("blpGetData is deprecated, please update your code to call blp() instead. blpGetData will be removed in an upcoming version of RBloomberg.")
+  cat("blpGetData is deprecated, please update your code to call blp() instead. blpGetData will be removed in an upcoming version of RBloomberg.\n")
   blp(x, ...)
 }
 
-blp <- function(x, ...) {
-   UseMethod("blp", x)
+### @export "blp-definition"
+blp <- function(conn, securities, fields, start=NULL, end=NULL,
+                                barsize=NULL, barfields=NULL, retval=NULL, 
+                                override_fields = NULL, overrides = NULL, currency = NULL) {
+### @end
+
+   if (is.null(conn) || is.null(securities) || is.null(fields)) {
+     stop("conn, securities, and fields are all required parameters.")
+   }
+   
+   if (!is.null(end) && is.null(start)) {
+     stop("You must pass a date to the start parameter.")
+   }
+   
+   if (!is.null(retval[1])) {
+     if (!retval[1] %in% c("matrix","data.frame","zoo","raw")) {
+       stop("retval must be matrix, data.frame, zoo, or raw")
+     }
+   }
+   
+   if (!is.null(barsize)) {
+     if (barsize > 0) {
+        allowed <- c("OPEN", "HIGH","LOW", "LAST_PRICE","VOLUME","NUMBER_TICKS")
+        if (!prod(c(barfields %in% allowed, !is.null(barfields)))) {
+         stop(paste("barfields must be one or more of OPEN, HIGH, LOW, LAST_PRICE, NUMBER_TICKS, or VOLUME"))
+       }
+     }
+   }
+   
+   UseMethod("blp", conn)
 }
 
 blp.default <- function(x, ...) {
-  blpGetData.COMObject(x, ...)
+  stop(paste("no blp method found for class", class(x)))
 }
 
-### @export "blpGetData-definition"
-blp.COMObject <- function(x, securities, fields, start=NULL, end=NULL,
-                                barsize=NULL, barfields=NULL, retval=NULL, 
-                                override_fields = NULL, overrides = NULL, currency = NULL, ...) {
-### @end
+# Must leave NULL defaults in these function definitions or else the local
+# variables are undefined.
+blp.JavaObject <- function(conn, securities, fields, start=NULL, end=NULL, barsize=NULL, barfields=NULL, 
+      retval=NULL, override_fields=NULL, overrides=NULL, currency=NULL) {
 
-  ## Is call ok?
-  if(is.null(securities) || is.null(fields)){
-    stop("x, securities, and fields are all required parameters.")
-  }
-  if(!is.null(end) && is.null(start)){
-    stop("You must pass a date to the start parameter.")
-  }
-  if(!is.null(retval[1])){
-    if(!retval[1] %in% c("matrix","data.frame","zoo","raw")){
-      stop("retval must be matrix, data.frame, zoo, or raw")
-    }
-  }
-  ## Make sure all fields and securities are in upper case
-  securities <- toupper(securities)
-  fields <- toupper(fields)
-  if(!is.null(barfields)){
-    barfields <- toupper(barfields)
-  }
-  ## intraday-specific conditions
-  if(!is.null(barsize)){
-    if(barsize > 0){
-      allowed <- c("OPEN", "HIGH","LOW", "LAST_PRICE","VOLUME","NUMBER_TICKS")
-      if(!prod(c(barfields %in% allowed, !is.null(barfields)))){
-        stop(paste("barfields must be one or more of OPEN, HIGH, LOW, LAST_PRICE, NUMBER_TICKS, or VOLUME"))
-      }
-    }
-  }
-  ## Make the underlying call to COM
+  request <- prepare_request(conn$service, securities, fields)
+  submit_request(conn$session, request)
+
+  read_events_stream_to_string(conn$session)
+}
+
+blp.COMObject <- function(conn, securities, fields, start=NULL, end=NULL, barsize=NULL, barfields=NULL, 
+      retval=NULL, override_fields=NULL, overrides=NULL, currency=NULL) {
+
+   # Changing these does not persist, so have to put them here for now instead of blp() why?
+   securities <- toupper(securities)
+   fields <- toupper(fields)
+   if(!is.null(barfields)){
+     barfields <- toupper(barfields)
+   }
+   
+   
   if(!is.null(start)){
-    BLP <- blpGetHistoricalData(x, securities, fields, start, end,
+    BLP <- blpGetHistoricalData(conn, securities, fields, start, end,
                        barsize, barfields, currency)
   }else{
-    BLP <- blpSubscribe(x, securities, fields, override_fields, overrides)
+    BLP <- blpSubscribe(conn, securities, fields, override_fields, overrides)
   }
   
   # If not specified, default to a data frame, or zoo for time series.

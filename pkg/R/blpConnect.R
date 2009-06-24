@@ -23,7 +23,12 @@ blpConnect <- function(iface="COM", timeout = 12000,
   } else if (iface == 'C') {
      stop("The C interface is not yet implemented.")
      
+  } else if (iface == 'Java') {
+     java_init() # Start the JVM, load Bloomberg API classes.
+     conn <- create_session_and_service()
+     return(conn)
+     
   } else {
-     stop("iface must be 'COM' or 'C'!")
+     stop("iface must be 'COM' or 'C' or 'Java'!")
   }
 }

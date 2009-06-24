@@ -3,7 +3,7 @@ test.basic <- function() {
   
   # Fetch static data for multiple securities and multiple fields.
   checkEquals(
-    blpGetData(conn, c("RYA ID Equity", "OCN US Equity"), c("NAME", "COUNTRY")),
+    blp(conn, c("RYA ID Equity", "OCN US Equity"), c("NAME", "COUNTRY")),
     data.frame(
       NAME=c("RYANAIR HOLDINGS PLC", "OCWEN FINANCIAL CORP"), 
       COUNTRY=c("IR", "US"),
@@ -12,7 +12,7 @@ test.basic <- function() {
   )
   
   checkEquals(
-    blpGetData(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "CUR_MKT_CAP", start="2008-02-01", end="2008-02-04", retval="matrix"),
+    blp(conn, c("RYA ID Equity", "OCN US Equity", "YHOO US Equity"), "CUR_MKT_CAP", start="2008-02-01", end="2008-02-04", retval="matrix"),
     
     data.matrix(data.frame(
       "DATETIME" = c(1201824000, 1202083200),
@@ -37,7 +37,7 @@ test.overrides <- function() {
   # CUST_TRR_RETURN_HOLDING_PER gives you total return for a custom period
   # of time.
   checkEquals(
-    blpGetData(
+    blp(
          conn, 
          c("RYA ID Equity", "OCN US Equity"), 
          c("CUST_TRR_RETURN_HOLDING_PER"), 

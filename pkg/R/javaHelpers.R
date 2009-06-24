@@ -29,6 +29,14 @@ create_bloomberg_service <- function(session) {
    .jcall(session, returnSig = "Lcom/bloomberglp/blpapi/Service;", method="getService", "//blp/refdata")
 }
 
+create_session_and_service <- function() {
+   session <- create_bloomberg_session()
+   service <- create_bloomberg_service(session)
+   conn <- c(session = session, service = service)
+   class(conn) <- "JavaObject"
+   return(conn)
+}
+
 prepare_request <- function(service, securities, fields, parameters) {
    request <- .jcall(service, returnSig = "Lcom/bloomberglp/blpapi/Request;", method="createRequest", "ReferenceDataRequest")
    
@@ -53,3 +61,21 @@ append_value_to_element <- function(value, element) {
    .jcall(element, returnSig = "V", "appendValue", value)
 }
 
+read_events_stream_to_string <- function(session) {
+   continue <- TRUE
+   messages <- c()
+
+   while(continue) {
+      event <- .jcall(session, returnSig="Lcom/bloomberglp/blpapi/Event;", method="nextEvent")
+      messageIterator <- .jcall(event, returnSig="Lcom/bloomberglp/blpapi/MessageIterator;", method="messageIterator")
+
+      while (.jcall(messageIterator, returnSig="Z", method="hasNext")) {
+         message <- .jcall(messageIterator, returnSig="Lcom/bloomberglp/blpapi/Message;", method="next")
+         messages <- append(messages, .jcall(message, "Ljava/lang/String;", "toString"))
+      }
+
+      continue <- !(length(grep("ReferenceDataResponse", .jcall(message, "Ljava/lang/String;", "toString"))) > 0)
+   }
+   
+   return(messages)
+}
