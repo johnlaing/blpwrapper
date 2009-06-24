@@ -28,8 +28,11 @@ filter:    erb
 <h2><a href="/" title="Back to main page">RBloomberg</a></h2>
 <div id="menu">
 <ul>
-    <% ["FAQ", "Installation"].each do |p| -%>
-    <li><%= link_to_page(p) %></li>
+    <% [
+        ['/faq', "FAQ"],
+        ['/installation', "Installation"]
+        ].each do |a, t| -%>
+    <li><a href="<%= a %>"><%= t %></a></li>
     <% end -%>
 </ul>
 </ul>
