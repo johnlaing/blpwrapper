@@ -17,17 +17,22 @@ blp <- function(conn, securities, fields, start=NULL, end=NULL,
      stop("You must pass a date to the start parameter.")
    }
    
+   # TODO clarify whether there are multiple retvals allowed and clean up
    if (!is.null(retval[1])) {
-     if (!retval[1] %in% c("matrix","data.frame","zoo","raw")) {
-       stop("retval must be matrix, data.frame, zoo, or raw")
+      allowed <- c("matrix","data.frame","zoo","raw")
+      stopmsg <- paste("retval must be one of ", paste(allowed, collapse=", "))
+     if (!retval[1] %in% allowed) {
+       stop(stopmsg)
      }
    }
    
    if (!is.null(barsize)) {
      if (barsize > 0) {
         allowed <- c("OPEN", "HIGH","LOW", "LAST_PRICE","VOLUME","NUMBER_TICKS")
+        stopmsg <- paste("barfields must be one or more of ", paste(allowed, collapse=", "))
+        # TODO replace with !is.null(barfields) & all(barfields %in% allowed) ?
         if (!prod(c(barfields %in% allowed, !is.null(barfields)))) {
-         stop(paste("barfields must be one or more of OPEN, HIGH, LOW, LAST_PRICE, NUMBER_TICKS, or VOLUME"))
+         stop(stopmsg)
        }
      }
    }
