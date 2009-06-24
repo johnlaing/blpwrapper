@@ -12,7 +12,7 @@ filter:    erb
 \usepackage{wrapfig}
 \usepackage{multicol}
 
-<%= pygments_latex_styles %>
+<%= pygments_latex_styles("native") %>
 
 
 \title{<%= @page.title %>}

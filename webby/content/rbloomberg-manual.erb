@@ -106,8 +106,27 @@ Once we know the fields, we can construct our call to fetch the desired data:
 <%= lidio("examples/current-override-calls.R", "total-return") %>
 <%= lidio(File.join(EXAMPLES_DIRECTORY, "override-total-return.out")) %>
 
-As you can see from this example, it is possible to specify multiple overrides in a single request. The only restriction is to list the overrides in corresponding order to the fields passed to override_fields.
+As you can see from this example, it is possible to specify multiple overrides in a single request. Take care to list the overrides in corresponding order to the fields passed to override\_fields.
 
 % subsection using_overrides (end)
 
 % section getting_current_data (end)
+
+\section{Field Information} % (fold)
+\label{sec:field_information}
+
+There are a number of utility methods within RBloomberg to help you identify fields available for calling. These were touched on in Section~\ref{sub:using_overrides} discussing overrides. Note that at this time, these fields rely on local information stored in .ovr and .bbfields and so can be used without making a connection to Bloomberg. As the next generation API has support for live field information, however, this will not always be the case.
+
+\subsection{Field Mnemonics} % (fold)
+\label{sub:field_mnemonics}
+
+Mnemonics are what we typically think of as field names such as PX\_LAST or NAME. You can research available mnemonics within your Bloomberg terminal using the FLDS function, and you may find this the most convenient way to search.
+
+To search (using grep) for all mnemonics matching a certain pattern, try:
+<%= lidio("examples/field-mnemonics.R", "search-mnemonics") %>
+<%= lidio(File.join(EXAMPLES_DIRECTORY, "search-mnemonics.txt")) %>
+
+
+% subsection field_mnemonics (end)
+
+% section field_information (end)

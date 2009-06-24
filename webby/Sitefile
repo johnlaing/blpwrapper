@@ -1,12 +1,15 @@
-task :default => :pdf
+EXAMPLES_DIRECTORY = "/private/tmp/569/C/work/rbloomberg-examples/"
 
+# Webby configuration
 SITE.output_dir = '../www/'
+SITE.create_mode = 'directory'
+
+# Webby (rake) tasks
+task :default => :pdf
 
 task :clobber do
   raise "Clobber not available, breaks SVN."
 end
-
-EXAMPLES_DIRECTORY = "/private/tmp/569/C/work/rbloomberg-examples/"
 
 task :run_examples do
   # Export the examples directory to Windows VM or other R-accessible directory specified by EXAMPLES_DIRECTORY

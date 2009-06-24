@@ -1,0 +1,7 @@
+library(RBloomberg)
+
+sink("search-mnemonics.txt")
+### @export "search-mnemonics"
+search.mnemonics("PX_LAST")
+### @end
+sink()

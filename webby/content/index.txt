@@ -1,23 +1,14 @@
 ---
-title:  RBloomberg
-author: Ana Nelson
+title: RBloomberg
 layout:  web
 filter:
   - erb
   - idio
   - textile
 ---
-<br />
-
-h1. <a href="/"><%= @page.title %></a>
 
 RBloomberg handles fetching data from the Bloomberg financial data application.
 
-Documentation on this site refers to the latest development version of RBloomberg, which is available to install with:
+Documentation on this site refers to the latest development version of RBloomberg.
 
-<textarea style="width:600px;height:30px;">install.packages("RBloomberg", repos="http://R-Forge.R-project.org")</textarea>
-
-<a href="rbloomberg-manual.pdf">PDF Manual</a>
-
-<a href="http://r-forge.r-project.org/projects/rbloomberg/">R-Forge Project Page</a>
-
+For detailed instructions on using RBloomberg, please download the "PDF Manual":rbloomberg-manual.pdf.

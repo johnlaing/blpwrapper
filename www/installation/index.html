@@ -12,7 +12,7 @@
 	<meta name="author" content="LoadFoO" />
 	<meta name="description" content="Site description" />
 	<meta name="keywords" content="key, words" />
-	<title>RBloomberg</title>
+	<title>Installation</title>
 	<link rel="stylesheet" type="text/css" href="/css/style.css" media="screen" />
 	<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
 	<link rel="shortcut icon" href="favicon.ico" />
@@ -32,10 +32,18 @@
 </div>
 <div id="content">
 <div id="left">
-<h2>RBloomberg</h2>
-<p>RBloomberg handles fetching data from the Bloomberg financial data application.</p>
-<p>Documentation on this site refers to the latest development version of RBloomberg.</p>
-<p>For detailed instructions on using RBloomberg, please download the <a href="rbloomberg-manual.pdf">PDF Manual</a>.</p>
+<h2>Installation</h2>
+<h2>Installing RBloomberg from CRAN</h2>
+<p>To install the latest stable release of RBloomberg from CRAN:<br />
+<pre><code>install.packages("RBloomberg")</code></pre></p>
+<h2>Installing RBloomberg from R-Forge</h2>
+<p>To install the latest daily build of the development version of RBloomberg from R-Forge:<br />
+<pre><code>install.packages("RBloomberg",repos="http://R-Forge.R-project.org")</code></pre></p>
+<h2>Compiling and Installing RBloomberg</h2>
+<p>If you wish to compile RBloomberg as an R package yourself, you will need to download and install <a href="http://www.murdoch-sutherland.com/Rtools/">R Tools</a>, and read the instructions for compiling R packages on Windows which is slightly more involved than on other platforms.</p>
+<p>The RBloomberg source is available to download from the R-Forge project page, or by checking it out from the Subversion repository:<br />
+<pre><code>svn checkout svn://svn.r-forge.r-project.org/svnroot/rbloomberg</code></pre></p>
+<p>You may find working with Subversion is made easier by using <a href="http://svk.bestpractical.com/view/HomePage">SVK</a>.</p>
 </div>
 <div id="right">
 <ul id="nav">
