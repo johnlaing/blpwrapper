@@ -101,17 +101,18 @@ read_events_stream_to_string <- function(session) {
                securities <- getValuesAsElements(security_data)
                blp <- rbind(blp, aperm(sapply(securities, getFieldData)))
             } else if (toString(message_type) == "HistoricalDataResponse") {
+               # TODO eventually should initialize blp to a list at the start.
+               if (is.null(blp)) {
+                  blp <- vector("list")
+               }
+               
                # Returns data for 1 security at a time.
                security <- getElement("securityData", message)
                ticker <- .jcall(security, returnSig="S", "getElementAsString", "security")
                
                field_data_array <- getValuesAsElements(getElement("fieldData", security))
                
-               
-               
-               # historical_data_table <- getElements(security_data)
-               # securities <- getValuesAsElements(security_data)
-               # blp <- rbind(blp, aperm(sapply(securities, getFieldData)))
+               blp[[ticker]] <- lapply(field_data_array, getValuesForFieldData)
             } else {
                stop(paste("I am not trained to handle messageType", toString(message_type)))
             }
@@ -167,6 +168,11 @@ getFieldData <- function(field) {
    lapply(fields, getFieldValue)
 }
 
+getValuesForFieldData <- function(field_data) {
+   fields <- getElements(field_data)
+   unlist(lapply(fields, getFieldValue))
+}
+
 getFieldAs <- function(field, fn_stub, return_sig) {
    fn_name <- paste("getValueAs", fn_stub, sep="")
    .jcall(field, returnSig = return_sig, fn_name)
@@ -178,9 +184,15 @@ getFieldValue <- function(field) {
      field_datatype,
       FLOAT64 = getFieldAs(field, "Float64", "D"),
       STRING = getFieldAs(field, "String", "S"),
-      DATE = toString(getFieldAs(field, "Date", "Lcom.bloomberglp.blpapi.datetime;")),
-      stop(field_datatype)
+      DATE = toString(getFieldAs(field, "Date", "Lcom/bloomberglp/blpapi/Datetime;")),
+      show_available_methods(field)
    )
+}
+
+show_available_methods <- function(field) {
+   cat("datatype of this field is ", getFieldType(field))
+   grepMethod(field, "getValueAs")
+   stop()
 }
 
 getFieldType <- function(field) {
