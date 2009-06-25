@@ -52,6 +52,9 @@ blp <- function(conn, securities, fields, start=NULL, end=NULL,
    attr(lst, "override_fields") <- override_fields
    attr(lst, "overrides") <- overrides
    
+   if (is.null(attr(lst, "num.of.date.cols"))) attr(lst, "num.of.date.cols") <- 0
+   
+   
    # If not specified, default to a data frame, or zoo for time series.
    if (is.null(retval)) {
       if (!is.null(start)) {
