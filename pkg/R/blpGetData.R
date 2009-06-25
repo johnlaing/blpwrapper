@@ -4,8 +4,8 @@ blpGetData <- function(x, ...) {
 }
 
 ### @export "blp-definition"
-blp <- function(conn, securities, fields, start=NULL, end=NULL,
-                                barsize=NULL, barfields=NULL, retval=NULL, 
+blp <- function(conn, securities, fields, start = NULL, end = NULL,
+                                barsize = NULL, barfields = NULL, retval = NULL, 
                                 override_fields = NULL, overrides = NULL, currency = NULL) {
 ### @end
 
@@ -29,8 +29,7 @@ blp <- function(conn, securities, fields, start=NULL, end=NULL,
      if (barsize > 0) {
         allowed <- c("OPEN", "HIGH","LOW", "LAST_PRICE","VOLUME","NUMBER_TICKS")
         stopmsg <- paste("barfields must be one or more of ", paste(allowed, collapse=", "))
-        # TODO replace with !is.null(barfields) & all(barfields %in% allowed) ?
-        if (!prod(c(barfields %in% allowed, !is.null(barfields)))) {
+        if (!is.null(barfields) & all(barfields %in% allowed)) {
          stop(stopmsg)
        }
      }
@@ -70,10 +69,12 @@ blp <- function(conn, securities, fields, start=NULL, end=NULL,
 blp.JavaObject <- function(conn, securities, fields, start, end, barsize, barfields, 
       retval, override_fields, overrides, currency) {
 
-  request <- prepare_request(conn$service, securities, fields)
+  request <- prepare_request(conn$service, securities, fields, start, end)
   submit_request(conn$session, request)
 
-  read_events_stream_to_string(conn$session)
+  lst <- read_events_stream_to_string(conn$session)
+  if (!is.null(start)) attr(list, "num.of.date.cols") <- 1
+  return(lst)
 }
 
 blp.COMObject <- function(conn, securities, fields, start, end, barsize, barfields, 

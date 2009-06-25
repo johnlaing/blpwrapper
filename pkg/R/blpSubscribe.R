@@ -1,8 +1,4 @@
 blpSubscribe <- function(conn, securities, fields, override_fields = NULL, overrides = NULL){
-   if(length(securities) == 0 || length(fields) == 0){
-     stop("Need at least one security and one field")
-   }
-
   if (is.null(override_fields)) {
      lst <- comGetProperty(conn, "BLPSubscribe", Security=securities, Fields=fields)
   } else {

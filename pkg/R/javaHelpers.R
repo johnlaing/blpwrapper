@@ -1,3 +1,10 @@
+# The table of JNI types is as follows:
+# I   integer  D  double (numeric)  J  long (*)    F  float (*)
+# V   void  Z  boolean  C  char (integer)    B  byte (raw)
+# L<class>; Java object of the class <class> (e.g. Ljava/lang/Object;)
+# [<type> Array of objects of type <type> (e.g. [D for an array of doubles)
+# Not all types or combinations are supported, but most are. Note that the Java type short was sacrificed for greater good (and pushed to T), namely S return type specification in .jcall is a shortcut for Ljava/lang/String;.
+
 java_init <- function() {
    library(rJava)
    .jinit()
@@ -41,8 +48,14 @@ create_session_and_service <- function() {
    return(conn)
 }
 
-prepare_request <- function(service, securities, fields, parameters) {
-   request <- .jcall(service, returnSig = "Lcom/bloomberglp/blpapi/Request;", method="createRequest", "ReferenceDataRequest")
+prepare_request <- function(service, securities, fields, start = NULL, end = NULL) {
+   if (is.null(start)) {
+      request_type <- "ReferenceDataRequest"
+   } else {
+      request_type <- "HistoricalDataRequest"
+   }
+   
+   request <- .jcall(service, returnSig = "Lcom/bloomberglp/blpapi/Request;", method="createRequest", request_type)
    
    requested_securities <- getElement("securities", request)
    sapply(securities, append_value_to_element, requested_securities)
@@ -50,7 +63,14 @@ prepare_request <- function(service, securities, fields, parameters) {
    requested_fields <- getElement("fields", request)
    sapply(fields, append_value_to_element, requested_fields)
    
+   if (!is.null(start)) set_request_parameter(request, "startDate", start)
+   if (!is.null(end)) set_request_parameter(request, "endDate", end)
+   
    return(request)
+}
+
+set_request_parameter <- function(request, parameter, value) {
+   .jcall(request, returnSig = "V", "set", parameter, value)
 }
 
 submit_request <- function(session, request) {
@@ -80,6 +100,18 @@ read_events_stream_to_string <- function(session) {
                security_data <- getElement("securityData", message)
                securities <- getValuesAsElements(security_data)
                blp <- rbind(blp, aperm(sapply(securities, getFieldData)))
+            } else if (toString(message_type) == "HistoricalDataResponse") {
+               # Returns data for 1 security at a time.
+               security <- getElement("securityData", message)
+               ticker <- .jcall(security, returnSig="S", "getElementAsString", "security")
+               
+               field_data_array <- getValuesAsElements(getElement("fieldData", security))
+               
+               
+               
+               # historical_data_table <- getElements(security_data)
+               # securities <- getValuesAsElements(security_data)
+               # blp <- rbind(blp, aperm(sapply(securities, getFieldData)))
             } else {
                stop(paste("I am not trained to handle messageType", toString(message_type)))
             }
@@ -146,7 +178,7 @@ getFieldValue <- function(field) {
      field_datatype,
       FLOAT64 = getFieldAs(field, "Float64", "D"),
       STRING = getFieldAs(field, "String", "S"),
-      DATE = toString(getFieldAs(field, "Date", "Lcom.bloomberglp.blpapi.Datetime;")),
+      DATE = toString(getFieldAs(field, "Date", "Lcom.bloomberglp.blpapi.datetime;")),
       stop(field_datatype)
    )
 }
