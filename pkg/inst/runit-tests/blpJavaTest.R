@@ -1,8 +1,4 @@
 test.java.basic <- function() {
   conn <- blpConnect("Java")
-  
-  blp(conn, "RYA ID Equity", "NAME")
-  
-  # This works, it's just slow:
-  # blp(conn, "SPX INDEX", "INDX_MEMBERS")
+  blp(conn, c("IBM US Equity", "MSFT US Equity"), c("PX_LAST", "NAME"), retval="raw")
 }

@@ -16,11 +16,6 @@ blpSubscribe <- function(conn, securities, fields, override_fields = NULL, overr
      stop("Call to BLPSubscribe did not return any data!")
   }
   
-  class(lst) <- "BlpRawReturn"
-  attr(lst, "securities") <- securities
-  attr(lst, "fields") <- fields
-  attr(lst, "override_fields") <- override_fields
-  attr(lst, "overrides") <- overrides
   attr(lst, "num.of.date.cols") <- 0
   
   return(lst)

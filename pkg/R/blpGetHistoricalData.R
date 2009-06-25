@@ -86,16 +86,11 @@ blpGetHistoricalData <- function(conn,securities,fields,start,end=NULL,barsize=N
     attr(lst,"num.of.date.cols") <- 1
   }
   
-  class(lst) <- "BlpRawReturn"
-
   # Set attributes of BlpRawReturn object.
   if (length(securities) > 1 && length(fields) == 1) {
     attr(lst,"num.of.date.cols") <- length(securities)
   }
 
-  attr(lst,"securities") <- securities
-  attr(lst,"fields") <- fields
-  
   if (!is.null(barfields)) {
     attr(lst,"barfields") <- barfields
   }

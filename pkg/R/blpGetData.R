@@ -44,9 +44,13 @@ blp <- function(conn, securities, fields, start=NULL, end=NULL,
    
    fn.name <- paste("blp", class(conn), sep=".")
    fn.call <- call(fn.name, conn, securities, fields, start, end, barsize, barfields, retval, override_fields, overrides, currency)
-   raw.result <- eval(fn.call)
+   lst <- eval(fn.call)
    
-   stopifnot(class(raw.result) == "BlpRawReturn") # TODO remove after testing
+   class(lst) <- "BlpRawReturn"
+   attr(lst, "securities") <- securities
+   attr(lst, "fields") <- fields
+   attr(lst, "override_fields") <- override_fields
+   attr(lst, "overrides") <- overrides
    
    # If not specified, default to a data frame, or zoo for time series.
    if (is.null(retval)) {
@@ -57,7 +61,7 @@ blp <- function(conn, securities, fields, start=NULL, end=NULL,
      }
    }
    
-   return(convert.to.retval(raw.result, retval))
+   return(convert.to.retval(lst, retval))
 }
 
 blp.JavaObject <- function(conn, securities, fields, start, end, barsize, barfields, 
