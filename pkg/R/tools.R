@@ -1,4 +1,4 @@
-## Take BlpCOMReturn object and return vector with any Bloomberg
+## Take BlpRawReturn object and return vector with any Bloomberg
 ## errors replaced with NA's (and raise warnings detailing error types
 ## if suppress = FALSE). 
 replaceBloombergErrors <- function(x, suppress=TRUE){

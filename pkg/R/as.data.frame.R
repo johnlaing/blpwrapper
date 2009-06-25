@@ -1,11 +1,11 @@
 # as.data.frame converts each column into the appropriate data type.
 # By contrast, as.matrix converts all non-date columns to numeric values.
 # as.data.frame does not support 3D data since data frames are 2D.
-as.data.frame.BlpCOMReturn <- function(x, row.names = NULL, optional =
+as.data.frame.BlpRawReturn <- function(x, row.names = NULL, optional =
                                        FALSE, ...){
   bbfields <- .bbfields
   lst <- list()
-  mtx <- as.matrix.BlpCOMReturn(x)
+  mtx <- as.matrix.BlpRawReturn(x)
   
   cols <- colnames(mtx)
   flds <- attr(x, "fields")

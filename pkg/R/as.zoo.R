@@ -1,5 +1,5 @@
-as.zoo.BlpCOMReturn <- function(x, suppress=TRUE, bbfields=.bbfields, ...){
-  mtx <- as.matrix.BlpCOMReturn(x)
+as.zoo.BlpRawReturn <- function(x, suppress=TRUE, bbfields=.bbfields, ...){
+  mtx <- as.matrix.BlpRawReturn(x)
   if(!is.matrix(mtx)){
     # If mtx is not a matrix, this is most likely because it is 3D data.
     # Matrices, and hence zoo objects, can only be 2D.

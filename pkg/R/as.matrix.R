@@ -1,5 +1,5 @@
 ## Bloomberg WAPI reference: "Appendix G: Error Codes", #APX007
-as.matrix.BlpCOMReturn <- function(x){
+as.matrix.BlpRawReturn <- function(x){
   vec <- replaceBloombergErrors(x, suppress=TRUE)
   ## get object properties
   secs <- attr(x, "securities")

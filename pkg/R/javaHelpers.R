@@ -66,16 +66,29 @@ read_events_stream_to_string <- function(session) {
    messages <- c()
 
    while(continue) {
+      # cat("beginning continue loop in read_events_stream_to_string")
       event <- .jcall(session, returnSig="Lcom/bloomberglp/blpapi/Event;", method="nextEvent")
-      messageIterator <- .jcall(event, returnSig="Lcom/bloomberglp/blpapi/MessageIterator;", method="messageIterator")
+      event_type <- .jcall(event, returnSig="Lcom/bloomberglp/blpapi/Event$EventType;", method="eventType")
+      
+      if (toString(event_type) %in% c("PARTIAL_RESPONSE", "RESPONSE")) {
+         # cat("event type is ", toString(event_type))
+         messageIterator <- .jcall(event, returnSig="Lcom/bloomberglp/blpapi/MessageIterator;", method="messageIterator")
 
-      while (.jcall(messageIterator, returnSig="Z", method="hasNext")) {
-         message <- .jcall(messageIterator, returnSig="Lcom/bloomberglp/blpapi/Message;", method="next")
-         messages <- append(messages, .jcall(message, "Ljava/lang/String;", "toString"))
+         while (.jcall(messageIterator, returnSig="Z", method="hasNext")) {
+            message <- .jcall(messageIterator, returnSig="Lcom/bloomberglp/blpapi/Message;", method="next")
+            # cat("message is ", toString(message))
+            messages <- append(messages, toString(message))
+         }
       }
-
-      continue <- !(length(grep("ReferenceDataResponse", .jcall(message, "Ljava/lang/String;", "toString"))) > 0)
+      
+      continue <- !(toString(event_type) == "RESPONSE")
+      # cat("continue is ", continue)
    }
    
    return(messages)
+}
+
+# Call toString on any java object which has it.
+toString <- function(java_object) {
+   .jcall(java_object, "Ljava/lang/String;", "toString")
 }

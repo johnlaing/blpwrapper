@@ -29,3 +29,11 @@ task :run_examples do
   # TODO automatically run examples
   puts "files exported, now run them in R"
 end
+# 
+# result = `ps ux | awk '/prl_vm_app/ && !/awk/ {print $2}'`.chomp
+# 
+# puts "Parallels process is #{result}..."
+# 
+# system %{
+# cp -r pkg /private/tmp/#{result}/C/work/rbloomberg-trunk
+# }
