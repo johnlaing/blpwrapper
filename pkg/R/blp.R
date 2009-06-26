@@ -72,7 +72,7 @@ blp.JavaObject <- function(conn, securities, fields, start, end, barsize, barfie
   request <- prepare_request(conn$service, securities, fields, start, end)
   submit_request(conn$session, request)
 
-  lst <- read_events_stream_to_string(conn$session)
+  lst <- process_event(conn$session, "RESPONSE")
   if (!is.null(start)) attr(list, "num.of.date.cols") <- 1
   return(lst)
 }

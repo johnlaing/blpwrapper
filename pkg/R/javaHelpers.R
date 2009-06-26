@@ -5,124 +5,12 @@
 # [<type> Array of objects of type <type> (e.g. [D for an array of doubles)
 # Not all types or combinations are supported, but most are. Note that the Java type short was sacrificed for greater good (and pushed to T), namely S return type specification in .jcall is a shortcut for Ljava/lang/String;.
 
-java_init <- function() {
-   library(rJava)
-   .jinit()
-   .jaddClassPath("C:\\blp\\API\\APIv3\\JavaAPI\\lib\\blpapi3.jar")   
-}
-
-create_bloomberg_session <- function(host = "localhost", port = 8194) {
-   session_options <- .jnew("com/bloomberglp/blpapi/SessionOptions")
-
-   host_jstring <- .jnew("java/lang/String", host)
-   port_jint <- int(port)
-   
-   .jcall(session_options, returnSig = "V", method = "setServerHost", host_jstring)
-   .jcall(session_options, returnSig = "V", method = "setServerPort", port_jint)
-   
-   # Start session.
-   session <- .jnew("com/bloomberglp/blpapi/Session", session_options)
-   success <- .jcall(session, returnSig = "Z", method = "start")
-   stopifnot(success)
-   
-   # TODO read event stream here
-   
-   # Start services.
-   success <- .jcall(session, returnSig = "Z", method = "openService", "//blp/refdata")
-   stopifnot(success)
-   
-   # TODO read event stream here
-
-   return(session)
-}
-
-create_bloomberg_service <- function(session) {
-   .jcall(session, returnSig = "Lcom/bloomberglp/blpapi/Service;", method="getService", "//blp/refdata")
-}
-
-create_session_and_service <- function() {
-   session <- create_bloomberg_session()
-   service <- create_bloomberg_service(session)
-   conn <- c(session = session, service = service)
-   class(conn) <- "JavaObject"
-   return(conn)
-}
-
-prepare_request <- function(service, securities, fields, start = NULL, end = NULL) {
-   if (is.null(start)) {
-      request_type <- "ReferenceDataRequest"
-   } else {
-      request_type <- "HistoricalDataRequest"
-   }
-   
-   request <- .jcall(service, returnSig = "Lcom/bloomberglp/blpapi/Request;", method="createRequest", request_type)
-   
-   requested_securities <- getElement("securities", request)
-   sapply(securities, append_value_to_element, requested_securities)
-
-   requested_fields <- getElement("fields", request)
-   sapply(fields, append_value_to_element, requested_fields)
-   
-   if (!is.null(start)) set_request_parameter(request, "startDate", start)
-   if (!is.null(end)) set_request_parameter(request, "endDate", end)
-   
-   return(request)
-}
-
-set_request_parameter <- function(request, parameter, value) {
-   .jcall(request, returnSig = "V", "set", parameter, value)
-}
-
-submit_request <- function(session, request) {
-   .jcall(session, returnSig="Lcom/bloomberglp/blpapi/CorrelationID;", method="sendRequest", request, .jnull(class = "com/bloomberglp/blpapi/CorrelationID") )
-}
-
 append_value_to_element <- function(value, element) {
    .jcall(element, returnSig = "V", "appendValue", value)
 }
 
-read_events_stream_to_string <- function(session) {
-   continue <- TRUE
-   blp <- NULL
-   
-   while(continue) {
-      event <- .jcall(session, returnSig="Lcom/bloomberglp/blpapi/Event;", method="nextEvent")
-      event_type <- .jcall(event, returnSig="Lcom/bloomberglp/blpapi/Event$EventType;", method="eventType")
-      
-      if (toString(event_type) %in% c("PARTIAL_RESPONSE", "RESPONSE")) {
-         messageIterator <- .jcall(event, returnSig="Lcom/bloomberglp/blpapi/MessageIterator;", method="messageIterator")
-
-         while (hasNext(messageIterator)) {
-            message <- .jcall(messageIterator, returnSig="Lcom/bloomberglp/blpapi/Message;", method="next")
-            message_type <- .jcall(message, returnSig="Lcom/bloomberglp/blpapi/Name;", method="messageType")
-            
-            if (toString(message_type) == "ReferenceDataResponse") {
-               security_data <- getElement("securityData", message)
-               securities <- getValuesAsElements(security_data)
-               blp <- rbind(blp, aperm(sapply(securities, getFieldData)))
-            } else if (toString(message_type) == "HistoricalDataResponse") {
-               # TODO eventually should initialize blp to a list at the start.
-               if (is.null(blp)) {
-                  blp <- vector("list")
-               }
-               
-               # Returns data for 1 security at a time.
-               security <- getElement("securityData", message)
-               ticker <- .jcall(security, returnSig="S", "getElementAsString", "security")
-               
-               field_data_array <- getValuesAsElements(getElement("fieldData", security))
-               
-               blp[[ticker]] <- lapply(field_data_array, getValuesForFieldData)
-            } else {
-               stop(paste("I am not trained to handle messageType", toString(message_type)))
-            }
-         }
-      }
-      
-      continue <- !(toString(event_type) == "RESPONSE")
-   }
-   
-   return(blp)
+set_request_parameter <- function(request, parameter, value) {
+   .jcall(request, returnSig = "V", "set", parameter, value)
 }
 
 grepMethod <- function(java_object, search_string) {

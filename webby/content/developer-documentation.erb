@@ -33,3 +33,49 @@ This is a new interface in the Version 3 API. Java must be installed, and the rJ
 % subsection java_interface (end)
 
 % section interfaces (end)
+
+\section{Unit Testing} % (fold)
+\label{sec:unit_testing}
+
+RBloomberg uses the RUnit package for testing. Tests can be found in inst/runit-tests. A test suite is defined in the file test.helper.R as follows:
+
+<%= lidio("../../pkg/R/test.helper.R") %>
+
+Tests can be run with a HTML report by running the file run.tests.R in the runit-tests directory:
+
+<%= lidio("../../pkg/inst/runit-tests/run.tests.R") %>
+
+More unit tests are always welcome and they can be added to one of the existing files or by creating a new file named according to the convention *Test.R.
+
+There should not be any errors or failures when running the test suite.
+
+% section unit_testing (end)
+
+\section{Literate Documentation} % (fold)
+\label{sec:literate_documentation}
+
+This document, the RBloomberg manual and the \href{http://rbloomberg.r-forge.r-project.org}{RBloomberg home page} are literate documents which take code samples directly from live, runnable R files.
+
+% section literate_documentation (end)
+
+\section{The COM Interface} % (fold)
+\label{sec:the_com_interface}
+
+This section discusses the COM interface in detail.
+
+% section the_com_interface (end)
+
+\section{The Java Interface} % (fold)
+\label{sec:the_java_interface}
+
+This section discusses the Java interface in detail.
+
+% section the_java_interface (end)
+
+\section{Data Conversion} % (fold)
+\label{sec:data_conversion}
+
+This section discusses common data conversion methods, such as as.data.frame, which are run on returned raw data obtained via any method.
+
+% section data_conversion (end)
+
