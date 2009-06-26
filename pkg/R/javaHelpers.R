@@ -11,11 +11,11 @@ java_init <- function() {
    .jaddClassPath("C:\\blp\\API\\APIv3\\JavaAPI\\lib\\blpapi3.jar")   
 }
 
-create_bloomberg_session <- function(host = "localhost", port = "8194") {
+create_bloomberg_session <- function(host = "localhost", port = 8194) {
    session_options <- .jnew("com/bloomberglp/blpapi/SessionOptions")
 
    host_jstring <- .jnew("java/lang/String", host)
-   port_jint <- int(8194)
+   port_jint <- int(port)
    
    .jcall(session_options, returnSig = "V", method = "setServerHost", host_jstring)
    .jcall(session_options, returnSig = "V", method = "setServerPort", port_jint)

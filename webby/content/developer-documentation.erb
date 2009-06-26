@@ -1,0 +1,35 @@
+---
+title:      RBloomberg Developer Documentation
+author:     Ana Nelson
+created_at: 2009-01-30 13:08:32.468894 +00:00
+dirty: true
+filter:
+  - erb
+  - idio
+---
+
+\section{Interfaces} % (fold)
+\label{sec:interfaces}
+
+RBloomberg currently implements COM and Java interfaces to Bloomberg.
+
+The package is intended to be written so that each interface returns data in the same format, so that the interface used should be invisible to the user except at startup or when using advanced or special features only available via a particular interface.
+
+\subsection{COM Interface} % (fold)
+\label{sub:com_interface}
+
+This interface is available with either Version 2 or Version 3 of the Bloomberg API. The rcom R package, and the statconnDCOM server, must be installed.
+
+Here are examples of raw calls to COM for fetching data:
+<%= lidio("../pkg/inst/examples/rawComCalls.R") %>
+
+% subsection com_interface (end)
+
+\subsection{Java Interface} % (fold)
+\label{sub:java_interface}
+
+This is a new interface in the Version 3 API. Java must be installed, and the rJava library which allows R to interface with the JVM.
+
+% subsection java_interface (end)
+
+% section interfaces (end)
