@@ -1,15 +1,14 @@
-library(RBloomberg)
-conn <- blpConnect()
+source("init.R")
 
 sink("override-currency.out")
 ### @export "currency"
-blpGetData(conn, "RYA ID Equity", "PX_LAST")
-blpGetData(conn, "RYA ID Equity", "CRNCY_ADJ_PX_LAST")
+blp(conn, "RYA ID Equity", "PX_LAST")
+blp(conn, "RYA ID Equity", "CRNCY_ADJ_PX_LAST")
 
-blpGetData(conn, "RYA ID Equity", "CRNCY_ADJ_PX_LAST", 
+blp(conn, "RYA ID Equity", "CRNCY_ADJ_PX_LAST", 
    override_fields = "EQY_FUND_CRNCY", overrides = "HKD")
 
-blpGetData(conn, "RYA ID Equity", "CRNCY_ADJ_PX_LAST", 
+blp(conn, "RYA ID Equity", "CRNCY_ADJ_PX_LAST", 
    override_fields = "EQY_FUND_CRNCY", overrides = "GBP")
 ### @end
 sink()
@@ -30,12 +29,12 @@ sink()
 
 sink("override-total-return.out")
 ### @export "total-return"
-blpGetData(conn, "MSFT US Equity", c("CUST_TRR_RETURN"),
+blp(conn, "MSFT US Equity", c("CUST_TRR_RETURN"),
    override_fields = c("CUST_TRR_START_DT", "CUST_TRR_END_DT"), 
    overrides = c("20080215", "20080602")
 )
 
-blpGetData(conn, "MSFT US Equity", 
+blp(conn, "MSFT US Equity", 
    c("CUST_TRR_RETURN"), 
    override_fields = c("CUST_TRR_START_DT", "CUST_TRR_END_DT", "CUST_TRR_CRNCY"), 
    overrides = c("20080215", "20080602", "GBP")

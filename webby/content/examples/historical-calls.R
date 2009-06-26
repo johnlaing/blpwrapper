@@ -1,9 +1,8 @@
-library(RBloomberg)
-conn <- blpConnect()
+source("init.R")
 
 sink("basic-intraday.out")
 ### @export "basic-intraday"
-blpGetData(conn, "RYA ID Equity", "PX_LAST", Sys.Date() - 10)
-blpGetData(conn, "RYA ID Equity", "PX_LAST", "2009-01-01", "2009-01-07")
+blp(conn, "RYA ID Equity", "PX_LAST", Sys.Date() - 10)
+blp(conn, "RYA ID Equity", "PX_LAST", "2009-01-01", "2009-01-07")
 ### @end
 sink()

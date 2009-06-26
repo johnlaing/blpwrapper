@@ -1,4 +1,4 @@
-library(RBloomberg)
+source("init.R")
 
 sink("search-mnemonics.txt")
 ### @export "search-mnemonics"

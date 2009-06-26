@@ -138,7 +138,7 @@ conn @PYbd[<-] blpConnect()
 Then we can make a simple request to ensure that the connection is working:
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=3,stepnumber=1]
-blpGetData(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[NAME"])
+blp(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[NAME"])
 \end{Verbatim}
 
     
@@ -162,8 +162,16 @@ Loading required package: bitops
 Loading required package: RUnit
 Contents of bbfields have been stored in .bbfields in the current workspace
 Contents of bbfields.ovr have been stored in .ovr in the current workspace
+
+Attaching package: 'RBloomberg'
+
+
+	The following object(s) are masked from package:base :
+
+	 toString 
+
 > conn <- blpConnect()
-> blpGetData(conn, "RYA ID Equity", "NAME")
+> blp(conn, "RYA ID Equity", "NAME")
                               NAME
 RYA ID EQUITY RYANAIR HOLDINGS PLC
 > 
@@ -190,7 +198,7 @@ printTextProtocol(testResults)
 The output of printTextProtocol should look like this:
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-RUNIT TEST PROTOCOL -- Wed Jun 24 13:12:12 2009 
+RUNIT TEST PROTOCOL -- Fri Jun 26 15:14:39 2009 
 *********************************************** 
 Number of test functions: 14 
 Number of errors: 0 
@@ -208,14 +216,17 @@ Test Suite: All Tests
 Test function regexp: ^test.+ 
 Test file regexp: Test.R$ 
 Involved directory: 
-C:/DOCUME~1/nelsona/LOCALS~1/Temp/Rinst21292065/RBloomberg/runit-tests 
+C:/PROGRA~1/R/R-29~1.0/library/RBloomberg/runit-tests 
 --------------------------- 
-Test file: C:/DOCUME~1/nelsona/LOCALS~1/Temp/Rinst21292065/RBloomberg/runit-tests/blpGetDataTest.R 
-test.basic: (2 checks) ... OK (1.65 seconds)
-test.overrides: (9 checks) ... OK (7.14 seconds)
+Test file: C:/PROGRA~1/R/R-29~1.0/library/RBloomberg/runit-tests/blpGetDataTest.R 
+test.basic: (2 checks) ... OK (2.58 seconds)
+test.overrides: (9 checks) ... OK (3.09 seconds)
 --------------------------- 
-Test file: C:/DOCUME~1/nelsona/LOCALS~1/Temp/Rinst21292065/RBloomberg/runit-tests/blpToolsTest.R 
-test.category.name: (1 checks) ... OK (0.03 seconds)
+Test file: C:/PROGRA~1/R/R-29~1.0/library/RBloomberg/runit-tests/blpJavaTest.R 
+test.java.basic: (0 checks) ... OK (3.75 seconds)
+--------------------------- 
+Test file: C:/PROGRA~1/R/R-29~1.0/library/RBloomberg/runit-tests/blpToolsTest.R 
+test.category.name: (1 checks) ... OK (0.04 seconds)
 test.data.type.for.list.of.fields: (1 checks) ... OK (0.03 seconds)
 test.data.type.for.single.field: (1 checks) ... OK (0 seconds)
 test.field.info.raises.error.on.invalid.mnemonic: (1 checks) ... OK (0.02 seconds)
@@ -226,9 +237,6 @@ test.is.power.of.two: (4 checks) ... OK (0 seconds)
 test.static: (1 checks) ... OK (0 seconds)
 test.what.i.override: (2 checks) ... OK (0.04 seconds)
 test.what.overides.me: (2 checks) ... OK (0.03 seconds)
---------------------------- 
-Test file: C:/DOCUME~1/nelsona/LOCALS~1/Temp/Rinst21292065/RBloomberg/runit-tests/rcomBloombergTest.R 
-test.bloomberg: (3 checks) ... OK (2.4 seconds)
 \end{Verbatim}
 
     
@@ -245,10 +253,10 @@ In particular, take note of any errors or failures. Hopefully you will have none
 This section covers getting current, i.e. non-historical, data from Bloomberg. This may be live (or delayed as per your availability) market data, or static descriptive data. All such data is called using the blp() function, as defined below:
 
 
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=14,stepnumber=1]
-blp.COMObject @PYbd[<-] @PYap[function](x, securities, fields, start@PYbd[=]@PYaD[NULL], end@PYbd[=]@PYaD[NULL],
-                                barsize@PYbd[=]@PYaD[NULL], barfields@PYbd[=]@PYaD[NULL], retval@PYbd[=]@PYaD[NULL], 
-                                override_fields @PYbd[=] @PYaD[NULL], overrides @PYbd[=] @PYaD[NULL], currency @PYbd[=] @PYaD[NULL], ...) {
+\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=6,stepnumber=1]
+blp @PYbd[<-] @PYap[function](conn, securities, fields, start @PYbd[=] @PYaD[NULL], end @PYbd[=] @PYaD[NULL],
+                                barsize @PYbd[=] @PYaD[NULL], barfields @PYbd[=] @PYaD[NULL], retval @PYbd[=] @PYaD[NULL], 
+                                override_fields @PYbd[=] @PYaD[NULL], overrides @PYbd[=] @PYaD[NULL], currency @PYbd[=] @PYaD[NULL]) {
 \end{Verbatim}
 
     
@@ -262,26 +270,26 @@ Note that the fields employed here are the same fields you may be familiar with 
 
 You have already seen the simplest type of call you can make. At minimum we need to pass a connection object, a single ticker, and a single field.
 
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=5,stepnumber=1]
-blpGetData(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[PX_LAST"])
+\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=4,stepnumber=1]
+blp(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[PX_LAST"])
 \end{Verbatim}
 
     
 
 This can be expanded by passing vectors of tickers and/or fields, to obtain data on multiple securities at once, or to return multiple fields at once, or both.
 
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=6,stepnumber=1]
-blpGetData(conn, c(@PYaB["]@PYaB[IBM US Equity"], @PYaB["]@PYaB[MSFT US Equity"]), c(@PYaB["]@PYaB[NAME"], @PYaB["]@PYaB[PX_LAST"]))
+\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=5,stepnumber=1]
+blp(conn, c(@PYaB["]@PYaB[IBM US Equity"], @PYaB["]@PYaB[MSFT US Equity"]), c(@PYaB["]@PYaB[NAME"], @PYaB["]@PYaB[PX_LAST"]))
 \end{Verbatim}
 
     
 
 And, of course, you can pass these arguments by way of variables, just as you might for any other R function:
 
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=7,stepnumber=1]
+\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=6,stepnumber=1]
 securities @PYbd[<-] @PYaB["]@PYaB[ED1 Comdty"]
 fields @PYbd[<-] c(@PYaB["]@PYaB[NAME"], @PYaB["]@PYaB[PX_LAST"], @PYaB["]@PYaB[OPEN"])
-blpGetData(conn, securities, fields)
+blp(conn, securities, fields)
 \end{Verbatim}
 
     
@@ -290,12 +298,12 @@ The data returned from these calls will look something like this:
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
               PX_LAST
-RYA ID EQUITY    3.29
+RYA ID EQUITY   3.305
                                       NAME PX_LAST
-IBM US EQUITY  INTL BUSINESS MACHINES CORP  104.44
-MSFT US EQUITY              MICROSOFT CORP   23.34
-                              NAME PX_LAST   OPEN
-ED1 COMDTY Generic 1st 'ED' Future   99.27 99.275
+IBM US EQUITY  INTL BUSINESS MACHINES CORP  105.77
+MSFT US EQUITY              MICROSOFT CORP   23.52
+                              NAME PX_LAST  OPEN
+ED1 COMDTY Generic 1st 'ED' Future  99.335 99.32
 \end{Verbatim}
 
     
@@ -309,14 +317,14 @@ The Bloomberg API allows you to make certain overrides to change the value that 
 
 A common use for overrides is to return data in a currency other than the security's default currency.
 
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=5,stepnumber=1]
-blpGetData(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[PX_LAST"])
-blpGetData(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[CRNCY_ADJ_PX_LAST"])
+\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=4,stepnumber=1]
+blp(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[PX_LAST"])
+blp(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[CRNCY_ADJ_PX_LAST"])
 
-blpGetData(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[CRNCY_ADJ_PX_LAST"], 
+blp(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[CRNCY_ADJ_PX_LAST"], 
    override_fields @PYbd[=] @PYaB["]@PYaB[EQY_FUND_CRNCY"], overrides @PYbd[=] @PYaB["]@PYaB[HKD"])
 
-blpGetData(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[CRNCY_ADJ_PX_LAST"], 
+blp(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[CRNCY_ADJ_PX_LAST"], 
    override_fields @PYbd[=] @PYaB["]@PYaB[EQY_FUND_CRNCY"], overrides @PYbd[=] @PYaB["]@PYaB[GBP"])
 \end{Verbatim}
 
@@ -324,20 +332,20 @@ blpGetData(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[CRNCY_ADJ_PX_LAST"
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
               PX_LAST
-RYA ID EQUITY    3.29
+RYA ID EQUITY   3.305
               CRNCY_ADJ_PX_LAST
-RYA ID EQUITY              3.29
+RYA ID EQUITY             3.305
               CRNCY_ADJ_PX_LAST
-RYA ID EQUITY          35.78388
+RYA ID EQUITY          36.04926
               CRNCY_ADJ_PX_LAST
-RYA ID EQUITY          2.792202
+RYA ID EQUITY          2.825401
 \end{Verbatim}
 
     
 
 Another very useful function involving overrides is the Custom Total Return family of calls. We can first use some of the helper functions to find the tickers by searching the list of available mnemonics, and to determine which overrides are available and which fields they apply to.
 
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=17,stepnumber=1]
+\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=16,stepnumber=1]
 cat(@PYaB["]@PYaB[search all mnemonics to find all with CUST_TRR\n"])
 search.mnemonics(@PYaB["]@PYaB[CUST_TRR"])
 
@@ -367,13 +375,13 @@ find our which fields are overridden by CUST_TRR_CRNCY
 
 Once we know the fields, we can construct our call to fetch the desired data:
 
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=28,stepnumber=1]
-blpGetData(conn, @PYaB["]@PYaB[MSFT US Equity"], c(@PYaB["]@PYaB[CUST_TRR_RETURN"]),
+\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=27,stepnumber=1]
+blp(conn, @PYaB["]@PYaB[MSFT US Equity"], c(@PYaB["]@PYaB[CUST_TRR_RETURN"]),
    override_fields @PYbd[=] c(@PYaB["]@PYaB[CUST_TRR_START_DT"], @PYaB["]@PYaB[CUST_TRR_END_DT"]), 
    overrides @PYbd[=] c(@PYaB["]@PYaB[20080215"], @PYaB["]@PYaB[20080602"])
 )
 
-blpGetData(conn, @PYaB["]@PYaB[MSFT US Equity"], 
+blp(conn, @PYaB["]@PYaB[MSFT US Equity"], 
    c(@PYaB["]@PYaB[CUST_TRR_RETURN"]), 
    override_fields @PYbd[=] c(@PYaB["]@PYaB[CUST_TRR_START_DT"], @PYaB["]@PYaB[CUST_TRR_END_DT"], @PYaB["]@PYaB[CUST_TRR_CRNCY"]), 
    overrides @PYbd[=] c(@PYaB["]@PYaB[20080215"], @PYaB["]@PYaB[20080602"], @PYaB["]@PYaB[GBP"])
@@ -468,10 +476,10 @@ field.info(@PYaB["]@PYaB[PX_LAST"])
 The same blp() function is used for historical interday and intraday data requests:
 
 
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=14,stepnumber=1]
-blp.COMObject @PYbd[<-] @PYap[function](x, securities, fields, start@PYbd[=]@PYaD[NULL], end@PYbd[=]@PYaD[NULL],
-                                barsize@PYbd[=]@PYaD[NULL], barfields@PYbd[=]@PYaD[NULL], retval@PYbd[=]@PYaD[NULL], 
-                                override_fields @PYbd[=] @PYaD[NULL], overrides @PYbd[=] @PYaD[NULL], currency @PYbd[=] @PYaD[NULL], ...) {
+\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=6,stepnumber=1]
+blp @PYbd[<-] @PYap[function](conn, securities, fields, start @PYbd[=] @PYaD[NULL], end @PYbd[=] @PYaD[NULL],
+                                barsize @PYbd[=] @PYaD[NULL], barfields @PYbd[=] @PYaD[NULL], retval @PYbd[=] @PYaD[NULL], 
+                                override_fields @PYbd[=] @PYaD[NULL], overrides @PYbd[=] @PYaD[NULL], currency @PYbd[=] @PYaD[NULL]) {
 \end{Verbatim}
 
     
@@ -482,23 +490,24 @@ blp.COMObject @PYbd[<-] @PYap[function](x, securities, fields, start@PYbd[=]@PYa
 If you want daily or less frequent periodic data, or data for a specific day, then you want to make an intraday request.
 
 
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=5,stepnumber=1]
-blpGetData(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[PX_LAST"], Sys.Date() @PYbd[-] @PYaR[10])
-blpGetData(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[PX_LAST"], @PYaB["]@PYaB[2009-01-01"], @PYaB["]@PYaB[2009-01-07"])
+\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=4,stepnumber=1]
+blp(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[PX_LAST"], Sys.Date() @PYbd[-] @PYaR[10])
+blp(conn, @PYaB["]@PYaB[RYA ID Equity"], @PYaB["]@PYaB[PX_LAST"], @PYaB["]@PYaB[2009-01-01"], @PYaB["]@PYaB[2009-01-07"])
 \end{Verbatim}
 
     
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
                     PX_LAST
-2009-06-14 23:00:00   3.350
 2009-06-15 23:00:00   3.400
 2009-06-16 23:00:00   3.360
 2009-06-17 23:00:00   3.265
 2009-06-18 23:00:00   3.220
 2009-06-21 23:00:00   3.136
 2009-06-22 23:00:00   3.220
-2009-06-23 23:00:00   3.290
+2009-06-23 23:00:00   3.365
+2009-06-24 23:00:00   3.250
+2009-06-25 23:00:00   3.305
                     PX_LAST
 2008-12-31 22:00:00      NA
 2009-01-01 23:00:00   3.150

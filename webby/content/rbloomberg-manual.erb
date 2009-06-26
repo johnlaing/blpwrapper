@@ -72,7 +72,7 @@ In particular, take note of any errors or failures. Hopefully you will have none
 
 This section covers getting current, i.e. non-historical, data from Bloomberg. This may be live (or delayed as per your availability) market data, or static descriptive data. All such data is called using the blp() function, as defined below:
 
-<%= lidio("../../pkg/R/blpGetData.R", "blp-definition") %>
+<%= lidio("../../pkg/R/blp.R", "blp-definition") %>
 
 As we will always be passing a connection object, securities and fields, these are typically not named parameters. It is usually more convenient to name later parameters, except perhaps for start and end, rather than trying to remember the order of them all.
 
@@ -154,7 +154,7 @@ Once you know the mnemonic you wish to use, you can get more information about i
 
 The same blp() function is used for historical interday and intraday data requests:
 
-<%= lidio("../../pkg/R/blpGetData.R", "blp-definition") %>
+<%= lidio("../../pkg/R/blp.R", "blp-definition") %>
 
 \subsection{Intraday Data} % (fold)
 \label{sub:intraday_data}
