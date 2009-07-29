@@ -1,0 +1,11 @@
+---
+title: R Package Repository
+layout:  web
+filter:
+  - erb
+  - textile
+---
+
+This is an "R Package Repository":http://cran.r-project.org/doc/manuals/R-admin.html#Setting-up-a-package-repository root.
+
+You can "browse binaries":/R/bin/ if you really want to.

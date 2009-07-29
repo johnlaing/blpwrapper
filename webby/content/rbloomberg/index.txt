@@ -1,0 +1,55 @@
+---
+title: RBloomberg
+layout: web
+created_at: 2009-07-29 13:16:14.230925 +01:00
+filter:
+  - erb
+  - textile
+---
+
+<% content_for(:sidebar) do %>
+    <ul id="nav">
+        <li><a href="help">Get Help</a></li>
+        <li><a href="<%= manual_filename %>">Download PDF Manual</a></li>
+        <li><a href="examples">Examples</a></li>
+    	<li><a href="http://launchpad.net/rbloomberg">Launchpad Project Page</a></li>
+    	<li><a href="https://bugs.launchpad.net/rbloomberg">Report a Bug</a></li>
+    	<li><a href="https://answers.launchpad.net/rbloomberg">Ask a Question</a></li>
+    	<li><a href="https://blueprints.launchpad.net/rbloomberg">Request a Feature</a></li>
+    	<li><a href="https://stat.ethz.ch/mailman/listinfo/r-sig-finance">r-sig-finance Mailing List</a></li>
+    	<li><a href="/R">R Package Repository</a></li>
+    </ul>
+<% end %>
+
+RBloomberg handles fetching data from the Bloomberg financial data application from within "R":http://r-project.org.
+
+Documentation on this site refers to the latest development version of RBloomberg. For detailed instructions on using RBloomberg, please download the "PDF Manual":<%= manual_filename %>.
+
+Use this custom search to search the RBloomberg website, the R Sig Finance mailing list archives and other places that tend to provide useful help results.
+
+<div id="cse" style="width: 100%;">Loading</div>
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">
+   google.load('search', '1');
+   google.setOnLoadCallback(function(){
+      new google.search.CustomSearchControl('015653941277163542830:pxa_xnbwq6s').draw('cse');
+   }, true);
+</script>
+
+h2. Installing RBloomberg from CRAN
+
+To install the latest stable release of RBloomberg from CRAN:
+<pre><code>install.packages("RBloomberg")</code></pre>
+
+h2. Installing Latest (Development) RBloomberg
+
+To install the latest daily build of the development version of RBloomberg from this site:
+<pre><code>install.packages("RBloomberg",repos="http://bloombergapi.com/R/")</code></pre>
+
+
+h2. Compiling RBloomberg from Source
+
+If you wish to compile RBloomberg as an R package yourself, you will need to download and install "R Tools":http://www.murdoch-sutherland.com/Rtools/, and read the instructions for compiling R packages on Windows which is slightly more involved than on other platforms.
+
+The RBloomberg source is available to download from the R-Forge project page, or by checking it out from the Bazaar repository:
+<pre><code>bzr branch http://ananelson.com/code/bloombergapi</code></pre>

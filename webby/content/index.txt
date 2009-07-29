@@ -3,12 +3,6 @@ title: Welcome
 layout:  web
 filter:
   - erb
-  - idio
   - textile
 ---
 
-RBloomberg handles fetching data from the Bloomberg financial data application.
-
-Documentation on this site refers to the latest development version of RBloomberg.
-
-For detailed instructions on using RBloomberg, please download the "PDF Manual":rbloomberg-manual.pdf.

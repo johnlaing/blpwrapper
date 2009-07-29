@@ -8,10 +8,6 @@ SITE.create_mode = 'directory'
 # Webby (rake) tasks
 task :default => :pdf
 
-task :clobber do
-  raise "Clobber not available, breaks SVN."
-end
-
 task :run_examples do
   # Export the examples directory to Windows VM or other R-accessible directory specified by EXAMPLES_DIRECTORY
   `cp content/examples/* #{EXAMPLES_DIRECTORY}`
@@ -30,3 +26,38 @@ task :run_examples do
   # TODO automatically run examples
   puts "files exported, now run them in R"
 end
+
+desc "create R PACKAGES and PACKAGES.gz"
+task :r_packages do
+  `R CMD BATCH tasks/package.R`
+end
+
+def r_project_version
+  File.read("../rbloomberg/DESCRIPTION") =~ /^Version:\s*([0-9.-]+)\s*$/
+  version = $1
+  raise "no version detected" if version.nil?
+  version
+end
+
+def r_source_files
+  html = "<ul>"
+  
+  `ls content/R/bin/windows/contrib/2.9/*.zip`.chomp.split.each do |f|
+    filename = f.gsub(/^content/, "")
+    html << %{<li><a href="#{filename}">#{File.basename(filename)}</a></li>}
+  end
+  
+  html + "</ul>"
+end
+
+def rbloomberg_manual_filename
+  "rbloomberg-manual-#{r_project_version.gsub(".", "-")}.pdf"
+end
+
+desc "Rename generated file with RBloomberg version number."
+task :copy do
+  `mv output/rbloomberg/rbloomberg-manual.pdf output/rbloomberg/#{manual_filename}`
+  `cp output/rbloomberg/#{manual_filename} ..`
+end
+
+require "gorgyrella"

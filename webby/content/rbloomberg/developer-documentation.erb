@@ -5,7 +5,6 @@ created_at: 2009-01-30 13:08:32.468894 +00:00
 dirty: true
 filter:
   - erb
-  - idio
 ---
 
 \section{Interfaces} % (fold)
@@ -21,7 +20,7 @@ The package is intended to be written so that each interface returns data in the
 This interface is available with either Version 2 or Version 3 of the Bloomberg API. The rcom R package, and the statconnDCOM server, must be installed.
 
 Here are examples of raw calls to COM for fetching data:
-<%= lidio("../../pkg/inst/examples/rawComCalls.R") %>
+<%= gorgl("rbloomberg/inst/examples/rawComCalls.R") %>
 
 % subsection com_interface (end)
 
@@ -39,11 +38,11 @@ This is a new interface in the Version 3 API. Java must be installed, and the rJ
 
 RBloomberg uses the RUnit package for testing. Tests can be found in inst/runit-tests. A test suite is defined in the file test.helper.R as follows:
 
-<%= lidio("../../pkg/R/test.helper.R") %>
+<%= gorgl("rbloomberg/R/test.helper.R") %>
 
 Tests can be run with a HTML report by running the file run.tests.R in the runit-tests directory:
 
-<%= lidio("../../pkg/inst/runit-tests/run.tests.R") %>
+<%= gorgl("rbloomberg/inst/runit-tests/run.tests.R") %>
 
 More unit tests are always welcome and they can be added to one of the existing files or by creating a new file named according to the convention *Test.R.
 

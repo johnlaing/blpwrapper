@@ -1,0 +1,7 @@
+.cairn
+.DS_Store
+*.log
+*.out
+*.tex
+*.toc
+*.aux

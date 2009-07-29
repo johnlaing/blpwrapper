@@ -5,7 +5,6 @@ created_at: 2009-01-30 13:08:32.468894 +00:00
 dirty: true
 filter:
   - erb
-  - idio
 ---
 
 \section{About RBloomberg} % (fold)
@@ -37,16 +36,16 @@ then rcom will automatically be installed for you if you don't have it.
 \label{sub:hello_world}
 
 Once you have RBloomberg installed, load the library just like any other via:
-<%= lidio("examples/hello-world.R", "library") %>
+<%= gorgl("examples/hello-world.R", "library") %>
 
 The first order of business is to connect to the Bloomberg data application, and store a reference to this connection object. You will use this in all subsequent calls:
-<%= lidio("examples/hello-world.R", "connect") %>
+<%= gorgl("examples/hello-world.R", "connect") %>
 
 Then we can make a simple request to ensure that the connection is working:
-<%= lidio("examples/hello-world.R", "basic-request") %>
+<%= gorgl("examples/hello-world.R", "basic-request") %>
 
 The result of running these three commands should be something like this:
-<%= lidio(File.join(EXAMPLES_DIRECTORY, "hello-world.Rout")) %>
+<%= gorgl(File.join(EXAMPLES_DIRECTORY, "hello-world.Rout")) %>
 
 % subsection hello_world (end)
 
@@ -56,10 +55,10 @@ The result of running these three commands should be something like this:
 Tests are live code examples that are tested for the expected output. They are useful to developers as a code quality tool, and they can also be very useful to users to help ensure everything is running smoothly and also as an extra source of reference material. Should you not be able to find the information you need in formal documentation (this is general advice, not just pertaining to RBloomberg), look for tests and study the syntax of examples there.
 
 To ensure that everything is running smoothly, we recommend that you run the RUnit test suite:
-<%= lidio("examples/run-unit-tests.R", "run") %>
+<%= gorgl("examples/run-unit-tests.R", "run") %>
 
 The output of printTextProtocol should look like this:
-<%= lidio(File.join(EXAMPLES_DIRECTORY, "unit-test-results.txt")) %>
+<%= gorgl(File.join(EXAMPLES_DIRECTORY, "unit-test-results.txt")) %>
 
 In particular, take note of any errors or failures. Hopefully you will have none of either.
 
@@ -72,7 +71,7 @@ In particular, take note of any errors or failures. Hopefully you will have none
 
 This section covers getting current, i.e. non-historical, data from Bloomberg. This may be live (or delayed as per your availability) market data, or static descriptive data. All such data is called using the blp() function, as defined below:
 
-<%= lidio("../../pkg/R/blp.R", "blp-definition") %>
+<%= gorgl("rbloomberg/R/blp.R", "blp-definition") %>
 
 As we will always be passing a connection object, securities and fields, these are typically not named parameters. It is usually more convenient to name later parameters, except perhaps for start and end, rather than trying to remember the order of them all.
 
@@ -82,16 +81,16 @@ Note that the fields employed here are the same fields you may be familiar with 
 \label{sub:basic_calls}
 
 You have already seen the simplest type of call you can make. At minimum we need to pass a connection object, a single ticker, and a single field.
-<%= lidio("examples/current-basic-calls.R", "minimal") %>
+<%= gorgl("examples/current-basic-calls.R", "minimal") %>
 
 This can be expanded by passing vectors of tickers and/or fields, to obtain data on multiple securities at once, or to return multiple fields at once, or both.
-<%= lidio("examples/current-basic-calls.R", "lists") %>
+<%= gorgl("examples/current-basic-calls.R", "lists") %>
 
 And, of course, you can pass these arguments by way of variables, just as you might for any other R function:
-<%= lidio("examples/current-basic-calls.R", "variables") %>
+<%= gorgl("examples/current-basic-calls.R", "variables") %>
 
 The data returned from these calls will look something like this:
-<%= lidio(File.join(EXAMPLES_DIRECTORY, "current-basic-calls-output.txt")) %>
+<%= gorgl(File.join(EXAMPLES_DIRECTORY, "current-basic-calls-output.txt")) %>
 
 % subsection basic_calls (end)
 
@@ -101,16 +100,16 @@ The data returned from these calls will look something like this:
 The Bloomberg API allows you to make certain overrides to change the value that a function returns. We give a few examples here, to determine whether a field you wish to request can be overridden, consult the FLDS screen in your Bloomberg terminal (look for What Overrides Me), or use the what.overrides.me() function discussed below to look up overrides within R.
 
 A common use for overrides is to return data in a currency other than the security's default currency.
-<%= lidio("examples/current-override-calls.R", "currency") %>
-<%= lidio(File.join(EXAMPLES_DIRECTORY, "override-currency.out")) %>
+<%= gorgl("examples/current-override-calls.R", "currency") %>
+<%= gorgl(File.join(EXAMPLES_DIRECTORY, "override-currency.out")) %>
 
 Another very useful function involving overrides is the Custom Total Return family of calls. We can first use some of the helper functions to find the tickers by searching the list of available mnemonics, and to determine which overrides are available and which fields they apply to.
-<%= lidio("examples/current-override-calls.R", "search-mnemonics") %>
-<%= lidio(File.join(EXAMPLES_DIRECTORY, "search-mnemonics.out")) %>
+<%= gorgl("examples/current-override-calls.R", "search-mnemonics") %>
+<%= gorgl(File.join(EXAMPLES_DIRECTORY, "search-mnemonics.out")) %>
 
 Once we know the fields, we can construct our call to fetch the desired data:
-<%= lidio("examples/current-override-calls.R", "total-return") %>
-<%= lidio(File.join(EXAMPLES_DIRECTORY, "override-total-return.out")) %>
+<%= gorgl("examples/current-override-calls.R", "total-return") %>
+<%= gorgl(File.join(EXAMPLES_DIRECTORY, "override-total-return.out")) %>
 
 As you can see from this example, it is possible to specify multiple overrides in a single request. Take care to list the overrides in corresponding order to the fields passed to override\_fields.
 
@@ -138,12 +137,12 @@ There are a number of utility methods within RBloomberg to help you identify fie
 Mnemonics are what we typically think of as field names such as PX\_LAST or NAME. You can research available mnemonics within your Bloomberg terminal using the FLDS function, and you may find this the most convenient way to search.
 
 To search (using grep) for all mnemonics matching a certain pattern, try:
-<%= lidio("examples/field-mnemonics.R", "search-mnemonics") %>
-<%= lidio(File.join(EXAMPLES_DIRECTORY, "search-mnemonics.txt")) %>
+<%= gorgl("examples/field-mnemonics.R", "search-mnemonics") %>
+<%= gorgl(File.join(EXAMPLES_DIRECTORY, "search-mnemonics.txt")) %>
 
 Once you know the mnemonic you wish to use, you can get more information about it like this:
-<%= lidio("examples/field-mnemonics.R", "field-info") %>
-<%= lidio(File.join(EXAMPLES_DIRECTORY, "field-info.txt")) %>
+<%= gorgl("examples/field-mnemonics.R", "field-info") %>
+<%= gorgl(File.join(EXAMPLES_DIRECTORY, "field-info.txt")) %>
 
 % subsection field_mnemonics (end)
 
@@ -154,15 +153,15 @@ Once you know the mnemonic you wish to use, you can get more information about i
 
 The same blp() function is used for historical interday and intraday data requests:
 
-<%= lidio("../../pkg/R/blp.R", "blp-definition") %>
+<%= gorgl("rbloomberg/R/blp.R", "blp-definition") %>
 
 \subsection{Intraday Data} % (fold)
 \label{sub:intraday_data}
 
 If you want daily or less frequent periodic data, or data for a specific day, then you want to make an intraday request.
 
-<%= lidio("examples/historical-calls.R", "basic-intraday") %>
-<%= lidio(File.join(EXAMPLES_DIRECTORY, "basic-intraday.out")) %>
+<%= gorgl("examples/historical-calls.R", "basic-intraday") %>
+<%= gorgl(File.join(EXAMPLES_DIRECTORY, "basic-intraday.out")) %>
 
 If you pass just a start date, then all data from that start date up until the present is returned. You can also pass both a start and end date and this will determine the range of dates for which to return data. Dates can be passed as POSIX dates, strings in the form YYYY-MM-DD or any other format which can be coerced via a call to as.POSIXct().
 

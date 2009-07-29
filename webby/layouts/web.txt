@@ -16,7 +16,7 @@ filter:    erb
 	<meta name="author" content="LoadFoO" />
 	<meta name="description" content="Site description" />
 	<meta name="keywords" content="key, words" />
-	<title>RBloomberg :: <%= @page.title %></title>
+	<title>BloombergAPI :: <%= @page.title %></title>
 	<link rel="stylesheet" type="text/css" href="/css/style.css" media="screen" />
 	<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
 	<link rel="shortcut icon" href="favicon.ico" />
@@ -25,14 +25,12 @@ filter:    erb
 <body>
 <div id="wrap">
 <div id="top">
-<h2><a href="/" title="Back to main page">RBloomberg</a></h2>
+<h2><a href="/" title="Back to main page">BloombergAPI</a></h2>
 <div id="menu">
 <ul>
     <% [
-        ['/search', 'Search'],
-        ['/faq', "FAQ"],
-        ['/installation', "Installation"],
-        ['/help', "Help"]
+        ['/rbloomberg', 'RBloomberg'],
+        ['/commits', 'Changelog']
         ].each do |a, t| -%>
     <li><a href="<%= a %>"><%= t %></a></li>
     <% end -%>
@@ -45,17 +43,7 @@ filter:    erb
 <%= @content %>
 </div>
 <div id="right">
-<ul id="nav">
-    <li><a href="rbloomberg-manual.pdf">Download PDF Manual</a></li>
-	<li><a href="http://r-forge.r-project.org/projects/rbloomberg">R-Forge Project Page</a></li>
-	<li><a href="https://stat.ethz.ch/mailman/listinfo/r-sig-finance">R Sig Finance Mailing List</a></li>
-</ul>
-	<div class="box">
-		<h2 style="margin-top:17px">Latest News</h2>
-		<ul>
-			<li>...</li>
-		</ul>
-	</div>
+    <%= content_for :sidebar %> 
 </div>
 <div id="clear"></div></div>
 <div id="footer">

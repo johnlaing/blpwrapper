@@ -1,0 +1,9 @@
+---
+title: BloombergAPI Commits
+layout: web
+filter:
+  - erb
+---
+<pre><code>
+<%= `bzr log -l 10 -v ..` %>
+</code></pre>
