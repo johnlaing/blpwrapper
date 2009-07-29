@@ -3,7 +3,6 @@ result = `ps ux | awk '/prl_vm_app/ && !/awk/ {print $2}'`.chomp
 EXAMPLES_DIRECTORY = "/private/tmp/#{result}/C/work/rbloomberg-examples/"
 
 # Webby configuration
-SITE.output_dir = '../www/'
 SITE.create_mode = 'directory'
 
 # Webby (rake) tasks

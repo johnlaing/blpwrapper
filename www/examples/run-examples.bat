@@ -1,1 +1,0 @@
-for %%i in (*.R) do "C:\Program Files\R\R-2.9.0\bin\R.exe" CMD BATCH --vanilla --quiet --no-timing %%i
