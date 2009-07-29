@@ -1,9 +1,0 @@
-Package: RBloomberg
-Version: 0.1-11
-Date: 2007-07-04
-Title: R/Bloomberg
-Author: Robert Sams <robert@sanctumfi.com>
-Maintainer: Robert Sams <robert@sanctumfi.com>
-Description: Fetch data from Bloomberg 
-License: GPL
-Depends: RDCOMClient, zoo, chron
