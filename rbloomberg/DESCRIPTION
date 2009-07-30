@@ -7,3 +7,4 @@ Maintainer: Robert Sams <robert@sanctumfi.com>
 Description: Fetch data from Bloomberg 
 License: GPL
 Depends: rcom, zoo, bitops, RUnit
+OS_type: windows

@@ -12,7 +12,7 @@ filter:
 
 RBloomberg is an R package which handles fetching data from the Bloomberg financial data application. RBloomberg was written by Robert Sams, see the package README for additional contributors and acknowledgements. RBloomberg is released under a GPL open source license.
 
-To download the latest version of this document, please visit the \href{http://rbloomberg.r-forge.r-project.org}{RBloomberg home page}.
+To download the latest version of this document, please visit the \href{http://bloombergapi.com}{RBloomberg home page}.
 
 % section about (end)
 
@@ -25,7 +25,7 @@ To download the latest version of this document, please visit the \href{http://r
 RBloomberg will only work on a Bloomberg workstation, using the Desktop COM API. This version requires the rcom R package, which in turn depends on \href{http://rcom.univie.ac.at/}{statconnDCOM} which is a COM server that, while free, is not open source. Support for the Bloomberg Version 3 Java API is in development. When rcom is installed, it will give instructions on how to install statconnDCOM. If you install RBloomberg via
 
 \begin{verbatim}
-  install.packages("RBloomberg", repos="http://R-Forge.R-project.org")
+  install.packages("RBloomberg", repos="http://bloombergapi.com/R")
 \end{verbatim}
 
 then rcom will automatically be installed for you if you don't have it.
@@ -45,7 +45,7 @@ Then we can make a simple request to ensure that the connection is working:
 <%= gorgl("examples/hello-world.R", "basic-request") %>
 
 The result of running these three commands should be something like this:
-<%= gorgl(File.join(EXAMPLES_DIRECTORY, "hello-world.Rout")) %>
+<%= gorgl("examples/hello-world.Rout") %>
 
 % subsection hello_world (end)
 
@@ -58,7 +58,7 @@ To ensure that everything is running smoothly, we recommend that you run the RUn
 <%= gorgl("examples/run-unit-tests.R", "run") %>
 
 The output of printTextProtocol should look like this:
-<%= gorgl(File.join(EXAMPLES_DIRECTORY, "unit-test-results.txt")) %>
+<%= gorgl("examples/run-unit-tests.Rout") %>
 
 In particular, take note of any errors or failures. Hopefully you will have none of either.
 
@@ -90,7 +90,7 @@ And, of course, you can pass these arguments by way of variables, just as you mi
 <%= gorgl("examples/current-basic-calls.R", "variables") %>
 
 The data returned from these calls will look something like this:
-<%= gorgl(File.join(EXAMPLES_DIRECTORY, "current-basic-calls-output.txt")) %>
+<%= gorgl("examples/current-basic-calls-output.txt") %>
 
 % subsection basic_calls (end)
 
@@ -101,15 +101,15 @@ The Bloomberg API allows you to make certain overrides to change the value that 
 
 A common use for overrides is to return data in a currency other than the security's default currency.
 <%= gorgl("examples/current-override-calls.R", "currency") %>
-<%= gorgl(File.join(EXAMPLES_DIRECTORY, "override-currency.out")) %>
+<%= gorgl("examples/override-currency.out") %>
 
 Another very useful function involving overrides is the Custom Total Return family of calls. We can first use some of the helper functions to find the tickers by searching the list of available mnemonics, and to determine which overrides are available and which fields they apply to.
 <%= gorgl("examples/current-override-calls.R", "search-mnemonics") %>
-<%= gorgl(File.join(EXAMPLES_DIRECTORY, "search-mnemonics.out")) %>
+<%= gorgl("examples/search-mnemonics.out") %>
 
 Once we know the fields, we can construct our call to fetch the desired data:
 <%= gorgl("examples/current-override-calls.R", "total-return") %>
-<%= gorgl(File.join(EXAMPLES_DIRECTORY, "override-total-return.out")) %>
+<%= gorgl("examples/override-total-return.out") %>
 
 As you can see from this example, it is possible to specify multiple overrides in a single request. Take care to list the overrides in corresponding order to the fields passed to override\_fields.
 
@@ -138,11 +138,11 @@ Mnemonics are what we typically think of as field names such as PX\_LAST or NAME
 
 To search (using grep) for all mnemonics matching a certain pattern, try:
 <%= gorgl("examples/field-mnemonics.R", "search-mnemonics") %>
-<%= gorgl(File.join(EXAMPLES_DIRECTORY, "search-mnemonics.txt")) %>
+<%= gorgl("examples/search-mnemonics.txt") %>
 
 Once you know the mnemonic you wish to use, you can get more information about it like this:
 <%= gorgl("examples/field-mnemonics.R", "field-info") %>
-<%= gorgl(File.join(EXAMPLES_DIRECTORY, "field-info.txt")) %>
+<%= gorgl("examples/field-info.txt") %>
 
 % subsection field_mnemonics (end)
 
@@ -161,7 +161,7 @@ The same blp() function is used for historical interday and intraday data reques
 If you want daily or less frequent periodic data, or data for a specific day, then you want to make an intraday request.
 
 <%= gorgl("examples/historical-calls.R", "basic-intraday") %>
-<%= gorgl(File.join(EXAMPLES_DIRECTORY, "basic-intraday.out")) %>
+<%= gorgl("examples/basic-intraday.out") %>
 
 If you pass just a start date, then all data from that start date up until the present is returned. You can also pass both a start and end date and this will determine the range of dates for which to return data. Dates can be passed as POSIX dates, strings in the form YYYY-MM-DD or any other format which can be coerced via a call to as.POSIXct().
 

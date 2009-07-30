@@ -24,7 +24,7 @@ Your question might have been asked and answered on the internet already. Use th
 
 h2. Read the Documentation
 
-There is an extensive PDF manual available "here":<%= manual_filename %>.
+There is an extensive PDF manual available "here":<%= rbloomberg_manual_filename %>.
 
 h2. Browse the Source
 

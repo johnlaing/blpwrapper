@@ -10,7 +10,7 @@ filter:
 <% content_for(:sidebar) do %>
     <ul id="nav">
         <li><a href="help">Get Help</a></li>
-        <li><a href="<%= manual_filename %>">Download PDF Manual</a></li>
+        <li><a href="<%= rbloomberg_manual_filename %>">Download PDF Manual</a></li>
         <li><a href="examples">Examples</a></li>
     	<li><a href="http://launchpad.net/rbloomberg">Launchpad Project Page</a></li>
     	<li><a href="https://bugs.launchpad.net/rbloomberg">Report a Bug</a></li>
@@ -23,7 +23,7 @@ filter:
 
 RBloomberg handles fetching data from the Bloomberg financial data application from within "R":http://r-project.org.
 
-Documentation on this site refers to the latest development version of RBloomberg. For detailed instructions on using RBloomberg, please download the "PDF Manual":<%= manual_filename %>.
+Documentation on this site refers to the latest development version of RBloomberg. For detailed instructions on using RBloomberg, please download the "PDF Manual":<%= rbloomberg_manual_filename %>.
 
 Use this custom search to search the RBloomberg website, the R Sig Finance mailing list archives and other places that tend to provide useful help results.
 

@@ -1,0 +1,5 @@
+Package: RBloomberg
+Version: 0.2-2
+Depends: rcom, zoo, bitops, RUnit
+OS_type: windows
+

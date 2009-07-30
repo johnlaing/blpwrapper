@@ -1,31 +1,8 @@
-result = `ps ux | awk '/prl_vm_app/ && !/awk/ {print $2}'`.chomp
-
-EXAMPLES_DIRECTORY = "/private/tmp/#{result}/C/work/rbloomberg-examples/"
-
 # Webby configuration
 SITE.create_mode = 'directory'
 
 # Webby (rake) tasks
 task :default => :pdf
-
-task :run_examples do
-  # Export the examples directory to Windows VM or other R-accessible directory specified by EXAMPLES_DIRECTORY
-  `cp content/examples/* #{EXAMPLES_DIRECTORY}`
-  
-  # Strip out any Idiopidae comment lines so they don't get executed.
-  # They do no harm if they are executed, but they clutter up output.
-  `ls #{EXAMPLES_DIRECTORY}/*.R`.chomp.split.each do |f|
-    data = File.read(f)
-    data = data.gsub(/^\#\#\#.*$\n/, "")
-    
-    File.open(f, "w") do |file|
-      file.write data
-    end
-  end
-  
-  # TODO automatically run examples
-  puts "files exported, now run them in R"
-end
 
 desc "create R PACKAGES and PACKAGES.gz"
 task :r_packages do
@@ -56,8 +33,7 @@ end
 
 desc "Rename generated file with RBloomberg version number."
 task :copy do
-  `mv output/rbloomberg/rbloomberg-manual.pdf output/rbloomberg/#{manual_filename}`
-  `cp output/rbloomberg/#{manual_filename} ..`
+  `mv output/rbloomberg/rbloomberg-manual.pdf output/rbloomberg/#{rbloomberg_manual_filename}`
 end
 
 require "gorgyrella"
