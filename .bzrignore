@@ -1,3 +1,5 @@
 deploy.sh
 output
 ._*
+webby/content/rbloomberg/examples/.RData
+script/upload*

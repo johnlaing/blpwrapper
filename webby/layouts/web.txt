@@ -19,7 +19,7 @@ filter:    erb
 	<title>BloombergAPI :: <%= @page.title %></title>
 	<link rel="stylesheet" type="text/css" href="/css/style.css" media="screen" />
 	<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
-	<link rel="shortcut icon" href="favicon.ico" />
+	<link rel="shortcut icon" href="/favicon.ico" />
 </head>
 
 <body>
@@ -47,7 +47,7 @@ filter:    erb
 </div>
 <div id="clear"></div></div>
 <div id="footer">
-<p>Site template designed by <a href="http://loadfoo.org/" rel="external">LoadFoO</a>. Valid <a href="http://jigsaw.w3.org/css-validator/check/referer" rel="external">CSS</a> &amp; <a href="http://validator.w3.org/check?uri=referer" rel="external">XHTML</a></p>
+<p>Site template designed by <a href="http://loadfoo.org/" rel="external">LoadFoO</a>. Built with <a href="http://webby.rubyforge.org">Webby</a> and <a href="http://gorgyrella.rubyforge.org">Gorgyrella</a> by <a href="http://ananelson.com">ana</a>.
 </div>
 </div>
 

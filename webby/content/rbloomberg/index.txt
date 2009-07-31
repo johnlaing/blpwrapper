@@ -17,11 +17,11 @@ filter:
     	<li><a href="https://answers.launchpad.net/rbloomberg">Ask a Question</a></li>
     	<li><a href="https://blueprints.launchpad.net/rbloomberg">Request a Feature</a></li>
     	<li><a href="https://stat.ethz.ch/mailman/listinfo/r-sig-finance">r-sig-finance Mailing List</a></li>
-    	<li><a href="/R">R Package Repository</a></li>
+    	<li><a href="http://r.bloombergapi.com/">R Package Repository</a></li>
     </ul>
 <% end %>
 
-RBloomberg handles fetching data from the Bloomberg financial data application from within "R":http://r-project.org.
+RBloomberg handles fetching data from the Bloomberg financial data application from within "R":http://www.r-project.org.
 
 Documentation on this site refers to the latest development version of RBloomberg. For detailed instructions on using RBloomberg, please download the "PDF Manual":<%= rbloomberg_manual_filename %>.
 
@@ -44,7 +44,7 @@ To install the latest stable release of RBloomberg from CRAN:
 h2. Installing Latest (Development) RBloomberg
 
 To install the latest daily build of the development version of RBloomberg from this site:
-<pre><code>install.packages("RBloomberg",repos="http://bloombergapi.com/R/")</code></pre>
+<pre><code>install.packages("RBloomberg",repos="http://r.bloombergapi.com/")</code></pre>
 
 
 h2. Compiling RBloomberg from Source

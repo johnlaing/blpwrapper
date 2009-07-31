@@ -1,0 +1,92 @@
+<html><head><title>Open or shut a connection to Bloomberg</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="Rchm.css">
+</head>
+<body>
+
+<table width="100%"><tr><td>blpConnect(RBloomberg)</td><td align="right">R Documentation</td></tr></table><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="keyword" value="R:   blpConnect">
+<param name="keyword" value="R:   blpDisconnect">
+<param name="keyword" value=" Open or shut a connection to Bloomberg">
+</object>
+
+
+<h2>Open or shut a connection to Bloomberg</h2>
+
+
+<h3>Description</h3>
+
+<p>
+The function <code>blpConnect</code> returns a connection object to one of
+the Bloomberg interfaces. Currently, only the COM Desktop API is
+supported.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+blpConnect(iface="COM", timeout=12000, show.days="week",
+na.action="na", periodicity="daily")
+blpDisconnect(conn)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>iface</code></td>
+<td>
+Which Bloomberg interface? (only "COM" currently supported).</td></tr>
+<tr valign="top"><td><code>timeout</code></td>
+<td>
+Timeout in Seconds</td></tr>
+<tr valign="top"><td><code>show.days</code></td>
+<td>
+"trading", "week", or "all"</td></tr>
+<tr valign="top"><td><code>na.action</code></td>
+<td>
+"bloomberg.handles", "previous.days", or "na"</td></tr>
+<tr valign="top"><td><code>periodicity</code></td>
+<td>
+"daily", "weekly", "monthly", or "annual"</td></tr>
+<tr valign="top"><td><code>conn</code></td>
+<td>
+Connection object</td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+Connection to other API's provided by Bloomberg (e.g., C Desktop API
+and C Server API) will be accessable via this function in future
+releases of this package. Currently, the object returned is of class
+'COMObject'.
+</p>
+<p>
+## FIX ME ##
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Robert Sams <a href="mailto:robert@sanctumfi.com">robert@sanctumfi.com</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## by default establish connection via Desktop COM API
+## Not run: 
+conn &lt;- blpConnect()
+blpDisconnect(conn)
+## End(Not run)
+</pre>
+
+
+
+<hr><div align="center">[Package <em>RBloomberg</em> version 0.2-2 <a href="00Index.html">Index</a>]</div>
+
+</body></html>

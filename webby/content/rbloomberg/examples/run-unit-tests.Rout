@@ -1,0 +1,154 @@
+
+R version 2.9.1 (2009-06-26)
+Copyright (C) 2009 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(RBloomberg)
+Loading required package: rcom
+Loading required package: rscproxy
+Loading required package: zoo
+
+Attaching package: 'zoo'
+
+
+	The following object(s) are masked from package:base :
+
+	 as.Date.numeric 
+
+Loading required package: bitops
+Loading required package: RUnit
+Contents of bbfields have been stored in .bbfields in the current workspace
+Contents of bbfields.ovr have been stored in .ovr in the current workspace
+
+Attaching package: 'RBloomberg'
+
+
+	The following object(s) are masked from package:base :
+
+	 toString 
+
+Warning message:
+In identical(get(., i), get(., lib.pos)) : ignoring non-pairlist attributes
+> testResults <- runTestSuite(allBloombergTests)
+
+
+Executing test function test.basic  ...  done successfully.
+
+
+
+Executing test function test.overrides  ...  done successfully.
+
+
+
+Executing test function test.java.basic  ...  done successfully.
+
+
+
+Executing test function test.category.name  ...  done successfully.
+
+
+
+Executing test function test.data.type.for.list.of.fields  ...  done successfully.
+
+
+
+Executing test function test.data.type.for.single.field  ...  done successfully.
+
+
+
+Executing test function test.field.info.raises.error.on.invalid.mnemonic  ... Error in field.info("NOT_A_VALID_MNEMONIC") : 
+  mnemonic NOT_A_VALID_MNEMONIC not found in bbfields
+In addition: Warning message:
+In rm(conn, envir = .GlobalEnv) : object 'conn' not found
+ done successfully.
+
+
+
+Executing test function test.field.name.for.list.of.fields  ...  done successfully.
+
+
+
+Executing test function test.field.name.for.single.field  ...  done successfully.
+
+
+
+Executing test function test.historical  ...  done successfully.
+
+
+
+Executing test function test.is.power.of.two  ...  done successfully.
+
+
+
+Executing test function test.static  ...  done successfully.
+
+
+
+Executing test function test.what.i.override  ... Error : length(mnemonic) == 1 is not TRUE
+ done successfully.
+
+
+
+Executing test function test.what.overides.me  ...  done successfully.
+
+> printTextProtocol(testResults)
+RUNIT TEST PROTOCOL -- Fri Jul 31 10:18:40 2009 
+*********************************************** 
+Number of test functions: 14 
+Number of errors: 0 
+Number of failures: 0 
+
+ 
+1 Test Suite : 
+All Tests - 14 test functions, 0 errors, 0 failures
+
+
+
+Details 
+*************************** 
+Test Suite: All Tests 
+Test function regexp: ^test.+ 
+Test file regexp: Test.R$ 
+Involved directory: 
+C:/PROGRA~1/R/R-29~1.1/library/RBloomberg/runit-tests 
+--------------------------- 
+Test file: C:/PROGRA~1/R/R-29~1.1/library/RBloomberg/runit-tests/blpGetDataTest.R 
+test.basic: (2 checks) ... OK (7.75 seconds)
+test.overrides: (9 checks) ... OK (7.2 seconds)
+--------------------------- 
+Test file: C:/PROGRA~1/R/R-29~1.1/library/RBloomberg/runit-tests/blpJavaTest.R 
+test.java.basic: (0 checks) ... OK (37.89 seconds)
+--------------------------- 
+Test file: C:/PROGRA~1/R/R-29~1.1/library/RBloomberg/runit-tests/blpToolsTest.R 
+test.category.name: (1 checks) ... OK (0.07 seconds)
+test.data.type.for.list.of.fields: (1 checks) ... OK (0.02 seconds)
+test.data.type.for.single.field: (1 checks) ... OK (0 seconds)
+test.field.info.raises.error.on.invalid.mnemonic: (1 checks) ... OK (0 seconds)
+test.field.name.for.list.of.fields: (1 checks) ... OK (0.03 seconds)
+test.field.name.for.single.field: (1 checks) ... OK (0 seconds)
+test.historical: (1 checks) ... OK (0.03 seconds)
+test.is.power.of.two: (4 checks) ... OK (0 seconds)
+test.static: (1 checks) ... OK (0 seconds)
+test.what.i.override: (2 checks) ... OK (0.02 seconds)
+test.what.overides.me: (2 checks) ... OK (0.03 seconds)
+> printTextProtocol(testResults, fileName="C:\\work\\rbloomberg-examples\\unit-test-results.txt")
+> 
+> proc.time()
+   user  system elapsed 
+   5.34   12.78   58.18 

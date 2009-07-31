@@ -1,0 +1,73 @@
+<html><head><title>Read bbfields.tbl file into workspace.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="Rchm.css">
+</head>
+<body>
+
+<table width="100%"><tr><td>blpReadFields(RBloomberg)</td><td align="right">R Documentation</td></tr></table><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="keyword" value="R:   blpReadFields">
+<param name="keyword" value=" Read bbfields.tbl file into workspace.">
+</object>
+
+
+<h2>Read bbfields.tbl file into workspace.</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Read into the workspace the file <code>bbfields.tbl</code> located on the local
+machine.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+blpReadFields(path = "C:/blp/API")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>path</code></td>
+<td>
+character. path where <code>bbfields.tbl</code> can be found.</td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+In order to perform datatype mapping, RBloomberg needs to consult the
+Bloomberg API file <code>bbfields.tbl</code> located on the machine running the
+Bloomberg terminal. We don't physically search the file each time
+a datatype mapping is needed. Instead, we read the entire contents of
+the file into the workspace and store it in a hidden dataframe
+<code>.bbfields</code>.
+</p>
+<p>
+This is attempted when the package is first loaded. If the file is not
+found in <code>C:/blp/API</code>, you must manually specify the correct path
+using this function.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Robert Sams <a href="mailto:robert@sanctumfi.com">robert@sanctumfi.com</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+.bbfields &lt;- blpReadFields()
+</pre>
+
+
+
+<hr><div align="center">[Package <em>RBloomberg</em> version 0.2-2 <a href="00Index.html">Index</a>]</div>
+
+</body></html>

@@ -24,15 +24,11 @@ Your question might have been asked and answered on the internet already. Use th
 
 h2. Read the Documentation
 
-There is an extensive PDF manual available "here":<%= rbloomberg_manual_filename %>.
+There is an extensive PDF manual available "here":<%= rbloomberg_manual_url %>.
 
 h2. Browse the Source
 
-RBloomberg is an R package, and an R package is just a bunch of files written in R, so you might find the answer to your question by just looking at the source itself. It's worth a try. Download one of these zip or tgz files:
-
-<%= r_source_files %>
-
-and take a look inside. The good stuff is in the @R/@ directory but also take a look at the unit tests in @inst/runit-tests@ which might have some helpful examples.
+RBloomberg is an R package, and an R package is just a bunch of files written in R, so you might find the answer to your question by just looking at the source itself. It's worth a try. Either open up the source you have in your R installation, or grab "this tar.gz file":http://r.bloombergapi.com/src/contrib/RBloomberg.tar.gz and take a look inside. The good stuff is in the @R/@ directory but also take a look at the unit tests in @inst/runit-tests@ which might have some helpful examples.
 
 h2. Ask Nicely for Help
 

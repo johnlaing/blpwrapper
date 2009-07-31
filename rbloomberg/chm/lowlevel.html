@@ -1,0 +1,216 @@
+<html><head><title>Low Level Functions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="Rchm.css">
+</head>
+<body>
+
+<table width="100%"><tr><td>lowlevel(RBloomberg)</td><td align="right">R Documentation</td></tr></table><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="keyword" value="R:   blpGetHistoricalData">
+<param name="keyword" value="R:   blpSubscribe">
+<param name="keyword" value="R:   as.COMDate.chron">
+<param name="keyword" value="R:   as.chron.COMDate">
+<param name="keyword" value="R:   as.matrix.BlpCOMReturn">
+<param name="keyword" value="R:   as.data.frame.BlpCOMReturn">
+<param name="keyword" value="R:   as.zoo.BlpCOMReturn">
+<param name="keyword" value="R:   replaceBloombergErrors">
+<param name="keyword" value="R:   dataType">
+<param name="keyword" value=" Low Level Functions">
+</object>
+
+
+<h2>Low Level Functions</h2>
+
+
+<h3>Description</h3>
+
+<p>
+These functions are not to be called by the user. This is ad-hoc
+documentation for developers of this package.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+blpGetHistoricalData(conn, securities, fields, start, end, barsize = NULL,
+                     barfields = NULL)
+blpSubscribe(conn, securities, fields)
+replaceBloombergErrors(x, suppress = TRUE)
+dataType(mnemonic, bbfields = .bbfields)
+## S3 method for class 'chron':
+as.COMDate(x, date1904 = FALSE)
+## S3 method for class 'COMDate':
+as.chron(x, date1904 = FALSE, ...)
+## S3 method for class 'BlpCOMReturn':
+as.matrix(x)
+## S3 method for class 'BlpCOMReturn':
+as.data.frame(x, row.names = NULL, optional =
+FALSE, ...)
+## S3 method for class 'BlpCOMReturn':
+as.zoo(x, suppress = TRUE, bbfields = .bbfields, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+object</td></tr>
+<tr valign="top"><td><code>conn</code></td>
+<td>
+connection object</td></tr>
+<tr valign="top"><td><code>securities</code></td>
+<td>
+vector of Bloomberg security codes</td></tr>
+<tr valign="top"><td><code>fields</code></td>
+<td>
+vector of field mnumonics</td></tr>
+<tr valign="top"><td><code>start,end</code></td>
+<td>
+chron object defining data window</td></tr>
+<tr valign="top"><td><code>barsize</code></td>
+<td>
+see blpGetData documentaion</td></tr>
+<tr valign="top"><td><code>barfields</code></td>
+<td>
+see blpGetData documentaion</td></tr>
+<tr valign="top"><td><code>date1904</code></td>
+<td>
+see below</td></tr>
+<tr valign="top"><td><code>suppress</code></td>
+<td>
+logical. do not raise warnings when Bloomberg error codes are
+converted to NA's</td></tr>
+<tr valign="top"><td><code>mnemonic</code></td>
+<td>
+Bloomberg field mnemonic, as documented in bbfields</td></tr>
+<tr valign="top"><td><code>bbfields</code></td>
+<td>
+dataframe containing data in bbfields</td></tr>
+<tr valign="top"><td><code>row.names</code></td>
+<td>
+ignored</td></tr>
+<tr valign="top"><td><code>optional</code></td>
+<td>
+ignored</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+other args</td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+At the moment this package can connect to Bloomberg only via the COM
+Desktop interface. Support for other Bloomberg interfaces are
+invisioned, especially the C Server interface.
+</p>
+<p>
+The user interacts with Bloomberg via the <code>blpGetData</code>
+function. This is a generic and a method will eventually exist for
+each Bloomberg interface. The idea is that calls to it and the values
+returned by it are exactly the same, regardless of the actual
+interface used, which is determined by the class of the connection
+object passed to the first argument of <code>blpGetData</code>. In short:
+user code is devorced from choice of interface. That's the
+aim. Currently, only one method exists, <code>blpGetData.BlpCOM</code>.
+</p>
+<p>
+All COM requests return a nested list, the nesting structure
+implicitly defining the return value's dimension and preserving data
+types. At present, we only support two-dimensional return values
+(e.g.,  a multiple security, mutiple field timeseries request is not
+allowed). 
+</p>
+<p>
+First, the nested list is transformed into something useful by
+coercing it to a vector, thereby implicitly coercing everything to the
+character data type if there is at least one non-numeric item in the
+return. If there are any Bloomberg error codes, these are then
+converted to NA's. Finally, the columns are recoved by setting the dim
+attribute based on what we know about the request. If the request is
+for a timeseries, the leftmost column is the COM date index, 
+represented numerically. We use <code>as.chron(mtx[1,])</code> to get back
+chron dates.
+</p>
+<p>
+If there are multiple data types in a single return, a dataframe is
+the natural structure for Bloomberg return values. But how do we
+recover the data types? (Note: a single Bloomberg error code in a
+numeric field will cause that field to be coerced into character mode
+on the strategy implimented here.) When RBloomberg is attached, the
+.bbfields file on the user's workstation is read and stored as a
+dataframe in .bbfields on the workspace. Every field availiable from
+the Bloomberg API is mapped onto a datatype in this file. RBloomberg
+maps these datatypes to R datatypes. We use this information to
+recover datatypes when a data.frame is required.
+</p>
+<p>
+<code>blpGetHistoricalData</code> and <code>blpSubscribe</code> are both wrappers to the COM
+methods of the same name. Depending on what is passed to
+<code>blpGetHistoricalData</code>, either a historical, intraday bars, or intraday
+tick request is made. <code>blpSubscribe</code> is for non-time series requests. Both
+functions return an object of class 'BlpCOMReturn', which is nothing more
+than the list returned by the COM method with some attributes attached. 
+The attributes provide meta-information that the coercion methods need
+to coerce the nested list returned by COM.
+</p>
+<p>
+Users pass chron dates to blpGetData and they always get chron
+dates. But COM requests expect COM dates and return COM dates, which are
+floating point reals representing the number of days since 1900. Two
+coercion functions <code>as.Date.comDate</code> and <code>as.comDate.Date</code> are
+provided to deal with this. For a discussion of the issue surrounding
+the treatment of 1904, see
+<a href="http://cpearson.com/excel/datetime.htm">http://cpearson.com/excel/datetime.htm</a>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Robert Sams <a href="mailto:robert@sanctumfi.com">robert@sanctumfi.com</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>
+From your Bloomberg terminal, use function WAPI:
+<table summary="Rd table">
+<tr>
+  <td align="left">"BLPGetHistoricalData Property" </td>  <td align="left"> Ref# FRP003 </td>
+</tr>
+<tr>
+  <td align="left"> "History, Raw Tick and Time-Bar Requests" </td>  <td align="left"> Ref# DP015 </td>
+</tr>
+<tr>
+  <td align="left"> "Extended Historical Data Requests" </td>  <td align="left"> Ref# DBExt </td>
+</tr>
+<tr>
+  <td align="left"> "Appendix C: Ticker Syntax" </td>  <td align="left"> Ref# APX003 </td>
+</tr>
+<tr>
+  <td align="left"> "Appendix D: Reading the Data Dictionary" </td>  <td align="left"> Ref# CAX041</td>
+</tr>
+<tr>
+  <td align="left"> "Appendix G: Error Codes" </td>  <td align="left"> Ref# APX007  </td>
+</tr>
+</table>
+<p>
+Also, threads in the R-sig-finance mailing list archives:
+<table summary="Rd table">
+<tr>
+  <td align="left">"Import from Bloomberg" </td>  <td align="left"> Enrique Bengoechea, 6 Jul 04 </td>
+</tr>
+<tr>
+  <td align="left"> "Bloomberg data import" </td>  <td align="left"> David L. Reiner, 31 Mar 05  </td>
+</tr>
+</table>
+
+
+
+<hr><div align="center">[Package <em>RBloomberg</em> version 0.2-2 <a href="00Index.html">Index</a>]</div>
+
+</body></html>

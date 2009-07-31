@@ -1,13 +1,7 @@
 # Webby configuration
 SITE.create_mode = 'directory'
 
-# Webby (rake) tasks
-task :default => :pdf
-
-desc "create R PACKAGES and PACKAGES.gz"
-task :r_packages do
-  `R CMD BATCH tasks/package.R`
-end
+task :default => [:pdf, :copy]
 
 def r_project_version
   File.read("../rbloomberg/DESCRIPTION") =~ /^Version:\s*([0-9.-]+)\s*$/
@@ -16,19 +10,12 @@ def r_project_version
   version
 end
 
-def r_source_files
-  html = "<ul>"
-  
-  `ls content/R/bin/windows/contrib/2.9/*.zip`.chomp.split.each do |f|
-    filename = f.gsub(/^content/, "")
-    html << %{<li><a href="#{filename}">#{File.basename(filename)}</a></li>}
-  end
-  
-  html + "</ul>"
-end
-
 def rbloomberg_manual_filename
   "rbloomberg-manual-#{r_project_version.gsub(".", "-")}.pdf"
+end
+
+def rbloomberg_manual_url
+  %{http://bloombergapi.com/rbloomberg/#{rbloomberg_manual_filename}}
 end
 
 desc "Rename generated file with RBloomberg version number."
