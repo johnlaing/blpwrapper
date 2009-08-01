@@ -4,8 +4,12 @@ module RubyBloomberg
     # Your class should define a bloomberg_ticker method which returns e.g. "RYA ID Equity"
     
     # Returns a single value for the requested data.
-    def bdp(field)
-      ReferenceDataRequest.submit(bloomberg_ticker, field).value
+    def bdp(field, params = {})
+      ReferenceDataRequest.submit(bloomberg_ticker, field, params).value
+    end
+    
+    def bdh(field, params)
+      HistoricalDataRequest.submit(bloomberg_ticker, field, params)
     end
   end
 end

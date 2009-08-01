@@ -67,6 +67,8 @@ module RubyBloomberg
       end
       
       @params.each do |k, v|
+        k = 'startDate' if k.to_s === 'start_date'
+        k = 'endDate' if k.to_s === 'end_date'
         request.set(k.to_s, prepare_parameter(v))
       end
       
