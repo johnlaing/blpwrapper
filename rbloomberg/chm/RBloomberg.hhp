@@ -12,7 +12,4 @@ Title=R Help for package RBloomberg
 
 [FILES]
 00Index.html
-blpConnect.html
-blpGetData.html
-blpReadFields.html
-lowlevel.html
+

@@ -77,6 +77,16 @@ blp.JavaObject <- function(conn, securities, fields, start, end, barsize, barfie
   return(lst)
 }
 
+blp.COMIDispatch <- function(conn, securities, fields, start, end, barsize, barfields, 
+      retval, override_fields, overrides, currency) {
+         
+  if (!is.null(start)) {
+    blpGetHistoricalData(conn, securities, fields, start, end, barsize, barfields, currency)
+  } else {
+    blpSubscribe(conn, securities, fields, override_fields, overrides)
+  }
+}
+
 blp.COMObject <- function(conn, securities, fields, start, end, barsize, barfields, 
       retval, override_fields, overrides, currency) {
          

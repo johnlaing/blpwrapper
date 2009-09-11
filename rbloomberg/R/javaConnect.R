@@ -1,7 +1,7 @@
 java_init <- function() {
    library(rJava)
    .jinit()
-   .jaddClassPath("C:\\blp\\API\\APIv3\\JavaAPI\\lib\\blpapi3.jar")   
+   .jaddClassPath("C:\\blp\\API\\APIv3\\JavaAPI\\lib\\blpapi3.jar")
 }
 
 create_session_and_service <- function() {
