@@ -14,8 +14,8 @@ prepare_request <- function(service, securities, fields, start = NULL, end = NUL
    requested_fields <- getElement("fields", request)
    sapply(fields, append_value_to_element, requested_fields)
    
-   if (!is.null(start)) set_request_parameter(request, "startDate", start)
-   if (!is.null(end)) set_request_parameter(request, "endDate", end)
+   if (!is.null(start)) set_request_parameter(request, "startDate", format(start, "%Y%m%d"))
+   if (!is.null(end)) set_request_parameter(request, "endDate", format(end, "%Y%m%d"))
    
    return(request)
 }

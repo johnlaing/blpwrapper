@@ -27,32 +27,48 @@ blp <- function(conn, securities, fields, start = NULL, end = NULL,
    
    if (!is.null(barsize)) {
      if (barsize > 0) {
+        if (length(securities) > 1) {
+           stop("Bar data can only be requested for one security at a time.")
+        }
+        
         allowed <- c("OPEN", "HIGH","LOW", "LAST_PRICE","VOLUME","NUMBER_TICKS")
-        stopmsg <- paste("barfields must be one or more of ", paste(allowed, collapse=", "))
-        if (!is.null(barfields) & all(barfields %in% allowed)) {
-         stop(stopmsg)
+        allowed_barfields_msg <- paste("barfields must be one or more of ", paste(allowed, collapse=", "))
+        
+        if (is.null(barfields) || !all(barfields %in% allowed)) {
+         stop(allowed_barfields_msg)
        }
      }
    }
    
    securities <- toupper(securities)
    fields <- toupper(fields)
+
    if (!is.null(barfields)) {
      barfields <- toupper(barfields)
+   }
+
+   if (!is.null(start)) {
+     start <- timeDate(start)
+   }
+
+   if (!is.null(end)) {
+     end <- timeDate(end)
    }
    
    fn.name <- paste("blp", class(conn), sep=".")
    fn.call <- call(fn.name, conn, securities, fields, start, end, barsize, barfields, retval, override_fields, overrides, currency)
    lst <- eval(fn.call)
    
+   # Everything comes back in the same format, BlpRawReturn, regardless of how it's obtained.
    class(lst) <- "BlpRawReturn"
    attr(lst, "securities") <- securities
    attr(lst, "fields") <- fields
    attr(lst, "override_fields") <- override_fields
    attr(lst, "overrides") <- overrides
    
-   if (is.null(attr(lst, "num.of.date.cols"))) attr(lst, "num.of.date.cols") <- 0
-   
+   if (is.null(attr(lst, "num.of.date.cols"))) {
+      attr(lst, "num.of.date.cols") <- 0
+   }
    
    # If not specified, default to a data frame, or zoo for time series.
    if (is.null(retval)) {
@@ -66,9 +82,23 @@ blp <- function(conn, securities, fields, start = NULL, end = NULL,
    return(convert.to.retval(lst, retval))
 }
 
+convert.to.retval <- function(x, retval) {
+   fn.name <- paste("as", retval, class(x), sep =".") 
+   eval(call(fn.name, x))
+}
+
+as.raw.BlpRawReturn <- function(x) {
+   return(x)
+}
+
+# blp methods for individual classes called by blp()
 blp.JavaObject <- function(conn, securities, fields, start, end, barsize, barfields, 
       retval, override_fields, overrides, currency) {
 
+  if (!is.null(override_fields)) {
+     stop("overrides not implemented!")
+  }
+  
   request <- prepare_request(conn$service, securities, fields, start, end)
   submit_request(conn$session, request)
 
@@ -77,13 +107,14 @@ blp.JavaObject <- function(conn, securities, fields, start, end, barsize, barfie
   return(lst)
 }
 
+# These are identical. Handling is done in blpSubscribe and blpGetHistoricalData.
 blp.COMIDispatch <- function(conn, securities, fields, start, end, barsize, barfields, 
       retval, override_fields, overrides, currency) {
          
   if (!is.null(start)) {
-    blpGetHistoricalData(conn, securities, fields, start, end, barsize, barfields, currency)
+    comGetHistoricalData(conn, securities, fields, start, end, barsize, barfields, currency)
   } else {
-    blpSubscribe(conn, securities, fields, override_fields, overrides)
+    comSubscribe(conn, securities, fields, override_fields, overrides)
   }
 }
 
@@ -91,17 +122,8 @@ blp.COMObject <- function(conn, securities, fields, start, end, barsize, barfiel
       retval, override_fields, overrides, currency) {
          
   if (!is.null(start)) {
-    blpGetHistoricalData(conn, securities, fields, start, end, barsize, barfields, currency)
+    comGetHistoricalData(conn, securities, fields, start, end, barsize, barfields, currency)
   } else {
-    blpSubscribe(conn, securities, fields, override_fields, overrides)
+    comSubscribe(conn, securities, fields, override_fields, overrides)
   }
-}
-
-convert.to.retval <- function(x, retval) {
-   fn.name <- paste("as", retval, class(x), sep =".") 
-   eval(call(fn.name, x))
-}
-
-as.raw.BlpRawReturn <- function(x) {
-   return(x)
 }

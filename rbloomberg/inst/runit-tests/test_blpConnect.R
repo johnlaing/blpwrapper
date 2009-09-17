@@ -12,12 +12,12 @@ test.future.iface <- function() {
 
 test.default.iface <- function() {
    conn <- blpConnect()
-   checkEquals(class(conn)[1], "COMIDispatch")
+   checkEquals(as.character(class(conn)), "COMIDispatch")
 }
 
 test.com.iface <- function() {
    conn <- blpConnect("COM")
-   checkEquals(class(conn)[1], "COMIDispatch")
+   checkEquals(as.character(class(conn)), "COMIDispatch")
 }
 
 test.rcom.iface <- function() {

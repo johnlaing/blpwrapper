@@ -84,7 +84,8 @@ show_available_methods <- function(field) {
 }
 
 getFieldType <- function(field) {
-   toString(.jcall(field, "Lcom/bloomberglp/blpapi/Schema$Datatype;", "datatype"))
+   raw.result <- tryCatch(.jcall(field, "Lcom/bloomberglp/blpapi/Schema$Datatype;", "datatype"), finally=cat(class(field)))
+   toString(raw.result)
 }
 
 numValues <- function(java_object) {

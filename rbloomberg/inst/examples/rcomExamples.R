@@ -38,4 +38,4 @@ comGetProperty(conn, "BLPGetHistoricalData2", Security = "RYA ID Equity", Fields
 
 # Intraday tick example.
 comGetProperty(conn, "BLPGetHistoricalData", Security="ED1 Comdty", Fields=c("BID","ASK"), 
-   StartDate=Sys.time() - 3600, EndDate = Sys.time(), BarSize=as.integer(0))
+   StartDate=Sys.timeDate() - 3600, EndDate = Sys.timeDate(), BarSize=as.integer(0))

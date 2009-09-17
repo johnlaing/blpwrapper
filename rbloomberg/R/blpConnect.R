@@ -1,3 +1,15 @@
+# Information about available interfaces.
+blpInterfaces <- function() {
+   available.packages <- installed.packages()
+
+   cat("'COM' interface")
+   if ("RDCOMClient" %in% available.packages) {
+      cat("available")
+   } else {
+      cat("NOT available, RDCOMClient package not installed.")
+   }
+}
+
 blpConnect <- function(iface="COM", timeout = 12000,
                        show.days = "week", na.action = "na",
                        periodicity = "daily"){
@@ -21,6 +33,7 @@ blpConnect <- function(iface="COM", timeout = 12000,
   
   fn.name <- paste("blpConnect", iface, sep=".")
   fn.call <- call(fn.name, timeout, show.days, na.action, periodicity)
+  
   eval(fn.call)
 }
 
@@ -60,4 +73,6 @@ blpConnect.COM <- function(timeout, show.days, na.action, periodicity) {
 blpConnect.Java <- function(timeout, show.days, na.action, periodicity) {
    java_init() # Start the JVM, load Bloomberg API classes.
    conn <- create_session_and_service()
+   
+   return(conn)
 }

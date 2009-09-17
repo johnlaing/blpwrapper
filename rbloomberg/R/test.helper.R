@@ -1,6 +1,6 @@
 allBloombergTests <- defineTestSuite("All Tests", 
    dirs=system.file("runit-tests", package="RBloomberg"), 
-   testFileRegexp="Test.R$")
+   testFileRegexp="^test_")
 
 runAllBloombergTests <- function() {
    testResults <- runTestSuite(allBloombergTests)

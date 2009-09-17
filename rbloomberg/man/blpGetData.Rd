@@ -112,17 +112,17 @@ start=Sys.Date() - 30)
 
 ## Intraday bars (last hour in 2 min bars)
 blpGetData(conn, "ED1 Comdty", c("BID","ASK"),
-start=Sys.time() - 3600, barfields="OPEN", barsize=2)
+start=Sys.timeDate() - 3600, barfields="OPEN", barsize=2)
 
 ## Tick-by-tick (3 minutes starting an hour ago)
 blpGetData(conn, "ED1 Comdty", c("BID"),
-start=Sys.time() - 3600,
-end=Sys.time() - 3420, barsize=0)
+start=Sys.timeDate() - 3600,
+end=Sys.timeDate() - 3420, barsize=0)
 
 # Example of 3D data. Note ugly dates.
 blpGetData(conn, c("ED5 Comdty","ED6 Comdty","ED7 Comdty",
 "ED8 Comdty"), c("BID","ASK"),
-start=Sys.time() - 86400 * 5,
+start=Sys.timeDate() - 86400 * 5,
 retval="matrix")
 
 blpDisconnect(conn)

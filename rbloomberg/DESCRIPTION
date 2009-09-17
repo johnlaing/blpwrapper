@@ -1,10 +1,10 @@
 Package: RBloomberg
-Version: 0.2-3
+Version: 0.2-4
 Date: 2009-09-11
 Title: R/Bloomberg
 Author: Robert Sams <robert@sanctumfi.com>
 Maintainer: Robert Sams <robert@sanctumfi.com>
 Description: Fetch data from Bloomberg 
 License: GPL
-Depends: zoo, bitops, RUnit
+Depends: zoo, bitops, RUnit, timeDate
 OS_type: windows

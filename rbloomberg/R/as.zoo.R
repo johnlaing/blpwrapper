@@ -7,7 +7,7 @@ as.zoo.BlpRawReturn <- function(x, suppress=TRUE, bbfields=.bbfields, ...){
   }
   cols <- colnames(mtx)[2:ncol(mtx)]
   if(attr(x,"num.of.date.cols") != 0){
-    dtime <- as.POSIXct(mtx[,1], tz=system.timezone(), origin="1970-01-01")
+    dtime <- timeDate(mtx[,1])
     mtx <- matrix(mtx[,2:ncol(mtx)], ncol=ncol(mtx) - 1)
   }else{
     stop("No date column.. cannot convert to zoo.")
@@ -16,16 +16,3 @@ as.zoo.BlpRawReturn <- function(x, suppress=TRUE, bbfields=.bbfields, ...){
   colnames(z) <- cols
   return(z)
 }
-
-# Stupid hack to fix BST not being recognized,
-# and any other issues that arise.
-system.timezone <- function() {
-   timezone <- Sys.timezone()
-   
-   if (timezone == "BST") {
-      timezone <- "Europe/London"
-   }
-   
-   return(timezone)
-}
-

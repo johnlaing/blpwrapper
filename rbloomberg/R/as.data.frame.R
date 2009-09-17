@@ -20,11 +20,6 @@ as.data.frame.BlpRawReturn <- function(x, row.names = NULL, optional =
     ndat <- 0
   }
   
-  ## if date column exists, convert it to chron
-  if(ndat != 0){
-    dtime <- as.POSIXct(mtx[,1], tz=system.timezone(), origin="1970-01-01")
-    mtx <- matrix(mtx[, 2:ncol(mtx)], ncol=ncol(mtx) - 1)
-  }
   ## convert all other columns to appropriate datatype
   if(!is.null(blds)){
     fields <- blds
@@ -41,11 +36,10 @@ as.data.frame.BlpRawReturn <- function(x, row.names = NULL, optional =
     }else if(typ[n] == "logical"){
       lst <- append(lst, list(as.logical(vec)))
     }else if(typ[n] == "datetime"){
-      lst <- append(lst, list(as.POSIXct(vec, tz=system.timezone(), origin="1970-01-01")))
+      lst <- append(lst, list(timeDate(vec)))
     }
   }
   if(ndat != 0){
-    lst <- append(list(dtime), lst)
     df <- as.data.frame.list(lst)
     colnames(df) <- cols
   }else{
@@ -55,4 +49,3 @@ as.data.frame.BlpRawReturn <- function(x, row.names = NULL, optional =
   }
   return(df)
 }
-
