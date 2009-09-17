@@ -12,6 +12,8 @@ filter:
 
 RBloomberg is an R package which handles fetching data from the Bloomberg financial data application. RBloomberg was written by Robert Sams, see the package README for additional contributors and acknowledgements. RBloomberg is released under a GPL open source license.
 
+This documentation refers to RBloomberg version <%= r_project_version %>.
+
 To download the latest version of this document, please visit the \href{http://bloombergapi.com}{RBloomberg home page}.
 
 % section about (end)
@@ -22,13 +24,13 @@ To download the latest version of this document, please visit the \href{http://b
 \subsection{Installation} % (fold)
 \label{sub:installation}
 
-RBloomberg will only work on a Bloomberg workstation, using the Desktop COM API. This version requires the rcom R package, which in turn depends on \href{http://rcom.univie.ac.at/}{statconnDCOM} which is a COM server that, while free, is not open source. Support for the Bloomberg Version 3 Java API is in development. When rcom is installed, it will give instructions on how to install statconnDCOM. If you install RBloomberg via
+RBloomberg will only work on a Bloomberg workstation, using the Desktop COM API. Support for the Desktop Java and C APIs are in development. You will need to install either RDCOMClient or rcom to act as a com server. By default, RBloomberg will connect to RDCOMClient. See blpConnect() for details.
+
+To install RBloomberg:
 
 \begin{verbatim}
   install.packages("RBloomberg", repos="http://r.bloombergapi.com")
 \end{verbatim}
-
-then rcom will automatically be installed for you if you don't have it.
 
 % subsection installation (end)
 

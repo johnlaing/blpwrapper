@@ -1,27 +1,4 @@
-
-R version 2.9.1 (2009-06-26)
-Copyright (C) 2009 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
-
-R is free software and comes with ABSOLUTELY NO WARRANTY.
-You are welcome to redistribute it under certain conditions.
-Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
-
-R is a collaborative project with many contributors.
-Type 'contributors()' for more information and
-'citation()' on how to cite R or R packages in publications.
-
-Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for an HTML browser interface to help.
-Type 'q()' to quit R.
-
-[Previously saved workspace restored]
-
 > source("init.R")
-Loading required package: rcom
-Loading required package: rscproxy
 Loading required package: zoo
 
 Attaching package: 'zoo'
@@ -33,6 +10,7 @@ Attaching package: 'zoo'
 
 Loading required package: bitops
 Loading required package: RUnit
+Loading required package: timeDate
 Contents of bbfields have been stored in .bbfields in the current workspace
 Contents of bbfields.ovr have been stored in .ovr in the current workspace
 
@@ -48,9 +26,19 @@ In identical(get(., i), get(., lib.pos)) : ignoring non-pairlist attributes
 > 
 > sink("basic-intraday.out")
 > blp(conn, "RYA ID Equity", "PX_LAST", Sys.Date() - 10)
+Warning messages:
+1: In if (x < 1e+05) { :
+  the condition has length > 1 and only the first element will be used
+2: In if (abs(reverse - x) > 1e-05) { :
+  the condition has length > 1 and only the first element will be used
 > blp(conn, "RYA ID Equity", "PX_LAST", "2009-01-01", "2009-01-07")
+Warning messages:
+1: In if (x < 1e+05) { :
+  the condition has length > 1 and only the first element will be used
+2: In if (abs(reverse - x) > 1e-05) { :
+  the condition has length > 1 and only the first element will be used
 > sink()
 > 
 > proc.time()
    user  system elapsed 
-   2.07    2.21    6.95 
+   2.62    1.46    4.25 

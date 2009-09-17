@@ -1,27 +1,4 @@
-
-R version 2.9.1 (2009-06-26)
-Copyright (C) 2009 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
-
-R is free software and comes with ABSOLUTELY NO WARRANTY.
-You are welcome to redistribute it under certain conditions.
-Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
-
-R is a collaborative project with many contributors.
-Type 'contributors()' for more information and
-'citation()' on how to cite R or R packages in publications.
-
-Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for an HTML browser interface to help.
-Type 'q()' to quit R.
-
-[Previously saved workspace restored]
-
 > library(RBloomberg)
-Loading required package: rcom
-Loading required package: rscproxy
 Loading required package: zoo
 
 Attaching package: 'zoo'
@@ -33,6 +10,7 @@ Attaching package: 'zoo'
 
 Loading required package: bitops
 Loading required package: RUnit
+Loading required package: timeDate
 Contents of bbfields have been stored in .bbfields in the current workspace
 Contents of bbfields.ovr have been stored in .ovr in the current workspace
 
@@ -48,15 +26,197 @@ In identical(get(., i), get(., lib.pos)) : ignoring non-pairlist attributes
 > testResults <- runTestSuite(allBloombergTests)
 
 
-Executing test function test.basic  ...  done successfully.
+Executing test function test.2d.invalid  ... Error in check.2d.matrix(2, 2, 1:6) : 
+  matrix dimensions 2 , 2 do not match vector length 6
+ done successfully.
 
 
 
-Executing test function test.overrides  ...  done successfully.
+Executing test function test.3d.invalid  ... Error in check.3d.matrix(2, 3, 2, 1:14) : 
+  matrix dimensions 2 , 3 , 2 do not match vector length 14
+ done successfully.
 
 
 
-Executing test function test.java.basic  ...  done successfully.
+Executing test function test.as.matrix.3d  ... , , 1
+
+     [,1]         [,2]    [,3]     [,4]   
+[1,] "2009-01-05" "3.24"  "5.5109" "20.52"
+[2,] "2009-01-06" "3.205" "5.5109" "20.76"
+[3,] "2009-01-07" "3.168" "5.5049" "19.51"
+
+, , 2
+
+     [,1]         [,2]       [,3]       [,4]            
+[1,] "2009-01-05" "4772.671" "573.8562" "182537.2"      
+[2,] "2009-01-06" "4721.114" "573.8562" "184672.1"      
+[3,] "2009-01-07" "4666.612" "573.2291" "173552.6123111"
+
+ done successfully.
+
+
+
+Executing test function test.as.matrix.multiple.fields.historical  ...  done successfully.
+
+
+
+Executing test function test.as.matrix.multiple.securities.historical  ...  done successfully.
+
+
+
+Executing test function test.as.matrix.non.historical  ...  done successfully.
+
+
+
+Executing test function test.as.matrix.non.historical.2  ...  done successfully.
+
+
+
+Executing test function test.numeric.to.timedate  ...  done successfully.
+
+
+
+Executing test function test.3d.historic  ... Loading required package: rscproxy
+2009, , 1
+
+     [,1]         [,2]    [,3]     [,4]   
+[1,] "2009-01-05" "3.24"  "5.5109" "20.52"
+[2,] "2009-01-06" "3.205" "5.5109" "20.76"
+[3,] "2009-01-07" "3.168" "5.5049" "19.51"
+
+, , 2
+
+     [,1]         [,2]        [,3]       [,4]         
+[1,] "2009-01-05" "4772.6709" "573.8562" "182537.1563"
+[2,] "2009-01-06" "4721.1143" "573.8562" "184672.0938"
+[3,] "2009-01-07" "4666.6118" "573.2291" "173552.625" 
+
+, , 1
+
+     [,1]                  [,2]    [,3]     [,4]   
+[1,] "2009-01-04 23:00:00" "3.24"  "5.5109" "20.52"
+[2,] "2009-01-06 00:00:00" "3.205" "5.5109" "20.76"
+[3,] "2009-01-07 00:00:00" "3.168" "5.5049" "19.51"
+
+, , 2
+
+     [,1]                  [,2]        [,3]       [,4]         
+[1,] "2009-01-04 23:00:00" "4772.6709" "573.8562" "182537.1563"
+[2,] "2009-01-06 00:00:00" "4721.1143" "573.8562" "184672.0938"
+[3,] "2009-01-07 00:00:00" "4666.6118" "573.2291" "173552.625" 
+
+2008 [1]  39479.0000  39482.0000  39479.0000  39482.0000  39479.0000  39482.0000
+ [7]      3.6000      3.5400      3.7583      3.9329     30.4498     30.1900
+[13]   5366.8911   5277.4429    390.1707    408.3037 292439.2813 289944.1563
+attr(,"num.of.date.cols")
+[1] 3
+attr(,"start")
+GMT
+[1] [2008-02-01]
+attr(,"end")
+GMT
+[1] [2008-02-04]
+attr(,"class")
+[1] "BlpRawReturn"
+attr(,"securities")
+[1] "RYA ID EQUITY"  "OCN US EQUITY"  "MSFT US EQUITY"
+attr(,"fields")
+[1] "PX_LAST"     "CUR_MKT_CAP"
+ [1] 1.201820e+09 1.202083e+09 1.201824e+09 1.202083e+09 1.201824e+09
+ [6] 1.202083e+09 3.600000e+00 3.540000e+00 3.758300e+00 3.932900e+00
+[11] 3.044980e+01 3.019000e+01 5.366891e+03 5.277443e+03 3.901707e+02
+[16] 4.083037e+02 2.924393e+05 2.899442e+05
+attr(,"num.of.date.cols")
+[1] 3
+attr(,"start")
+GMT
+[1] [2008-02-01]
+attr(,"end")
+GMT
+[1] [2008-02-04]
+attr(,"class")
+[1] "BlpRawReturn"
+attr(,"securities")
+[1] "RYA ID EQUITY"  "OCN US EQUITY"  "MSFT US EQUITY"
+attr(,"fields")
+[1] "PX_LAST"     "CUR_MKT_CAP"
+ done successfully.
+
+
+
+Executing test function test.basic  ... [[1]]
+                              NAME COUNTRY
+RYA ID EQUITY RYANAIR HOLDINGS PLC      IR
+OCN US EQUITY OCWEN FINANCIAL CORP      US
+
+[[2]]
+                              NAME COUNTRY
+RYA ID EQUITY RYANAIR HOLDINGS PLC      IR
+OCN US EQUITY OCWEN FINANCIAL CORP      US
+
+ done successfully.
+
+
+
+Executing test function test.CUST_TRR_RETURN_HOLDING_PER  ... [[1]]
+              CUST_TRR_RETURN_HOLDING_PER
+RYA ID EQUITY                     -9.8266
+OCN US EQUITY                    -17.2962
+
+[[2]]
+              CUST_TRR_RETURN_HOLDING_PER
+RYA ID EQUITY                     -9.8266
+OCN US EQUITY                    -17.2962
+
+ done successfully.
+
+
+
+Executing test function test.historical.numeric  ...  done successfully.
+
+
+
+Executing test function test.LT_DEBT_TO_COM_EQY  ... [[1]]
+               LT_DEBT_TO_COM_EQY
+RYA ID EQUITY               76.53
+OCN US EQUITY               44.42
+YHOO US EQUITY               8.76
+
+[[2]]
+               LT_DEBT_TO_COM_EQY
+RYA ID EQUITY               76.53
+OCN US EQUITY               44.42
+YHOO US EQUITY               8.76
+
+ done successfully.
+
+
+
+Executing test function test.com.iface  ...  done successfully.
+
+
+
+Executing test function test.default.iface  ...  done successfully.
+
+
+
+Executing test function test.future.iface  ... Error in blpConnect("C") : Requested interface C is not yet implemented.
+In addition: There were 12 warnings (use warnings() to see them)
+ done successfully.
+
+
+
+Executing test function test.invalid.iface  ... Error in blpConnect("rubbish") : 
+  Requsted interface rubbish is not valid! Valid interfaces are  COM rcom Java
+ done successfully.
+
+
+
+Executing test function test.java.iface  ...  done successfully.
+
+
+
+Executing test function test.rcom.iface  ...  done successfully.
 
 
 
@@ -74,8 +234,6 @@ Executing test function test.data.type.for.single.field  ...  done successfully.
 
 Executing test function test.field.info.raises.error.on.invalid.mnemonic  ... Error in field.info("NOT_A_VALID_MNEMONIC") : 
   mnemonic NOT_A_VALID_MNEMONIC not found in bbfields
-In addition: Warning message:
-In rm(conn, envir = .GlobalEnv) : object 'conn' not found
  done successfully.
 
 
@@ -107,16 +265,32 @@ Executing test function test.what.i.override  ... Error : length(mnemonic) == 1 
 
 Executing test function test.what.overides.me  ...  done successfully.
 
+
+
+Executing test function test.3d.data  ...  done successfully.
+
+
+
+Executing test function test.comGetHistoricalData.basic.character.results  ...  done successfully.
+
+
+
+Executing test function test.comSubscribe.basic.character.results  ...  done successfully.
+
+
+
+Executing test function test.comSubscribe.numeric.with.overrides  ...  done successfully.
+
 > printTextProtocol(testResults)
-RUNIT TEST PROTOCOL -- Fri Jul 31 10:18:40 2009 
+RUNIT TEST PROTOCOL -- Thu Sep 17 17:28:55 2009 
 *********************************************** 
-Number of test functions: 14 
+Number of test functions: 34 
 Number of errors: 0 
 Number of failures: 0 
 
  
 1 Test Suite : 
-All Tests - 14 test functions, 0 errors, 0 failures
+All Tests - 34 test functions, 0 errors, 0 failures
 
 
 
@@ -124,31 +298,57 @@ Details
 *************************** 
 Test Suite: All Tests 
 Test function regexp: ^test.+ 
-Test file regexp: Test.R$ 
+Test file regexp: ^test_ 
 Involved directory: 
-C:/PROGRA~1/R/R-29~1.1/library/RBloomberg/runit-tests 
+C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests 
 --------------------------- 
-Test file: C:/PROGRA~1/R/R-29~1.1/library/RBloomberg/runit-tests/blpGetDataTest.R 
-test.basic: (2 checks) ... OK (7.75 seconds)
-test.overrides: (9 checks) ... OK (7.2 seconds)
+Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_as_matrix.R 
+test.2d.invalid: (1 checks) ... OK (0 seconds)
+test.3d.invalid: (1 checks) ... OK (0 seconds)
+test.as.matrix.3d: (2 checks) ... OK (1.25 seconds)
+test.as.matrix.multiple.fields.historical: (2 checks) ... OK (0.6 seconds)
+test.as.matrix.multiple.securities.historical: (2 checks) ... OK (0.59 seconds)
+test.as.matrix.non.historical: (2 checks) ... OK (0.5 seconds)
+test.as.matrix.non.historical.2: (2 checks) ... OK (0.47 seconds)
+test.numeric.to.timedate: (4 checks) ... OK (0.09 seconds)
 --------------------------- 
-Test file: C:/PROGRA~1/R/R-29~1.1/library/RBloomberg/runit-tests/blpJavaTest.R 
-test.java.basic: (0 checks) ... OK (37.89 seconds)
+Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_blp.R 
+test.3d.historic: (0 checks) ... OK (2.73 seconds)
+test.basic: (2 checks) ... OK (1.13 seconds)
+test.CUST_TRR_RETURN_HOLDING_PER: (2 checks) ... OK (1.11 seconds)
+test.historical.numeric: (0 checks) ... OK (1.11 seconds)
+test.LT_DEBT_TO_COM_EQY: (2 checks) ... OK (1.06 seconds)
 --------------------------- 
-Test file: C:/PROGRA~1/R/R-29~1.1/library/RBloomberg/runit-tests/blpToolsTest.R 
-test.category.name: (1 checks) ... OK (0.07 seconds)
-test.data.type.for.list.of.fields: (1 checks) ... OK (0.02 seconds)
+Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_blpConnect.R 
+test.com.iface: (1 checks) ... OK (0.34 seconds)
+test.default.iface: (1 checks) ... OK (0.34 seconds)
+test.future.iface: (1 checks) ... OK (0 seconds)
+test.invalid.iface: (1 checks) ... OK (0 seconds)
+test.java.iface: (1 checks) ... OK (0.97 seconds)
+test.rcom.iface: (1 checks) ... OK (0.34 seconds)
+--------------------------- 
+Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_blpTools.R 
+test.category.name: (1 checks) ... OK (0.03 seconds)
+test.data.type.for.list.of.fields: (1 checks) ... OK (0.04 seconds)
 test.data.type.for.single.field: (1 checks) ... OK (0 seconds)
-test.field.info.raises.error.on.invalid.mnemonic: (1 checks) ... OK (0 seconds)
+test.field.info.raises.error.on.invalid.mnemonic: (1 checks) ... OK (0.01 seconds)
 test.field.name.for.list.of.fields: (1 checks) ... OK (0.03 seconds)
-test.field.name.for.single.field: (1 checks) ... OK (0 seconds)
-test.historical: (1 checks) ... OK (0.03 seconds)
+test.field.name.for.single.field: (1 checks) ... OK (0.02 seconds)
+test.historical: (1 checks) ... OK (0 seconds)
 test.is.power.of.two: (4 checks) ... OK (0 seconds)
 test.static: (1 checks) ... OK (0 seconds)
 test.what.i.override: (2 checks) ... OK (0.02 seconds)
 test.what.overides.me: (2 checks) ... OK (0.03 seconds)
+--------------------------- 
+Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_comGetHistoricalData.R 
+test.3d.data: (0 checks) ... OK (1.27 seconds)
+test.comGetHistoricalData.basic.character.results: (4 checks) ... OK (1.22 seconds)
+--------------------------- 
+Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_comSubscribe.R 
+test.comSubscribe.basic.character.results: (2 checks) ... OK (1.05 seconds)
+test.comSubscribe.numeric.with.overrides: (2 checks) ... OK (1.05 seconds)
 > printTextProtocol(testResults, fileName="C:\\work\\rbloomberg-examples\\unit-test-results.txt")
 > 
 > proc.time()
    user  system elapsed 
-   5.34   12.78   58.18 
+   7.95    9.62   40.31 

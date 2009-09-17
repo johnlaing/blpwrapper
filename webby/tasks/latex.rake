@@ -6,6 +6,6 @@ task :pdf => [:build] do
     next unless f =~ /\.tex$/
     dir = File.dirname(f)
     file = File.basename(f)
-    system("cd #{dir}; pdflatex #{file}; cp #{file.gsub(/tex$/, 'pdf')} ../../../")
+    system("cd #{dir}; pdflatex #{file}")
   end
 end

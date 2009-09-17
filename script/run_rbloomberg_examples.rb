@@ -18,6 +18,6 @@ dir.each do |f|
   file.write(data)
   file.close
   
-  cmd = "cd #{dir.path.gsub("/", "\\")} & R CMD BATCH #{file.path} #{original_file.gsub(/R$/, "Rout")}"
+  cmd = "cd #{dir.path.gsub("/", "\\")} & R CMD BATCH --vanilla -q #{file.path} #{original_file.gsub(/R$/, "Rout")}"
   system(cmd)
 end
