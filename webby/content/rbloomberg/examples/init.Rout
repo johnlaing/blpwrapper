@@ -15,6 +15,11 @@ Loading required package: timeDate
 Contents of bbfields have been stored in .bbfields in the current workspace
 Contents of bbfields.ovr have been stored in .ovr in the current workspace
 
+Checking RBloomberg interfaces:
+COM interface available
+rcom interface available
+Java interface available
+
 Attaching package: 'RBloomberg'
 
 
@@ -28,4 +33,4 @@ In identical(get(., i), get(., lib.pos)) : ignoring non-pairlist attributes
 > 
 > proc.time()
    user  system elapsed 
-   2.00    1.29    3.45 
+   4.48    4.29    9.34 

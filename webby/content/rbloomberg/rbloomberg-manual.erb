@@ -14,7 +14,7 @@ RBloomberg is an R package which handles fetching data from the Bloomberg financ
 
 This documentation refers to RBloomberg version <%= r_project_version %>.
 
-To download the latest version of this document, please visit the \href{http://bloombergapi.com}{RBloomberg home page}.
+To download the latest version of this document, please visit the \href{http://bloombergapi.com/rbloomberg}{RBloomberg home page}.
 
 % section about (end)
 
@@ -50,23 +50,6 @@ The result of running these three commands should be something like this:
 <%= gorgl("examples/hello-world.Rout") %>
 
 % subsection hello_world (end)
-
-\subsection{Unit Tests} % (fold)
-\label{sub:unit_tests}
-
-Tests are live code examples that are tested for the expected output. They are useful to developers as a code quality tool, and they can also be very useful to users to help ensure everything is running smoothly and also as an extra source of reference material. Should you not be able to find the information you need in formal documentation (this is general advice, not just pertaining to RBloomberg), look for tests and study the syntax of examples there.
-
-To ensure that everything is running smoothly, we recommend that you run the RUnit test suite:
-<%= gorgl("examples/run-unit-tests.R", "run") %>
-
-The output of printTextProtocol should look like this:
-<%= gorgl("examples/run-unit-tests.Rout") %>
-
-In particular, take note of any errors or failures. Hopefully you will have none of either.
-
-% subsection unit_tests (end)
-
-% section installation_and_requirements (end)
 
 \section{Getting Current Data} % (fold)
 \label{sec:getting_current_data}
@@ -122,7 +105,7 @@ Note that dates must be passed as strings in the form ``YYYYMMDD''. If you pass 
 \subsection{Format of Returned Data} % (fold)
 \label{sub:format_of_returned_data}
 
-By default, RBloomberg returns a data frame for current requests and a zoo for historical data. You can specify a particular format using the retval parameter. retval can take options "raw", "matrix", "zoo" or "data.frame". Remember that for a matrix, all values must be of the same data type. Hence, dates will not appear in date format in a matrix. The "raw" retval is useful for troubleshooting if you receive an error message which originated in the data conversion process.
+By default, RBloomberg returns a data frame for current requests and a zoo for historical data. You can specify a particular format using the retval parameter. retval can take options "raw", "matrix", "zoo" or "data.frame". The "raw" retval is useful for troubleshooting. All other data is first converted to "matrix", then if necessary to "zoo" or "data.frame".
 
 % subsection format_of_returned_data (end)
 
@@ -165,7 +148,7 @@ If you want daily or less frequent periodic data, or data for a specific day, th
 <%= gorgl("examples/historical-calls.R", "basic-intraday") %>
 <%= gorgl("examples/basic-intraday.out") %>
 
-If you pass just a start date, then all data from that start date up until the present is returned. You can also pass both a start and end date and this will determine the range of dates for which to return data. Dates can be passed as POSIX dates, strings in the form YYYY-MM-DD or any other format which can be coerced via a call to as.POSIXct().
+If you pass just a start date, then all data from that start date up until the present is returned. You can also pass both a start and end date and this will determine the range of dates for which to return data. Dates can be passed as POSIX dates, strings in the form YYYY-MM-DD or any other format which can be coerced via a call to timeDate.
 
 Overrides can be passed in the same manner as for current data calls. Also there is a currency parameter, as documented in the Bloomberg API for the blpGetHistoricalData2 function. Again, test to be sure this is giving you what you expect as it does not apply to all fields.
 
@@ -174,3 +157,20 @@ Overrides can be passed in the same manner as for current data calls. Also there
 
 
 % section historical_data (end)
+
+\subsection{Unit Tests} % (fold)
+\label{sub:unit_tests}
+
+Tests are live code examples that are tested for the expected output. They are useful to developers as a code quality tool, and they can also be very useful to users to help ensure everything is running smoothly and also as an extra source of reference material. Should you not be able to find the information you need in formal documentation (this is general advice, not just pertaining to RBloomberg), look for tests and study the syntax of examples there.
+
+To ensure that everything is running smoothly, we recommend that you run the RUnit test suite:
+<%= gorgl("examples/run-unit-tests.R", "run") %>
+
+The output of printTextProtocol should look like this:
+<%= gorgl("examples/run-unit-tests.Rout") %>
+
+In particular, take note of any errors or failures. Hopefully you will have none of either.
+
+% subsection unit_tests (end)
+
+% section installation_and_requirements (end)

@@ -14,6 +14,11 @@ Loading required package: timeDate
 Contents of bbfields have been stored in .bbfields in the current workspace
 Contents of bbfields.ovr have been stored in .ovr in the current workspace
 
+Checking RBloomberg interfaces:
+COM interface available
+rcom interface available
+Java interface available
+
 Attaching package: 'RBloomberg'
 
 
@@ -30,4 +35,4 @@ RYA ID EQUITY RYANAIR HOLDINGS PLC
 > 
 > proc.time()
    user  system elapsed 
-   2.18    1.37    3.59 
+   4.43    3.82    8.98 

@@ -1,4 +1,4 @@
       category category.name subcategory subcategory.name field.id field.name
-13477      195       Pricing           0               NA     0560 Last Price
+13624      195       Pricing           0               NA     0560 Last Price
       field.mnemonic mkt.bitmask data.bitmask data.type
-13477        PX_LAST        4062           12         3
+13624        PX_LAST        4062           12         3
