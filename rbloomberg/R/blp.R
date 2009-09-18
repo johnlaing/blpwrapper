@@ -72,7 +72,7 @@ blp <- function(conn, securities, fields, start = NULL, end = NULL,
    
    # If not specified, default to a data frame, or zoo for time series.
    if (is.null(retval)) {
-      if (!is.null(start)) {
+      if (attr(lst, "num.of.date.cols") > 0) {
        retval <- "zoo"
      } else {
        retval <- "data.frame"

@@ -17,6 +17,10 @@ Future support for platform independent API's is envisioned.")
       assign(".ovr", ovr, ".GlobalEnv")
       message("Contents of bbfields.ovr have been stored in .ovr in the current workspace")
     }
+    
+    cat("\nChecking RBloomberg interfaces:")
+    blpInterfaces()
+    cat("\n")
   }
 }
 
@@ -26,4 +30,3 @@ Future support for platform independent API's is envisioned.")
   message ("Removing variable .ovr from the current workspace")
   rm(.ovr, inherits=TRUE)
 }
-

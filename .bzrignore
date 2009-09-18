@@ -3,3 +3,6 @@ output
 ._*
 webby/content/rbloomberg/examples/.RData
 script/upload*
+ruby_bloomberg/lib/java/blpapi3.jar
+*.Rout
+.RData

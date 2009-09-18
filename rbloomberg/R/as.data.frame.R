@@ -1,51 +1,38 @@
-# as.data.frame converts each column into the appropriate data type.
-# By contrast, as.matrix converts all non-date columns to numeric values.
-# as.data.frame does not support 3D data since data frames are 2D.
-as.data.frame.BlpRawReturn <- function(x, row.names = NULL, optional =
-                                       FALSE, ...){
-  bbfields <- .bbfields
-  lst <- list()
+as.data.frame.BlpRawReturn <- function(x) {
   mtx <- as.matrix.BlpRawReturn(x)
+
+  if (length(dim(mtx)) != 2) stop("data frames can only be created for 2 dimensions, should not be here!")
   
-  cols <- colnames(mtx)
-  flds <- attr(x, "fields")
-  secs <- attr(x, "securities")
-  blds <- attr(x, "barfields")
-  ndat <- attr(x, "num.of.date.cols")
+  fields <- attr(x, "fields")
+  securities <- attr(x, "securities")
+  barfields <- attr(x, "barfields")
   
-  # Nasty 6pm Friday hack to change num.of.date.cols to 0 if we have a single
-  # historical date. Otherwise 1st data column is converted to a date which
-  # we don't want.
-  if (!is.null(attr(x, "end")) && (attr(x, "end") == attr(x, "start"))) {
-    ndat <- 0
+  num.of.date.cols <- attr(mtx, "num.of.date.cols")
+  if (num.of.date.cols > 1) stop("Should have at most 1 date column!")
+  
+  if (!is.null(barfields)) {
+    fields <- barfields
+  }
+
+  column.data.types <- dataType(fields, .bbfields)
+  
+  if (num.of.date.cols > 0) {
+     column.data.types <- append("datetime", column.data.types)
   }
   
-  ## convert all other columns to appropriate datatype
-  if(!is.null(blds)){
-    fields <- blds
-  }else{
-    fields <- flds
+  df <- as.data.frame(mtx)
+  
+  for (i in 1:ncol(df)) {
+     type <- column.data.types[i]
+     vec <- df[,i]
+     df[,i] <- switch(type,
+        character = as.character(vec),
+        double = as.numeric(vec),
+        logical = as.logical(vec),
+        datetime = timeDate(vec), # Here we are either processing a Bloomberg date string or our own date string created in as.matrix.
+        stop(paste("conversion of column type", type, "not supported!"))
+      )
   }
-  typ <- dataType(fields, bbfields)
-  for(n in seq(1, ncol(mtx))){
-    vec <- mtx[,n]
-    if(typ[n] == "character"){
-      lst <- append(lst, list(as.character(vec)))
-    }else if(typ[n] == "double"){
-      lst <- append(lst, list(as.numeric(vec)))
-    }else if(typ[n] == "logical"){
-      lst <- append(lst, list(as.logical(vec)))
-    }else if(typ[n] == "datetime"){
-      lst <- append(lst, list(timeDate(vec)))
-    }
-  }
-  if(ndat != 0){
-    df <- as.data.frame.list(lst)
-    colnames(df) <- cols
-  }else{
-    df <- as.data.frame.list(lst)
-    colnames(df) <- flds
-    rownames(df) <- secs
-  }
+  
   return(df)
 }

@@ -38,8 +38,42 @@ test.as.matrix.non.historical <- function() {
    checkEquals(actual, x)
    
    expected <- array(x, c(2,2))
+   rownames(expected) <- securities
+   colnames(expected) <- fields
+   attr(expected, "num.of.date.cols") <- 0
+   
    actual <- as.matrix.BlpRawReturn(x)
    
+   checkEquals(actual, expected)
+}
+
+test.as.matrix.non.historical.dates <- function() {
+   conn <- blpConnect()
+   
+   securities <- c("RYA ID EQUITY", "OCN US EQUITY")
+   fields <- c("EQY_INIT_PO_DT", "COUNTRY")
+   
+   x <- c("05/29/1997", "09/24/1996", "IR", "US")
+   attr(x, "securities") <- securities
+   attr(x, "fields") <- fields
+   attr(x, "num.of.date.cols") <- 0
+   attr(x, "class") <- "BlpRawReturn"
+   
+   actual <- blp(conn, securities, fields, retval="raw")
+   checkEquals(actual, x)
+   
+   x <- c("1997-05-29", "1996-09-24", "IR", "US")
+   attr(x, "securities") <- securities
+   attr(x, "fields") <- fields
+   attr(x, "num.of.date.cols") <- 0
+   attr(x, "class") <- "BlpRawReturn"
+   
+   expected <- array(x, c(2,2))
+   rownames(expected) <- securities
+   colnames(expected) <- fields
+   attr(expected, "num.of.date.cols") <- 0
+   
+   actual <- as.matrix.BlpRawReturn(x)
    checkEquals(actual, expected)
 }
 
@@ -59,6 +93,9 @@ test.as.matrix.non.historical.2 <- function() {
    checkEquals(actual, x)
    
    expected <- array(x, c(3,1))
+   rownames(expected) <- securities
+   colnames(expected) <- fields
+   attr(expected, "num.of.date.cols") <- 0
    actual <- as.matrix.BlpRawReturn(x)
    
    checkEquals(actual, expected)
@@ -87,6 +124,10 @@ test.as.matrix.multiple.securities.historical <- function() {
    
    x <- c("2008-02-01", "2008-02-04", 5366.891, 5277.443, 390.1707, 408.3037, 37928.28, 39197.90)
    expected <- array(x, c(2,4))
+   attr(expected, "num.of.date.cols") <- 1
+   colnames(expected) <- c("DATETIME", "RYA ID EQUITY", "OCN US EQUITY", "YHOO US EQUITY")
+   rownames(expected) <- c("2008-02-01", "2008-02-04")
+   
    checkEquals(actual, expected, tolerance = 0.0005)
 }
 
@@ -118,7 +159,12 @@ test.as.matrix.multiple.fields.historical <- function() {
    attr(x, "class") <- "BlpRawReturn"
    attr(x, "securities") <- securities
    attr(x, "fields") <- fields
+   
    expected <- array(x, c(2,3))
+   attr(expected, "num.of.date.cols") <- 1
+   colnames(expected) <- c("DATETIME", "CUR_MKT_CAP", "PX_LAST")
+   rownames(expected) <- c("2008-02-01", "2008-02-04")
+
    checkEquals(actual, expected, tolerance = 0.0005)
 }
 
@@ -142,10 +188,13 @@ test.as.matrix.3d <- function() {
    checkEquals(actual, x, tolerance = 0.0000005)
    
    y <- as.matrix.BlpRawReturn(x)
-   print(y)
    
    expected <- c("2009-01-05", "2009-01-06", "2009-01-07", 3.24, 3.205, 3.168, 5.5109, 5.5109, 5.5049, 20.52, 20.76, 19.51, "2009-01-05", "2009-01-06", "2009-01-07", 4772.671, 4721.114, 4666.612, 573.8562, 573.8562, 573.2291, 182537.2, 184672.1, 173552.61231110000)
    expected <- array(expected, c(3,4,2))
-
+   dimnames(expected)[1] <- list(c("2009-01-05", "2009-01-06", "2009-01-07"))
+   dimnames(expected)[2] <- list(c("DATETIME", "RYA ID EQUITY", "OCN US EQUITY", "MSFT US EQUITY"))
+   dimnames(expected)[3] <- list(c("PX_LAST", "CUR_MKT_CAP"))
+   attr(expected, "num.of.date.cols") <- 1
+   
    checkEquals(y, expected, tolerance = 0.0000005)
 }

@@ -1,13 +1,17 @@
+check.interface <- function(interface.name, package.name) {
+   cat("\n", interface.name, " interface", sep="")
+   if (package.name %in% installed.packages()) {
+      cat(" available")
+   } else {
+      cat(" NOT available.", package.name, "package not installed.")
+   }
+}
+
 # Information about available interfaces.
 blpInterfaces <- function() {
-   available.packages <- installed.packages()
-
-   cat("'COM' interface")
-   if ("RDCOMClient" %in% available.packages) {
-      cat("available")
-   } else {
-      cat("NOT available, RDCOMClient package not installed.")
-   }
+   check.interface("COM", "RDCOMClient")
+   check.interface("rcom", "rcom")
+   check.interface("Java", "rJava")
 }
 
 blpConnect <- function(iface="COM", timeout = 12000,
