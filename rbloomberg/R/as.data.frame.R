@@ -21,16 +21,18 @@ as.data.frame.BlpRawReturn <- function(x) {
   }
   
   df <- as.data.frame(mtx)
-  
+
   for (i in 1:ncol(df)) {
-     type <- column.data.types[i]
-     vec <- df[,i]
-     df[,i] <- switch(type,
-        character = as.character(vec),
-        double = as.numeric(vec),
-        logical = as.logical(vec),
-        datetime = timeDate(vec), # Here we are either processing a Bloomberg date string or our own date string created in as.matrix.
-        stop(paste("conversion of column type", type, "not supported!"))
+      type <- column.data.types[i]
+      vec <- as.vector(df[,i])
+
+     df[,i] <- switch(
+             type,
+             character = as.character(vec),
+             double = as.numeric(vec),
+             logical = as.logical(vec),
+             datetime = timeDate(vec), # Here we are either processing a Bloomberg date string or our own date string created in as.matrix.
+             stop(paste("conversion of column type", type, "not supported!"))
       )
   }
   
