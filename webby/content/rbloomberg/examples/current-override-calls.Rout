@@ -67,4 +67,4 @@ In identical(get(., i), get(., lib.pos)) : ignoring non-pairlist attributes
 > 
 > proc.time()
    user  system elapsed 
-   4.82    3.95    9.92 
+   2.53    2.06    4.96 

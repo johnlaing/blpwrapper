@@ -1,7 +1,7 @@
 # Webby configuration
 SITE.create_mode = 'directory'
 
-task :default => [:pdf, :copy]
+task :default => [:build, :pdf, :copy]
 
 def r_project_version
   File.read("../rbloomberg/DESCRIPTION") =~ /^Version:\s*([0-9.-]+)\s*$/

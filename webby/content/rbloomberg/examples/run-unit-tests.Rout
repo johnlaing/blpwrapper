@@ -158,10 +158,6 @@ Executing test function test.what.overides.me  ...  done successfully.
 
 
 
-Executing test function test.3d.data  ...  done successfully.
-
-
-
 Executing test function test.comGetHistoricalData.basic.character.results  ...  done successfully.
 
 
@@ -173,15 +169,15 @@ Executing test function test.comSubscribe.basic.character.results  ...  done suc
 Executing test function test.comSubscribe.numeric.with.overrides  ...  done successfully.
 
 > printTextProtocol(testResults)
-RUNIT TEST PROTOCOL -- Fri Sep 18 18:49:12 2009 
+RUNIT TEST PROTOCOL -- Mon Sep 28 10:38:24 2009 
 *********************************************** 
-Number of test functions: 33 
+Number of test functions: 32 
 Number of errors: 0 
 Number of failures: 0 
 
  
 1 Test Suite : 
-All Tests - 33 test functions, 0 errors, 0 failures
+All Tests - 32 test functions, 0 errors, 0 failures
 
 
 
@@ -196,49 +192,48 @@ C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests
 Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_as_matrix.R 
 test.2d.invalid: (1 checks) ... OK (0 seconds)
 test.3d.invalid: (1 checks) ... OK (0 seconds)
-test.as.matrix.3d: (2 checks) ... OK (5.99 seconds)
-test.as.matrix.multiple.fields.historical: (2 checks) ... OK (4.08 seconds)
-test.as.matrix.multiple.securities.historical: (2 checks) ... OK (4.06 seconds)
-test.as.matrix.non.historical: (2 checks) ... OK (4 seconds)
-test.as.matrix.non.historical.2: (2 checks) ... OK (4.12 seconds)
-test.as.matrix.non.historical.dates: (2 checks) ... OK (4.11 seconds)
-test.numeric.to.timedate: (4 checks) ... OK (0.08 seconds)
+test.as.matrix.3d: (2 checks) ... OK (1.09 seconds)
+test.as.matrix.multiple.fields.historical: (2 checks) ... OK (0.67 seconds)
+test.as.matrix.multiple.securities.historical: (2 checks) ... OK (0.56 seconds)
+test.as.matrix.non.historical: (2 checks) ... OK (0.53 seconds)
+test.as.matrix.non.historical.2: (2 checks) ... OK (0.48 seconds)
+test.as.matrix.non.historical.dates: (2 checks) ... OK (0.51 seconds)
+test.numeric.to.timedate: (4 checks) ... OK (0.07 seconds)
 --------------------------- 
 Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_blp.R 
-test.basic: (4 checks) ... OK (6.41 seconds)
-test.CUST_TRR_RETURN_HOLDING_PER: (2 checks) ... OK (5.3 seconds)
-test.LT_DEBT_TO_COM_EQY: (2 checks) ... OK (4.96 seconds)
+test.basic: (4 checks) ... OK (2.49 seconds)
+test.CUST_TRR_RETURN_HOLDING_PER: (2 checks) ... OK (1.11 seconds)
+test.LT_DEBT_TO_COM_EQY: (2 checks) ... OK (1.08 seconds)
 --------------------------- 
 Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_blpConnect.R 
-test.com.iface: (1 checks) ... OK (3.97 seconds)
-test.default.iface: (1 checks) ... OK (3.99 seconds)
+test.com.iface: (1 checks) ... OK (0.35 seconds)
+test.default.iface: (1 checks) ... OK (0.36 seconds)
 test.future.iface: (1 checks) ... OK (0 seconds)
 test.invalid.iface: (1 checks) ... OK (0 seconds)
-test.java.iface: (1 checks) ... OK (1.89 seconds)
-test.rcom.iface: (1 checks) ... OK (4.06 seconds)
+test.java.iface: (1 checks) ... OK (0.93 seconds)
+test.rcom.iface: (1 checks) ... OK (0.35 seconds)
 --------------------------- 
 Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_blpTools.R 
-test.category.name: (1 checks) ... OK (0.04 seconds)
-test.data.type.for.list.of.fields: (1 checks) ... OK (0.04 seconds)
+test.category.name: (1 checks) ... OK (0.13 seconds)
+test.data.type.for.list.of.fields: (1 checks) ... OK (0.03 seconds)
 test.data.type.for.single.field: (1 checks) ... OK (0 seconds)
 test.field.info.raises.error.on.invalid.mnemonic: (1 checks) ... OK (0 seconds)
-test.field.name.for.list.of.fields: (1 checks) ... OK (0.03 seconds)
+test.field.name.for.list.of.fields: (1 checks) ... OK (0.04 seconds)
 test.field.name.for.single.field: (1 checks) ... OK (0 seconds)
-test.historical: (1 checks) ... OK (0.05 seconds)
+test.historical: (1 checks) ... OK (0 seconds)
 test.is.power.of.two: (4 checks) ... OK (0 seconds)
 test.static: (1 checks) ... OK (0 seconds)
-test.what.i.override: (2 checks) ... OK (0.01 seconds)
-test.what.overides.me: (2 checks) ... OK (0.03 seconds)
+test.what.i.override: (2 checks) ... OK (0.02 seconds)
+test.what.overides.me: (2 checks) ... OK (0.05 seconds)
 --------------------------- 
 Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_comGetHistoricalData.R 
-test.3d.data: (0 checks) ... OK (4.66 seconds)
-test.comGetHistoricalData.basic.character.results: (4 checks) ... OK (4.89 seconds)
+test.comGetHistoricalData.basic.character.results: (4 checks) ... OK (2.25 seconds)
 --------------------------- 
 Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_comSubscribe.R 
-test.comSubscribe.basic.character.results: (2 checks) ... OK (4.95 seconds)
-test.comSubscribe.numeric.with.overrides: (2 checks) ... OK (5.34 seconds)
+test.comSubscribe.basic.character.results: (2 checks) ... OK (1.53 seconds)
+test.comSubscribe.numeric.with.overrides: (2 checks) ... OK (1.7 seconds)
 > printTextProtocol(testResults, fileName="C:\\work\\rbloomberg-examples\\unit-test-results.txt")
 > 
 > proc.time()
    user  system elapsed 
-  34.87   40.93  104.45 
+   7.84    9.01   39.68 
