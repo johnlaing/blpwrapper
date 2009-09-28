@@ -23,13 +23,13 @@ class TestSecurity < Test::Unit::TestCase
   
   def test_historical
     dates = [
-      Date.civil(2009, 2, 2),
-      Date.civil(2009, 2, 3),
-      Date.civil(2009, 2, 4),
-      Date.civil(2009, 2, 5),
-      Date.civil(2009, 2, 6),
-      Date.civil(2009, 2, 9),
-      Date.civil(2009, 2, 10)
+      Time.parse("2009-02-02"),
+      Time.parse("2009-02-03"),
+      Time.parse("2009-02-04"),
+      Time.parse("2009-02-05"),
+      Time.parse("2009-02-06"),
+      Time.parse("2009-02-09"),
+      Time.parse("2009-02-10")
     ]
     
     expected = [["security", "PX_LAST"], ["date", dates], ["RYA ID Equity", [3.07, 3.15, 3.275, 3.395, 3.41, 3.384, 3.23]]]

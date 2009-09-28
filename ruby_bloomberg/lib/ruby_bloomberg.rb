@@ -69,4 +69,4 @@ end  # module RubyBloomberg
 RubyBloomberg.require_all_libs_relative_to(__FILE__)
 RubyBloomberg.require_all_libs_relative_to(__FILE__, RubyBloomberg::BLOOMBERG_API)
 
-require 'date'
+require 'time'

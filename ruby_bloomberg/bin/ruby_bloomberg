@@ -3,6 +3,8 @@
 require File.expand_path(
     File.join(File.dirname(__FILE__), %w[.. lib ruby_bloomberg]))
 
-# Put your code here
+require 'drb'
 
-# EOF
+DRb.start_service("druby://192.168.1.49:7781", RubyBloomberg::DrbWrapper.new)
+puts "server started on port 7781"
+DRb.thread.join

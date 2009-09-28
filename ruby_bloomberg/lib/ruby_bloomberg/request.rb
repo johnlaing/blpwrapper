@@ -27,22 +27,48 @@ module RubyBloomberg
       Connection.instance.data_service
     end
     
+    def prepare_reference_data_table
+      return false unless @data_table.rows.empty?
+      
+      @data_table.set_header_at_index(0, "security")
+      
+      n = @fields.size
+      @fields.each_with_index do |f, i|
+        @data_table.set_header_at_index(i + 1, f)
+      end
+
+      @securities.each do |s|
+        security_row = [s]
+        n.times do
+          security_row << nil
+        end
+        @data_table.append(security_row)
+      end
+    end
+    
     def prepare_historical_data_table
       return false unless @data_table.rows.empty?
       
       @data_table.set_header_at_index(0, "security")
       
-      @fields.each_with_index do |f, i|
-        @data_table.set_header_at_index(i + 1, f)
+      if @bar_fields.nil?
+        n = @fields.size
+        @fields.each_with_index do |f, i|
+          @data_table.set_header_at_index(i + 1, f)
+        end
+      else
+        n = @bar_fields.size
+        @bar_fields.each_with_index do |f, i|
+          @data_table.set_header_at_index(i + 1, f)
+        end
       end
       
-      n = @fields.size
       date_row = ["date"] + [[]] * n # evil hack, these n arrays are dups of each other so only 1 of them needs to be filled below
       @data_table.append(date_row)
       
       @securities.each do |s|
         security_row = [s]
-        @fields.each do
+        n.times do
           security_row << []
         end
         @data_table.append(security_row)

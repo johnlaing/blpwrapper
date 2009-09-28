@@ -16,7 +16,7 @@ module RubyBloomberg
           field_data = field_data_array.getValueAsElement(j)
           
           date = field_value(field_data.getElement(0))
-          @data_table.rows[0].append_to_array(1, Date.strptime(date)) if sequence_number == 0
+          @data_table.rows[0].append_to_array(1, Time.parse(date)) if sequence_number == 0
           
           1.upto(field_data.numElements - 1) do |k|
             # k is number of fields

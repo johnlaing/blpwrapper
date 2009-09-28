@@ -1,3 +1,5 @@
+require "../script/check_rbloomberg_version.rb"
+
 # Webby configuration
 SITE.create_mode = 'directory'
 

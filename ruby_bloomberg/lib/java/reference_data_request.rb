@@ -2,33 +2,28 @@ module RubyBloomberg
   class ReferenceDataRequest < JavaRequest
     
     def read_message_data(message)
+      prepare_reference_data_table
+
       raise "oops, thought there was only going to be 1 element here, better rethink this!" unless message.numElements == 1
       security_data_array = message.getElement("securityData")
       
-      @data_table.set_header_at_index(0, "security")
-      
       0.upto(security_data_array.numValues - 1) do |i|
         security_data = security_data_array.getValueAsElement(i)
-        
         security_code = security_data.getElementAsString("security")
-        field_data = security_data.getElement("fieldData")
+        sequence_number = security_data.getElement("sequenceNumber").value_as_int32
         
-        row = ForgetMeNot::Row.new
-        row.append security_code
+        if security_data.hasElement("securityError")
+          raise security_data.getElement("securityError").to_s
+        end
+        
+        field_data = security_data.getElement("fieldData")
 
         0.upto(field_data.numElements - 1) do |k|
           field = field_data.getElement(k)
-
-          if @data_table.headers[k+1].nil?
-            @data_table.set_header_at_index(k+1, field.name.to_s)
-          else
-            raise "field names #{field.name}, #{@data_table.headers[k+1]} do not match!" unless @data_table.headers[k+1] === field.name.to_s
-          end
-
-          row.append field_value(field)
+          field_index = @fields.index(field.name.to_s)
+          
+          @data_table.rows[sequence_number][k+1] = field_value(field)
         end
-
-        @data_table.append(row)
       end
     end
   end

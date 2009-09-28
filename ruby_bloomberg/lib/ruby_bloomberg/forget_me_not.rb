@@ -8,6 +8,14 @@ module ForgetMeNot
       @headers = []
     end
     
+    def [](row_or_column_name)
+      if @headers.include?(row_or_column_name)
+        column(row_or_column_name)
+      else
+        @rows.detect {|r| r[0] == row_or_column_name}.data
+      end
+    end
+    
     def set_header_at_index(index, header_name)
       @headers[index] = header_name
     end
@@ -39,6 +47,19 @@ module ForgetMeNot
       @rows.first.to_a[1]
     end
     
+    # Iterate over each row as a hash
+    def each_hash
+      rows.each do |r|
+        yield(r.to_hash)
+      end
+    end
+    
+    def each_with_index
+      rows.each_with_index do |r, i|
+        yield(r.to_hash, i)
+      end
+    end
+    
     # Return a virtual column of data
     def column(column_name_or_index)
       case column_name_or_index
@@ -58,6 +79,8 @@ module ForgetMeNot
   end # Table class
   
   class Row
+    attr_reader :data
+    
     def initialize(data = [])
       @data = data
     end
@@ -79,6 +102,10 @@ module ForgetMeNot
       @data[index] = value
     end
     
+    def [](index)
+      @data[index]
+    end
+    
     def to_a
       @data
     end
@@ -88,7 +115,7 @@ module ForgetMeNot
     end
     
     def to_hash
-      raise "headers do not match data" unless valid_headers
+      raise "headers #{@table.headers.inspect} do not match data #{@data.inspect}" unless valid_headers
       Hash[*@table.headers.zip(@data).to_a.flatten]
     end
   end

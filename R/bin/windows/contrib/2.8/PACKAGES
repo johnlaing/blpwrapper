@@ -1,5 +1,5 @@
 Package: RBloomberg
-Version: 0.2-5
+Version: 0.2-95
 Depends: zoo, bitops, RUnit, timeDate
 OS_type: windows
 

@@ -3,6 +3,7 @@ include_class "com.bloomberglp.blpapi.Element"
 include_class "com.bloomberglp.blpapi.Event"
 include_class "com.bloomberglp.blpapi.Message"
 include_class "com.bloomberglp.blpapi.MessageIterator"
+include_class "com.bloomberglp.blpapi.Datetime"
 
 module RubyBloomberg
   class JavaRequest < Request
