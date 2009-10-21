@@ -1,7 +1,7 @@
               PX_LAST
-RYA ID EQUITY     3.4
+RYA ID EQUITY   3.361
                                       NAME PX_LAST
-IBM US EQUITY  INTL BUSINESS MACHINES CORP  121.08
-MSFT US EQUITY              MICROSOFT CORP   25.55
-                              NAME PX_LAST   OPEN
-ED1 COMDTY Generic 1st 'ED' Future  99.605 99.595
+IBM US EQUITY  INTL BUSINESS MACHINES CORP  122.82
+MSFT US EQUITY              MICROSOFT CORP   26.37
+                              NAME PX_LAST  OPEN
+ED1 COMDTY Generic 1st 'ED' Future  99.645 99.64

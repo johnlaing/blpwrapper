@@ -1,6 +1,6 @@
 library(RBloomberg)
 
-testResults <- runTestSuite(allBloombergTests)
+testResults <- runTestSuite(allBloombergTests())
 sink("tests.html")
 printHTMLProtocol(testResults)
 sink()
