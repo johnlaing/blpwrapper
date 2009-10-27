@@ -9,6 +9,15 @@ filter:
 
 Please remember that anyone providing help to you is a volunteer. Please show respect for their time by making your request as informative as possible, and doing as much homework as you reasonably can to try to solve the problem yourself before asking for help.
 
+h2. Troubleshooting Tips
+
+Here are some quick things to try which might help you figure out what's going wrong:
+* Try @retval = "raw"@ in your blp() request.
+* Try making the same request via the Bloomberg add-in for Excel, or in your Bloomberg workstation using the FLDS page. Make sure your fields and override fields are valid and appropriate for the securities you are requesting.
+* Check for errors in the Bloomberg API log file, usually located in @C:\blp\API@ and called @bbcomm@ or @bbcomm.log@.
+
+There are more extensive troubleshooting tips in the Troubleshooting chapter of the "user guide":<%= rbloomberg_manual_url %>.
+
 h2. Search the Mailing List Archives
 
 Your question might have been asked and answered on the internet already. Use this custom search to search the this website, the R Sig Finance mailing list archives and other places that tend to provide useful help results.
@@ -32,6 +41,6 @@ RBloomberg is an R package, and an R package is just a bunch of files written in
 
 h2. Ask Nicely for Help
 
-If all else fails, then you are welcome to ask for help. You can send a note to the "R-Sig-Finance mailing list":https://stat.ethz.ch/mailman/listinfo/r-sig-finance. This is an R mailing list for people with an interest in finance, not specific to RBloomberg but there are a lot of RBloomberg users on there. Please explain your problem clearly, including the version of R and RBloomberg you are using, and be patient.
+If all else fails, then you are welcome to ask for help. You can send a note to the "R-Sig-Finance mailing list":https://stat.ethz.ch/mailman/listinfo/r-sig-finance. This is an R mailing list for people with an interest in finance, not specific to RBloomberg but there are a lot of RBloomberg users on there. Please explain your problem clearly, and please include the output from running @sessionInfo()@ so we know what version of R and RBloomberg you are using.
 
 Another option is to ask a question, submit a bug report or request a new feature at the "Launchpad page":http://launchpad.net/rbloomberg for RBloomberg.

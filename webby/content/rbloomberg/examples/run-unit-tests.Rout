@@ -28,13 +28,212 @@ Attaching package: 'RBloomberg'
 
 Warning message:
 In identical(get(., i), get(., lib.pos)) : ignoring non-pairlist attributes
-> testResults <- runTestSuite(allBloombergTests)
-Error in testSuites[[1]] : object of type 'closure' is not subsettable
-Calls: runTestSuite -> isValidTestSuite -> is
-In addition: Warning message:
-In isValidTestSuite(testSuites) :
-  'testSuite' object is not of class 'RUnitTestSuite'.
+> testResults <- runTestSuite(allBloombergTests())
+
+
+Executing test function test.2d.invalid  ... Error in check.2d.matrix(2, 2, 1:6) : 
+  matrix dimensions 2 , 2 do not match vector length 6
+ done successfully.
+
+
+
+Executing test function test.3d.invalid  ... Error in check.3d.matrix(2, 3, 2, 1:14) : 
+  matrix dimensions 2 , 3 , 2 do not match vector length 14
+ done successfully.
+
+
+
+Executing test function test.as.matrix.3d  ...  done successfully.
+
+
+
+Executing test function test.as.matrix.multiple.fields.historical  ...  done successfully.
+
+
+
+Executing test function test.as.matrix.multiple.securities.historical  ...  done successfully.
+
+
+
+Executing test function test.as.matrix.non.historical  ...  done successfully.
+
+
+
+Executing test function test.as.matrix.non.historical.2  ...  done successfully.
+
+
+
+Executing test function test.as.matrix.non.historical.dates  ...  done successfully.
+
+
+
+Executing test function test.numeric.to.timedate  ...  done successfully.
+
+
+
+Executing test function test.basic  ... Loading required package: rscproxy
+ done successfully.
+
+
+
+Executing test function test.CUST_TRR_RETURN_HOLDING_PER  ...  done successfully.
+
+
+
+Executing test function test.LT_DEBT_TO_COM_EQY  ...  done successfully.
+
+
+
+Executing test function test.com.iface  ...  done successfully.
+
+
+
+Executing test function test.default.iface  ...  done successfully.
+
+
+
+Executing test function test.future.iface  ... Error in blpConnect("C") : Requested interface C is not yet implemented.
+ done successfully.
+
+
+
+Executing test function test.invalid.iface  ... Error in blpConnect("rubbish") : 
+  Requsted interface rubbish is not valid! Valid interfaces are  COM rcom Java
+ done successfully.
+
+
+
+Executing test function test.java.iface  ...  done successfully.
+
+
+
+Executing test function test.rcom.iface  ...  done successfully.
+
+
+
+Executing test function test.category.name  ...  done successfully.
+
+
+
+Executing test function test.data.type.for.list.of.fields  ...  done successfully.
+
+
+
+Executing test function test.data.type.for.single.field  ...  done successfully.
+
+
+
+Executing test function test.field.info.raises.error.on.invalid.mnemonic  ... Error in field.info("NOT_A_VALID_MNEMONIC") : 
+  mnemonic NOT_A_VALID_MNEMONIC not found in bbfields
+ done successfully.
+
+
+
+Executing test function test.field.name.for.list.of.fields  ...  done successfully.
+
+
+
+Executing test function test.field.name.for.single.field  ...  done successfully.
+
+
+
+Executing test function test.historical  ...  done successfully.
+
+
+
+Executing test function test.is.power.of.two  ...  done successfully.
+
+
+
+Executing test function test.static  ...  done successfully.
+
+
+
+Executing test function test.what.i.override  ... Error : length(mnemonic) == 1 is not TRUE
+ done successfully.
+
+
+
+Executing test function test.what.overides.me  ...  done successfully.
+
+
+
+Executing test function test.comGetHistoricalData.basic.character.results  ...  done successfully.
+
+
+
+Executing test function test.comSubscribe.basic.character.results  ...  done successfully.
+
+
+
+Executing test function test.comSubscribe.numeric.with.overrides  ...  done successfully.
+
 > printTextProtocol(testResults)
-Error in is(testData, "RUnitTestData") : object 'testResults' not found
-Calls: printTextProtocol -> is
-Execution halted
+RUNIT TEST PROTOCOL -- Tue Oct 27 12:14:34 2009 
+*********************************************** 
+Number of test functions: 32 
+Number of errors: 0 
+Number of failures: 0 
+
+ 
+1 Test Suite : 
+All Tests - 32 test functions, 0 errors, 0 failures
+
+
+
+Details 
+*************************** 
+Test Suite: All Tests 
+Test function regexp: ^test.+ 
+Test file regexp: ^test 
+Involved directory: 
+C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests 
+--------------------------- 
+Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_as_matrix.R 
+test.2d.invalid: (1 checks) ... OK (0 seconds)
+test.3d.invalid: (1 checks) ... OK (0 seconds)
+test.as.matrix.3d: (2 checks) ... OK (1.34 seconds)
+test.as.matrix.multiple.fields.historical: (2 checks) ... OK (0.55 seconds)
+test.as.matrix.multiple.securities.historical: (2 checks) ... OK (0.71 seconds)
+test.as.matrix.non.historical: (2 checks) ... OK (0.55 seconds)
+test.as.matrix.non.historical.2: (2 checks) ... OK (0.49 seconds)
+test.as.matrix.non.historical.dates: (2 checks) ... OK (0.57 seconds)
+test.numeric.to.timedate: (4 checks) ... OK (0.07 seconds)
+--------------------------- 
+Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_blp.R 
+test.basic: (4 checks) ... OK (2.69 seconds)
+test.CUST_TRR_RETURN_HOLDING_PER: (2 checks) ... OK (1.16 seconds)
+test.LT_DEBT_TO_COM_EQY: (2 checks) ... OK (1.14 seconds)
+--------------------------- 
+Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_blpConnect.R 
+test.com.iface: (1 checks) ... OK (0.35 seconds)
+test.default.iface: (1 checks) ... OK (0.36 seconds)
+test.future.iface: (1 checks) ... OK (0 seconds)
+test.invalid.iface: (1 checks) ... OK (0 seconds)
+test.java.iface: (1 checks) ... OK (1.33 seconds)
+test.rcom.iface: (1 checks) ... OK (0.36 seconds)
+--------------------------- 
+Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_blpTools.R 
+test.category.name: (1 checks) ... OK (0.04 seconds)
+test.data.type.for.list.of.fields: (1 checks) ... OK (0.03 seconds)
+test.data.type.for.single.field: (1 checks) ... OK (0 seconds)
+test.field.info.raises.error.on.invalid.mnemonic: (1 checks) ... OK (0.01 seconds)
+test.field.name.for.list.of.fields: (1 checks) ... OK (0.03 seconds)
+test.field.name.for.single.field: (1 checks) ... OK (0.01 seconds)
+test.historical: (1 checks) ... OK (0.03 seconds)
+test.is.power.of.two: (4 checks) ... OK (0 seconds)
+test.static: (1 checks) ... OK (0 seconds)
+test.what.i.override: (2 checks) ... OK (0.02 seconds)
+test.what.overides.me: (2 checks) ... OK (0.03 seconds)
+--------------------------- 
+Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_comGetHistoricalData.R 
+test.comGetHistoricalData.basic.character.results: (4 checks) ... OK (1.33 seconds)
+--------------------------- 
+Test file: C:/PROGRA~1/R/R-29~1.2/library/RBloomberg/runit-tests/test_comSubscribe.R 
+test.comSubscribe.basic.character.results: (2 checks) ... OK (1.15 seconds)
+test.comSubscribe.numeric.with.overrides: (2 checks) ... OK (1.19 seconds)
+> printTextProtocol(testResults, fileName="C:\\work\\rbloomberg-examples\\unit-test-results.txt")
+> 
+> proc.time()
+   user  system elapsed 
+   7.95    8.87   37.59 

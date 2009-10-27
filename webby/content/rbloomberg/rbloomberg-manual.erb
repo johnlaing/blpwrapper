@@ -7,6 +7,8 @@ filter:
   - erb
 ---
 
+\tableofcontents
+
 \section{About RBloomberg} % (fold)
 \label{sec:about}
 
@@ -129,10 +131,6 @@ Once you know the mnemonic you wish to use, you can get more information about i
 <%= gorgl("examples/field-mnemonics.R", "field-info") %>
 <%= gorgl("examples/field-info.txt") %>
 
-% subsection field_mnemonics (end)
-
-% section field_information (end)
-
 \section{Historical Data} % (fold)
 \label{sec:historical_data}
 
@@ -152,12 +150,6 @@ If you pass just a start date, then all data from that start date up until the p
 
 Overrides can be passed in the same manner as for current data calls. Also there is a currency parameter, as documented in the Bloomberg API for the blpGetHistoricalData2 function. Again, test to be sure this is giving you what you expect as it does not apply to all fields.
 
-% subsection intraday_data (end)
-
-
-
-% section historical_data (end)
-
 \subsection{Unit Tests} % (fold)
 \label{sub:unit_tests}
 
@@ -174,4 +166,50 @@ In particular, take note of any errors or failures. Hopefully you will have none
 % subsection unit_tests (end)
 
 % section installation_and_requirements (end)
+
+
+\section{Troubleshooting}
+\label{sub:troubleshooting}
+
+The rcom API is experimental. You should be using RDCOMClient unless you have a particular reason to use rcom. If you are using rcom and having difficulty, please try using RDCOMClient instead.
+
+In this section, we discuss some quick things to try relating to specific problems, then more general troubleshooting tips if these quick fixes don't help.
+
+\subsection{Request Not Returning Data}
+
+If you are making a request using the blp() function and not getting data back, or getting an error message, here are some things to try.
+
+\subsubsection{Request Raw Data}
+
+By default, RBloomberg tries to convert data into a nice structure for you, but sometimes this doesn't help. If you are having trouble, try setting retval = "raw" in your blp() request and this may solve the problem for you or it may help you figure out what is going wrong.
+
+\subsubsection{Check Your Fields Somewhere Else}
+
+You might have a typo in your ticker or in the fields you are requesting, or the fields might not be applicable to the ticker. Try making the same request from within your Bloomberg terminal. The FLDS page gives you access to all the same fields from RBloomberg, so you can re-create the request you are trying to make (for one security at a time). You could also use the Excel API to double-check your request.
+
+Also, check any override fields you are using to make sure they don't cause problems.
+
+\subsection{Troubleshooting Strategies}
+
+\subsubsection{Where Is The Problem?}
+
+If you are having a problem with RBloomberg, there's a number of places this issue could originate.
+\begin{itemize}
+\item{The Bloomberg API}
+\item{The COM server, which links R with the Bloomberg API.}
+\item{R itself (unlikely)}
+\item{Your request to RBloomberg}
+\item{RBloomberg itself}
+\end{itemize}
+
+To check whether the Bloomberg API is working, you can try to access Bloomberg from within Excel or run one of the demo/diagnostic scripts in the Bloomberg API directory, such as Apidemo. To check whether the COM server is working, try connecting to another application, such as Excel or Internet Explorer. \href{http://www.omegahat.org/RDCOMClient/Docs/introduction.html}{This page} has an introduction to the RDCOMClient and includes instructions for making basic requests. If you have Word installed, you can try:
+
+<%= gorgl("examples/com-connect-word.R") %>
+
+When you run that, you should see Microsoft Word appear momentarily. If so, the COM server is installed and working.
+
+\subsubsection{Look For Error Messages}
+
+The Bloomberg API writes error messages to a log file located in C blp API and called bbcomm or bbcomm.log. Check here for clues as to what is going wrong. Also, there is free software called DebugView available from Microsoft which can help to detect error messages. You need to have this software running, then make the request which is causing the problem. You should see debugging information appear in the DebugView console as you work.
+
 

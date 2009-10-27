@@ -25,16 +25,9 @@ RBloomberg handles fetching data from the Bloomberg financial data application f
 
 Documentation on this site refers to the latest development version of RBloomberg. For detailed instructions on using RBloomberg, please download the "PDF Manual":<%= rbloomberg_manual_filename %>.
 
-Use this custom search to search the RBloomberg website, the R Sig Finance mailing list archives and other places that tend to provide useful help results.
+h2. Troubleshooting & Help
 
-<div id="cse" style="width: 100%;">Loading</div>
-<script src="http://www.google.com/jsapi" type="text/javascript"></script>
-<script type="text/javascript">
-   google.load('search', '1');
-   google.setOnLoadCallback(function(){
-      new google.search.CustomSearchControl('015653941277163542830:pxa_xnbwq6s').draw('cse');
-   }, true);
-</script>
+Please read the "help":help page if you are having difficulty with RBloomberg.
 
 h2. Installing RBloomberg from CRAN
 
@@ -53,3 +46,5 @@ If you wish to compile RBloomberg as an R package yourself, you will need to dow
 
 The RBloomberg source is available to download from the R-Forge project page, or by checking it out from the Bazaar repository:
 <pre><code>bzr branch http://ananelson.com/code/bloombergapi</code></pre>
+
+
