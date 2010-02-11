@@ -3,4 +3,4 @@ library(RBloomberg)
 testResults <- runTestSuite(allBloombergTests())
 printTextProtocol(testResults)
 ### @end
-printTextProtocol(testResults, fileName="C:\\work\\rbloomberg-examples\\unit-test-results.txt")
+printTextProtocol(testResults, fileName="unit-test-results.txt")

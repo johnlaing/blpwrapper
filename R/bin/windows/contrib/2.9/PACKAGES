@@ -1,5 +1,7 @@
 Package: RBloomberg
-Version: 0.2-97
+Version: 0.2-98
 Depends: zoo, bitops, RUnit, timeDate
 OS_type: windows
+License: GPL
+File: RBloomberg_0.2-98.zip
 

@@ -1,5 +1,6 @@
 echo "Deleting old files in contrib directories..."
 @echo off
+@echo on
 del /Q R\src\contrib\*
 del /Q R\bin\windows\contrib\2.8\*
 del /Q R\bin\windows\contrib\2.9\*

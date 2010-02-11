@@ -198,3 +198,35 @@ test.as.matrix.3d <- function() {
    
    checkEquals(y, expected, tolerance = 0.0000005)
 }
+
+test.as.matrix.bardata <- function() {
+  conn <- blpConnect()
+  securities <- c("AUD CURNCY")
+  barfields <-  c("LAST_PRICE")
+  start <- timeDate("2009-12-15 10:00")
+  end <- timeDate("2009-12-15 11:00")
+  
+  x <- c(40162.416667, 40162.420139, 40162.423611, 40162.427083, 40162.430556, 40162.434028, 40162.437500, 40162.440972, 40162.444444, 40162.447917, 40162.451389, 40162.454861,
+ 0.906605, 0.907115, 0.906910, 0.907270, 0.908185, 0.908415, 0.908050, 0.907500, 0.907350, 0.907400, 0.907550, 0.907850)
+  attr(x, "num.of.date.cols") <- 1
+  attr(x, "barfields") <- barfields
+  attr(x, "start") <- start
+  attr(x, "end") <- end
+  attr(x, "class") <- "BlpRawReturn"
+  attr(x, "securities") <- securities
+  attr(x, "fields") <- barfields
+
+  actual <- blp(conn, securities, fields=barfields, start=start, end=end, barfields=barfields, barsize=5, retval="raw")
+  
+  checkEquals(actual, x, tolerance=0.0000005)
+
+  expected <- c("2009-12-15 10:00:00", "2009-12-15 10:05:00", "2009-12-15 10:09:59", "2009-12-15 10:14:59", "2009-12-15 10:20:00", "2009-12-15 10:25:00", "2009-12-15 10:30:00", "2009-12-15 10:34:59", "2009-12-15 10:39:59", "2009-12-15 10:45:00", "2009-12-15 10:50:00", "2009-12-15 10:54:59",
+ "0.906605", 0.907115, 0.906910, 0.907270, 0.908185, 0.908415, 0.908050, 0.907500, 0.907350, 0.907400, 0.907550, 0.907850)
+  expected <- array(expected, c(12, 2))
+  rownames(expected) <- c("2009-12-15 10:00:00", "2009-12-15 10:05:00", "2009-12-15 10:09:59", "2009-12-15 10:14:59", "2009-12-15 10:20:00", "2009-12-15 10:25:00", "2009-12-15 10:30:00", "2009-12-15 10:34:59", "2009-12-15 10:39:59", "2009-12-15 10:45:00", "2009-12-15 10:50:00", "2009-12-15 10:54:59")
+  colnames(expected) <- c("DATETIME", "LAST_PRICE")
+  attr(expected, "num.of.date.cols") <- 1
+
+  y <- as.matrix.BlpRawReturn(x)
+  checkEquals(y, expected, tolerance = 0.0000005)
+}

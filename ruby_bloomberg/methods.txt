@@ -1,0 +1,331 @@
+********************
+ole method: ActivateRealtime
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: ActivateRealtime
+PROPERTYGET returns BOOL
+takes 0 args
+********************
+ole method: AddRef
+FUNC returns UI4
+takes 0 args
+not visible!
+********************
+ole method: AutoRelease
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: AutoRelease
+PROPERTYGET returns BOOL
+takes 0 args
+********************
+ole method: BLPGetHistoricalData
+PROPERTYGET returns VARIANT
+takes 6 args of which 3 are optional
+ - Security ("VARIANT": ["VARIANT"]) defaults to: nil
+ - Fields ("VARIANT": ["VARIANT"]) defaults to: nil
+ - StartDate ("VARIANT": ["VARIANT"]) defaults to: nil
+ - EndDate ("VARIANT": ["VARIANT"]) defaults to: nil
+ - BarSize ("VARIANT": ["VARIANT"]) defaults to: nil
+ - BarFields ("VARIANT": ["VARIANT"]) defaults to: nil
+********************
+ole method: BLPGetHistoricalData2
+PROPERTYGET returns VARIANT
+takes 7 args of which 3 are optional
+ - Security ("VARIANT": ["VARIANT"]) defaults to: nil
+ - Fields ("VARIANT": ["VARIANT"]) defaults to: nil
+ - StartDate ("VARIANT": ["VARIANT"]) defaults to: nil
+ - Currency ("VARIANT": ["VARIANT"]) defaults to: nil
+ - EndDate ("VARIANT": ["VARIANT"]) defaults to: nil
+ - BarSize ("VARIANT": ["VARIANT"]) defaults to: nil
+ - BarFields ("VARIANT": ["VARIANT"]) defaults to: nil
+********************
+ole method: BLPSubscribe
+PROPERTYGET returns VARIANT
+takes 4 args of which 2 are optional
+ - Security ("VARIANT": ["VARIANT"]) defaults to: nil
+ - Fields ("VARIANT": ["VARIANT"]) defaults to: nil
+ - OverrideFields ("VARIANT": ["VARIANT"]) defaults to: nil
+ - Overrides ("VARIANT": ["VARIANT"]) defaults to: nil
+********************
+ole method: CancelRequest
+FUNC returns VOID
+takes 1 args
+ - cookie ("I4": ["I4"]) defaults to: nil
+********************
+ole method: DataOnlyInEvent
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: DataOnlyInEvent
+PROPERTYGET returns BOOL
+takes 0 args
+********************
+ole method: Desubscribe
+FUNC returns VOID
+takes 1 args
+ - Security ("BSTR": ["BSTR"]) defaults to: nil
+********************
+ole method: DisplayNonTradingDays
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: Flush
+FUNC returns VOID
+takes 0 args
+********************
+ole method: GenericSend
+FUNC returns VOID
+takes 4 args of which 1 are optional
+ - cookie ("I4": ["I4"]) defaults to: nil
+ - ServiceCode ("I4": ["I4"]) defaults to: nil
+ - MessageData ("VARIANT": ["VARIANT"]) defaults to: nil
+ - Results ("VARIANT": ["PTR", "VARIANT"]) defaults to: nil
+********************
+ole method: GetHistoricalData
+FUNC returns VOID
+takes 8 args of which 4 are optional
+ - Security ("VARIANT": ["VARIANT"]) defaults to: nil
+ - cookie ("I4": ["I4"]) defaults to: nil
+ - Fields ("VARIANT": ["VARIANT"]) defaults to: nil
+ - StartDate ("VARIANT": ["VARIANT"]) defaults to: nil
+ - EndDate ("VARIANT": ["VARIANT"]) defaults to: nil
+ - BarSize ("VARIANT": ["VARIANT"]) defaults to: nil
+ - BarFields ("VARIANT": ["VARIANT"]) defaults to: nil
+ - Results ("VARIANT": ["PTR", "VARIANT"]) defaults to: nil
+********************
+ole method: GetHistoricalData2
+FUNC returns VOID
+takes 9 args of which 4 are optional
+ - Security ("VARIANT": ["VARIANT"]) defaults to: nil
+ - cookie ("I4": ["I4"]) defaults to: nil
+ - Fields ("VARIANT": ["VARIANT"]) defaults to: nil
+ - StartDate ("VARIANT": ["VARIANT"]) defaults to: nil
+ - Currency ("VARIANT": ["VARIANT"]) defaults to: nil
+ - EndDate ("VARIANT": ["VARIANT"]) defaults to: nil
+ - BarSize ("VARIANT": ["VARIANT"]) defaults to: nil
+ - BarFields ("VARIANT": ["VARIANT"]) defaults to: nil
+ - Results ("VARIANT": ["PTR", "VARIANT"]) defaults to: nil
+********************
+ole method: GetIDsOfNames
+FUNC returns VOID
+takes 5 args
+ - riid ("GUID": ["PTR", "USERDEFINED", "GUID"]) defaults to: nil
+ - rgszNames ("I1,I1": ["PTR", "PTR", "I1", "I1"]) defaults to: nil
+ - cNames ("UINT": ["UINT"]) defaults to: nil
+ - lcid ("UI4": ["UI4"]) defaults to: nil
+ - rgdispid ("I4": ["PTR", "I4"]) defaults to: nil
+not visible!
+********************
+ole method: GetIDsOfNames
+FUNC returns HRESULT
+takes 5 args
+ - riid ("GUID": ["PTR", "USERDEFINED", "GUID"]) defaults to: nil
+ - rgszNames ("I1,I1": ["PTR", "PTR", "I1", "I1"]) defaults to: nil
+ - cNames ("UINT": ["UINT"]) defaults to: nil
+ - lcid ("UI4": ["UI4"]) defaults to: nil
+ - rgdispid ("I4": ["PTR", "I4"]) defaults to: nil
+not visible!
+********************
+ole method: GetTypeInfo
+FUNC returns HRESULT
+takes 3 args
+ - itinfo ("UINT": ["UINT"]) defaults to: nil
+ - lcid ("UI4": ["UI4"]) defaults to: nil
+ - pptinfo ("VOID,VOID": ["PTR", "PTR", "VOID", "VOID"]) defaults to: nil
+not visible!
+********************
+ole method: GetTypeInfo
+FUNC returns VOID
+takes 3 args
+ - itinfo ("UINT": ["UINT"]) defaults to: nil
+ - lcid ("UI4": ["UI4"]) defaults to: nil
+ - pptinfo ("VOID,VOID": ["PTR", "PTR", "VOID", "VOID"]) defaults to: nil
+not visible!
+********************
+ole method: GetTypeInfoCount
+FUNC returns VOID
+takes 1 args
+ - pctinfo ("UINT": ["PTR", "UINT"]) defaults to: nil
+not visible!
+********************
+ole method: GetTypeInfoCount
+FUNC returns HRESULT
+takes 1 args
+ - pctinfo ("UINT": ["PTR", "UINT"]) defaults to: nil
+not visible!
+********************
+ole method: Invoke
+FUNC returns VOID
+takes 8 args
+ - dispidMember ("I4": ["I4"]) defaults to: nil
+ - riid ("GUID": ["PTR", "USERDEFINED", "GUID"]) defaults to: nil
+ - lcid ("UI4": ["UI4"]) defaults to: nil
+ - wFlags ("UI2": ["UI2"]) defaults to: nil
+ - pdispparams ("DISPPARAMS": ["PTR", "USERDEFINED", "DISPPARAMS"]) defaults to: nil
+ - pvarResult ("VARIANT": ["PTR", "VARIANT"]) defaults to: nil
+ - pexcepinfo ("EXCEPINFO": ["PTR", "USERDEFINED", "EXCEPINFO"]) defaults to: nil
+ - puArgErr ("UINT": ["PTR", "UINT"]) defaults to: nil
+not visible!
+********************
+ole method: Invoke
+FUNC returns HRESULT
+takes 8 args
+ - dispidMember ("I4": ["I4"]) defaults to: nil
+ - riid ("GUID": ["PTR", "USERDEFINED", "GUID"]) defaults to: nil
+ - lcid ("UI4": ["UI4"]) defaults to: nil
+ - wFlags ("UI2": ["UI2"]) defaults to: nil
+ - pdispparams ("DISPPARAMS": ["PTR", "USERDEFINED", "DISPPARAMS"]) defaults to: nil
+ - pvarResult ("VARIANT": ["PTR", "VARIANT"]) defaults to: nil
+ - pexcepinfo ("EXCEPINFO": ["PTR", "USERDEFINED", "EXCEPINFO"]) defaults to: nil
+ - puArgErr ("UINT": ["PTR", "UINT"]) defaults to: nil
+not visible!
+********************
+ole method: NonTradingDayValue
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: NumberPoints
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: NumberPoints
+PROPERTYGET returns I4
+takes 0 args
+********************
+ole method: ParentWnd
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: Periodicity
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: PollingTime
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: PollingTime
+PROPERTYGET returns I4
+takes 0 args
+********************
+ole method: Port
+PROPERTYGET returns I2
+takes 0 args
+********************
+ole method: Port
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: QueryInterface
+FUNC returns VOID
+takes 2 args
+ - riid ("GUID": ["PTR", "USERDEFINED", "GUID"]) defaults to: nil
+ - ppvObj ("VOID,VOID": ["PTR", "PTR", "VOID", "VOID"]) defaults to: nil
+not visible!
+********************
+ole method: QueueEvents
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: QueueEvents
+PROPERTYGET returns BOOL
+takes 0 args
+********************
+ole method: QuoteGPA
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: QuoteGPA
+PROPERTYGET returns BOOL
+takes 0 args
+********************
+ole method: Release
+FUNC returns UI4
+takes 0 args
+not visible!
+********************
+ole method: RemoteHost
+PROPERTYGET returns BSTR
+takes 0 args
+********************
+ole method: RemoteHost
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: RetryCount
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: RetryCount
+PROPERTYGET returns I2
+takes 0 args
+********************
+ole method: ReverseChronological
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: SendQueueSize
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: SendQueueSize
+PROPERTYGET returns I4
+takes 0 args
+********************
+ole method: ShowHistoricalDates
+PROPERTYGET returns BOOL
+takes 0 args
+********************
+ole method: ShowHistoricalDates
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: ShowYields
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: ShowYields
+PROPERTYGET returns BOOL
+takes 0 args
+********************
+ole method: StartTime
+PROPERTYGET returns VARIANT
+takes 0 args
+********************
+ole method: Subscribe
+FUNC returns VOID
+takes 7 args of which 4 are optional
+ - Security ("VARIANT": ["VARIANT"]) defaults to: nil
+ - cookie ("I4": ["I4"]) defaults to: nil
+ - Fields ("VARIANT": ["VARIANT"]) defaults to: nil
+ - OverrideFields ("VARIANT": ["VARIANT"]) defaults to: nil
+ - Overrides ("VARIANT": ["VARIANT"]) defaults to: nil
+ - Results ("VARIANT": ["PTR", "VARIANT"]) defaults to: nil
+ - Monitor ("VARIANT": ["VARIANT"]) defaults to: nil
+********************
+ole method: SubscriptionMode
+PROPERTYGET returns USERDEFINED, _FIRE_EVENT_TYPES
+takes 0 args
+********************
+ole method: SubscriptionMode
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: TickerLookup
+FUNC returns VOID
+takes 5 args of which 2 are optional
+ - Name ("BSTR": ["BSTR"]) defaults to: nil
+ - MarketSector ("_MARKET_": ["USERDEFINED", "_MARKET_"]) defaults to: nil
+ - cookie ("I4": ["I4"]) defaults to: nil
+ - Continue ("VARIANT": ["VARIANT"]) defaults to: nil
+ - Result ("VARIANT": ["PTR", "VARIANT"]) defaults to: nil
+********************
+ole method: Timeout
+PROPERTYPUT returns VOID
+takes 1 args
+********************
+ole method: Timeout
+PROPERTYGET returns I4
+takes 0 args

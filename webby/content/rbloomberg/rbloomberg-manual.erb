@@ -150,8 +150,8 @@ If you pass just a start date, then all data from that start date up until the p
 
 Overrides can be passed in the same manner as for current data calls. Also there is a currency parameter, as documented in the Bloomberg API for the blpGetHistoricalData2 function. Again, test to be sure this is giving you what you expect as it does not apply to all fields.
 
-\subsection{Unit Tests} % (fold)
-\label{sub:unit_tests}
+\section{Unit Tests} % (fold)
+\label{sec:unit_tests}
 
 Tests are live code examples that are tested for the expected output. They are useful to developers as a code quality tool, and they can also be very useful to users to help ensure everything is running smoothly and also as an extra source of reference material. Should you not be able to find the information you need in formal documentation (this is general advice, not just pertaining to RBloomberg), look for tests and study the syntax of examples there.
 
@@ -159,14 +159,9 @@ To ensure that everything is running smoothly, we recommend that you run the RUn
 <%= gorgl("examples/run-unit-tests.R", "run") %>
 
 The output of printTextProtocol should look like this:
-<%= gorgl("examples/run-unit-tests.Rout") %>
+<%= gorgl("examples/unit-test-results.txt") %>
 
 In particular, take note of any errors or failures. Hopefully you will have none of either.
-
-% subsection unit_tests (end)
-
-% section installation_and_requirements (end)
-
 
 \section{Troubleshooting}
 \label{sub:troubleshooting}

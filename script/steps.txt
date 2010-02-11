@@ -1,0 +1,16 @@
+bump package number
+install package
+build package
+run examples
+webby build/pdf
+push/upload all
+commit changes
+
+
+-- new major version of R --
+Install R
+Install R Tools
+Install libraries:
+- RUnit
+- rcom
+- RDCOMClient

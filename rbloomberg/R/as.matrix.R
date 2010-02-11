@@ -93,13 +93,14 @@ as.matrix.BlpRawReturn <- function(x){
            }
         }
      } else {
-        stop("bar data not implemented")
-
-        f <- c()
-        for (i in barfields) {
-          f <- c(f, paste(fields, i, sep="."))
-        }
-        fields <- f
+       # Bar Data
+       d2 <- length(barfields)+1
+       d1 <- length(vec)/d2
+       mtx <- array(vec, c(d1, d2))
+       mtx[,1] <- format(numeric.to.timeDate(mtx[,1]))
+       colnames(mtx) <- c("DATETIME", barfields)
+       rownames(mtx) <- mtx[,1]
+       attr(mtx, "num.of.date.cols") <- 1
      }
   }
 

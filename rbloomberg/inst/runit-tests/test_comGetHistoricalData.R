@@ -18,6 +18,6 @@ test.comGetHistoricalData.basic.character.results <- function() {
   actual <- as.vector(actual)
   actual <- replaceBloombergErrors(actual)
 
-  expected <- c("1230764400", "1230854400", "1230768000", "1230854400", NA, "3.15", NA, "5.4868", NA, "4640.0972", NA, "571.3476")
+  expected <- c("1230768000", "1230854400", "1230768000", "1230854400", NA, "3.15", NA, "5.4868", NA, "4640.0972", NA, "571.3476")
   checkEquals(actual, expected)
 }

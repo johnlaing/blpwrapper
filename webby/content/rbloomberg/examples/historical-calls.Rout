@@ -1,39 +1,4 @@
 > source("init.R")
-Loading required package: zoo
-
-Attaching package: 'zoo'
-
-
-	The following object(s) are masked from package:base :
-
-	 as.Date.numeric 
-
-Loading required package: bitops
-Loading required package: RUnit
-Loading required package: timeDate
-Contents of bbfields have been stored in .bbfields in the current workspace
-Contents of bbfields.ovr have been stored in .ovr in the current workspace
-
-Checking RBloomberg interfaces:
-COM interface available
-rcom interface available
-Java interface available
-
-Attaching package: 'RBloomberg'
-
-
-	The following object(s) are masked from package:base :
-
-	 toString 
-
-Warning message:
-In identical(get(., i), get(., lib.pos)) : ignoring non-pairlist attributes
-> 
-> sink("basic-intraday.out")
-> blp(conn, "RYA ID Equity", "PX_LAST", Sys.Date() - 10)
-> blp(conn, "RYA ID Equity", "PX_LAST", "2009-01-01", "2009-01-07")
-> sink()
-> 
-> proc.time()
-   user  system elapsed 
-   2.90    1.70    4.96 
+Error in library(RBloomberg) : there is no package called 'RBloomberg'
+Calls: source -> eval.with.vis -> eval.with.vis -> library
+Execution halted
