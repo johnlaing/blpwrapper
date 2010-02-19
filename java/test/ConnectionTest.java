@@ -7,8 +7,14 @@ public class ConnectionTest extends TestCase {
     connection.connect();
 
     String[] securities = {"RYA ID Equity", "OCN US Equity"};
-    String[] fields = {"NAME"};
-    connection.sendRefDataRequest(securities, fields);
+    String[] fields = {"NAME", "BID"};
+    
+    connection.blp(securities, fields);
+
+    String[] fields2 =  {"PX_LAST"};
+    connection.blp(securities, fields2);
+
+    System.out.println(connection.response_cache);
   }
 }
 
