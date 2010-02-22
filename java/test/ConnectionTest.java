@@ -14,7 +14,7 @@ public class ConnectionTest extends TestCase {
     String[] fields2 =  {"NAME", "COUNTRY_ISO", "PX_LAST"};
     ReferenceDataResult result = (ReferenceDataResult)connection.blp(securities, fields2);
     
-    System.out.println(result.csv());
+    System.out.println(result.tsv());
   }
 }
 
