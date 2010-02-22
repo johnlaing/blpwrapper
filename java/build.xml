@@ -50,4 +50,8 @@
     </junit>
   </target>
 
+  <target name="jar" depends="compile">
+    <jar basedir="${build.prod.dir}" destfile="bloombergapi.jar" />
+  </target>
+
 </project>

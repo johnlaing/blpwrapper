@@ -43,8 +43,9 @@ public class Connection {
     session.start();
   }
 
-  public CorrelationID nextCorrelationID() throws Exception {
-    if (response_cache.add(null)) {
+  public CorrelationID nextCorrelationID(String[] securities, String[] fields) throws Exception {
+    ReferenceDataResult result = new ReferenceDataResult(securities, fields);
+    if (response_cache.add(result)) {
       return(new CorrelationID(response_cache.size()-1));
     } else {
       throw new Exception("unable to add to response_cache");
@@ -72,7 +73,7 @@ public class Connection {
       fields_element.appendValue(fields[i]);
     }
 
-    CorrelationID correlation_id = nextCorrelationID();
+    CorrelationID correlation_id = nextCorrelationID(securities, fields);
     session.sendRequest(request, correlation_id);
     return(correlation_id);
   }
@@ -104,28 +105,16 @@ public class Connection {
 
     while (msgIter.hasNext()) {
       Message message = msgIter.next();
-
-      Element ReferenceDataResponse = message.asElement();
-      Element securityDataArray = ReferenceDataResponse.getElement("securityData");
-
-      int numItems = securityDataArray.numValues();
-      for (int i = 0; i < numItems; ++i) {
-        Element securityData = securityDataArray.getValueAsElement(i);
-        Element fieldData = securityData.getElement("fieldData");
-
-        System.out.println(i);
-        System.out.println(securityData);
-        System.out.println(fieldData);
-      }
-
       int response_id = (int)message.correlationID().value();
-      response_cache.set(response_id, (Object)message.toString());
+
+      ReferenceDataResult result = (ReferenceDataResult)response_cache.get(response_id);
+      result.processResponse(message.asElement());
     }
   }
 
   public Object blp(String[] securities, String[] fields) throws Exception {
     int response_id = (int)sendRefDataRequest(securities, fields).value();
-    processEventLoop(true); // Pass true to ensure we wait for full response.
+    processEventLoop(true); // await_response = true to ensure we wait for full response.
     return(response_cache.get(response_id));
   }
 }

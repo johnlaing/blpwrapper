@@ -12,9 +12,13 @@ public class ConnectionTest extends TestCase {
     connection.blp(securities, fields);
 
     String[] fields2 =  {"PX_LAST"};
-    connection.blp(securities, fields2);
+    ReferenceDataResult result = (ReferenceDataResult)connection.blp(securities, fields2);
+    System.out.println("*************************");
+    System.out.println(result.csv());
 
-    System.out.println(connection.response_cache);
+//    System.out.println(connection.response_cache);
+
+//    System.out.println(connection.response_cache.get(0).csv());
   }
 }
 
