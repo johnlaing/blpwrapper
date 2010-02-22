@@ -19,6 +19,7 @@
   </path>
 
   <target name="prepare">
+    <tstamp/>
     <mkdir dir="${build.prod.dir}" />
     <mkdir dir="${build.test.dir}" />
   </target>
@@ -54,4 +55,14 @@
     <jar basedir="${build.prod.dir}" destfile="bloombergapi.jar" />
   </target>
 
+  <target name="xxx">
+    <jvmarg value="-Xrunhprof:file=hprof/demo-${TSTAMP}.hprof,format=b" />
+    <jvmarg value="-javaagent:vendor/lib/hu.oktech.profiler-runtime.jar" />
+  </target>
+
+  <target name="demo" depends="compile">
+    <java classname="com.bloombergapi.wrapper.Demo" fork="yes">
+      <classpath refid="project.classpath" />
+    </java>
+  </target>
 </project>
