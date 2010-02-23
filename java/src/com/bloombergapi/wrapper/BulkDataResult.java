@@ -2,21 +2,16 @@ package com.bloombergapi.wrapper;
 
 import com.bloomberglp.blpapi.*;
 
-public class ReferenceDataResult implements DataResult {
+public class BulkDataResult implements DataResult {
   private String[] submitted_fields;
   private String[] returned_fields;
   private String[] submitted_securities;
   private String[] data_types;
   private String[][] result_data;
 
-  public ReferenceDataResult(String[] securities, String[] fields) {
+  public BulkDataResult(String[] securities, String[] fields) {
     submitted_fields = fields;
     submitted_securities = securities;
-
-    returned_fields = new String[fields.length];
-
-    data_types = new String[fields.length];
-    result_data = new String[securities.length][fields.length];
   }
 
   public String[] getFields() {
@@ -39,12 +34,12 @@ public class ReferenceDataResult implements DataResult {
     Element securityDataArray = response.getElement("securityData");
     int numItems = securityDataArray.numValues();
 
-    // Iterate over securities.
     for (int i = 0; i < numItems; i++) {
+      System.out.println("i :" + i);
       Element securityData = securityDataArray.getValueAsElement(i);
       Element fieldData = securityData.getElement("fieldData");
       int seq = securityData.getElementAsInt32("sequenceNumber");
-      
+
       // Check for errors.
       if (securityData.hasElement("securityError")) {
         System.err.println(securityData.getElement("security"));
@@ -78,16 +73,37 @@ public class ReferenceDataResult implements DataResult {
       // Iterate over fields for each security
       for (int j = 0; j < fieldData.numElements(); j++) { 
         Element field = fieldData.getElement(j);
-        
+
         if (seq==0) {
-          if (field.datatype().intValue() == Schema.Datatype.Constants.SEQUENCE) {
-            throw new BloombergAPIWrapperException("reference data request cannot handle SEQUENCE data in field " + field.name().toString());
-          } 
-          data_types[j] = field.datatype().toString();
-          returned_fields[j] = field.name().toString();
+
+          if (field.datatype().intValue() != Schema.Datatype.Constants.SEQUENCE) {
+            throw new BloombergAPIWrapperException("bulk data request can only handle SEQUENCE data in field " + field.name().toString());
+          }
+
+          Element x = field.getValueAsElement(0);
+          int num_data_fields = x.numElements();
+
+          returned_fields = new String[num_data_fields];
+          data_types = new String[num_data_fields];
+          result_data = new String[field.numElements()][num_data_fields];
+
+          for(int k = 0; k < num_data_fields; k++) {
+            Element y = x.getElement(k);
+            returned_fields[k] = y.name().toString();
+            data_types[k] = y.datatype().toString();
+          }
+
         }
 
-        result_data[seq][j] = field.getValueAsString();
+        for (int l = 0; l < field.numElements(); l++) {
+          Element x = field.getValueAsElement(l);
+
+          for (int k = 0; k < x.numElements(); k++) {
+            System.out.println("l: " + l + "; k: " + k);
+            Element y = x.getElement(k);
+            result_data[l][k] = y.getValueAsString();
+          }
+        }
       } 
     }
   }

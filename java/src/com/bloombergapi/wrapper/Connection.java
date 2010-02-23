@@ -18,17 +18,20 @@ public class Connection {
   private String refdata_request_name = "ReferenceDataRequest";
   private boolean refdata_service_open = false;
 
+  public static final int REFERENCE_DATA_RESULT = 1;
+  public static final int BULK_DATA_RESULT = 2;
+
   public Connection() {
     response_cache = new ArrayList();
   }
 
-  public void connect() throws Exception {
+  public void connect() throws java.io.IOException, java.lang.InterruptedException, BloombergAPIWrapperException {
     setupSessionOptions();
     setupSession();
     processEventLoop();
   }
 
-  public void close() throws Exception {
+  public void close() throws java.io.IOException, java.lang.InterruptedException {
     session.stop();
   }
 
@@ -38,13 +41,18 @@ public class Connection {
     session_options.setServerPort(server_port);
   }
 
-  private void setupSession() throws Exception {
+  private void setupSession() throws java.io.IOException, java.lang.InterruptedException {
     session = new Session(session_options);
     session.start();
   }
 
-  public CorrelationID nextCorrelationID(String[] securities, String[] fields) throws Exception {
-    ReferenceDataResult result = new ReferenceDataResult(securities, fields);
+  public CorrelationID nextCorrelationID(int result_type, String[] securities, String[] fields) throws Exception {
+    DataResult result;
+    switch(result_type) {
+        case REFERENCE_DATA_RESULT:   result = new ReferenceDataResult(securities, fields); break;
+        case BULK_DATA_RESULT:        result = new BulkDataResult(securities, fields); break;
+        default: throw new BloombergAPIWrapperException("unknown result_type " + result_type);
+      }
     if (response_cache.add(result)) {
       return(new CorrelationID(response_cache.size()-1));
     } else {
@@ -59,7 +67,7 @@ public class Connection {
     return(session.getService(refdata_service_name));
   }
 
-  private CorrelationID sendRefDataRequest(String[] securities, String[] fields) throws Exception {
+  private CorrelationID sendRefDataRequest(int result_type, String[] securities, String[] fields) throws Exception {
     Service service = getRefDataService();
     Request request = service.createRequest(refdata_request_name);
 
@@ -73,16 +81,17 @@ public class Connection {
       fields_element.appendValue(fields[i]);
     }
 
-    CorrelationID correlation_id = nextCorrelationID(securities, fields);
+    CorrelationID correlation_id = nextCorrelationID(result_type, securities, fields);
     session.sendRequest(request, correlation_id);
     return(correlation_id);
   }
   
-  private void processEventLoop() throws Exception {
-    processEventLoop(false);
+  private void processEventLoop() throws java.lang.InterruptedException, BloombergAPIWrapperException {
+    processEventLoop(0);
   }
 
-  private void processEventLoop(boolean await_response) throws Exception {
+  private void processEventLoop(int result_type) throws java.lang.InterruptedException, BloombergAPIWrapperException {
+    boolean await_response = (result_type > 0);
     boolean cont = true;
     while (cont) {
       Event event = session.nextEvent();
@@ -90,9 +99,9 @@ public class Connection {
       switch (event.eventType().intValue()) {
         case Event.EventType.Constants.SESSION_STATUS:       processStatusEvent(event); cont=await_response; break;
         case Event.EventType.Constants.SERVICE_STATUS:       processStatusEvent(event); cont=await_response; break;
-        case Event.EventType.Constants.RESPONSE:             processResponseEvent(event); cont=false; break;
-        case Event.EventType.Constants.PARTIAL_RESPONSE:     processResponseEvent(event); break;
-        default: throw new Exception("don't recognize event type" + event.eventType().toString());
+        case Event.EventType.Constants.RESPONSE:             processResponseEvent(result_type, event); cont=false; break;
+        case Event.EventType.Constants.PARTIAL_RESPONSE:     processResponseEvent(result_type, event); break;
+        default: throw new BloombergAPIWrapperException(event.eventType());
       }
     }
   }
@@ -100,22 +109,40 @@ public class Connection {
   private void processStatusEvent(Event event) {
   }
 
-  private void processResponseEvent(Event event) {
+  private void processResponseEvent(int result_type, Event event) throws BloombergAPIWrapperException {
     MessageIterator msgIter = event.messageIterator();
 
     while (msgIter.hasNext()) {
       Message message = msgIter.next();
       int response_id = (int)message.correlationID().value();
+      DataResult result;
 
-      ReferenceDataResult result = (ReferenceDataResult)response_cache.get(response_id);
+      switch(result_type) {
+        case REFERENCE_DATA_RESULT:   result = (ReferenceDataResult)response_cache.get(response_id); break;
+        case BULK_DATA_RESULT:        result = (BulkDataResult)response_cache.get(response_id); break;
+        default: throw new BloombergAPIWrapperException("unknown result_type " + result_type);
+      }
+
       result.processResponse(message.asElement());
     }
   }
 
-  public Object blp(String[] securities, String[] fields) throws Exception {
-    int response_id = (int)sendRefDataRequest(securities, fields).value();
-    processEventLoop(true); // await_response = true to ensure we wait for full response.
-    return(response_cache.get(response_id));
+  public DataResult blp(String[] securities, String[] fields) throws Exception {
+    int response_id = (int)sendRefDataRequest(REFERENCE_DATA_RESULT, securities, fields).value();
+    processEventLoop(REFERENCE_DATA_RESULT);
+    return((DataResult)response_cache.get(response_id));
+  }
+
+  public DataResult bls(String security, String field) throws Exception {
+    String[] securities = new String[1];
+    securities[0] = security;
+
+    String[] fields = new String[1];
+    fields[0] = field;
+
+    int response_id = (int)sendRefDataRequest(BULK_DATA_RESULT, securities, fields).value();
+    processEventLoop(BULK_DATA_RESULT);
+    return((DataResult)response_cache.get(response_id));
   }
 }
 
