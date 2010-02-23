@@ -61,8 +61,10 @@ public class ReferenceDataResult{
       // Iterate over fields for each security
       for (int j = 0; j < fieldData.numElements(); j++) { 
         Element field = fieldData.getElement(j);
-
+        
         if (seq==0) {
+          // This is the first security to be processed.
+          // Store field name and type.
           data_types[j] = field.datatype().toString();
           returned_fields[j] = field.name().toString();
         }
