@@ -1,7 +1,7 @@
 import junit.framework.*;
 import com.bloombergapi.wrapper.*;
 
-public class ConnectionTest extends TestCase {
+public class ReferenceDataResultTest extends TestCase {
   private Connection conn;
 
   public void setUp() throws Exception{
@@ -11,13 +11,6 @@ public class ConnectionTest extends TestCase {
 
   public void tearDown() throws Exception{
     conn.close();
-  }
-
-  public void testValidBulkDataRequest() throws Exception {
-    String security = "BKIR ID Equity";
-    String field = "DVD_HIST";
-
-    conn.bls(security, field);
   }
 
   public void testThrowsErrorForBulkDataRequest() throws Exception {
@@ -73,6 +66,35 @@ public class ConnectionTest extends TestCase {
     String[] fields = {"NAME", "BID", "LOW_DT_52WEEK"};
 
     ReferenceDataResult result = (ReferenceDataResult)conn.blp(securities, fields);
+  }
+
+  public void testValidRequestWithOverrides() throws Exception {
+    String[] securities = {"RYA ID Equity", "OCN US Equity"};
+    String[] fields = {"CRNCY_ADJ_MKT_CAP", "CUR_MKT_CAP"};
+    String[] override_fields = {"EQY_FUND_CRNCY"};
+    String[] overrides = {"JPY"};
+
+    ReferenceDataResult result = (ReferenceDataResult)conn.blp(securities, fields, override_fields, overrides);
+    String[][] data = result.getData();
+    
+    System.out.println(data[0][0]);
+    System.out.println(data[0][1]);
+    System.out.println(data[1][0]);
+    System.out.println(data[1][1]);
+  }
+
+  public void testValidRequestWithInvalidOverrides() throws Exception {
+    String[] securities = {"RYA ID Equity", "OCN US Equity"};
+    String[] fields = {"NAME", "BID", "LOW_DT_52WEEK"};
+    String[] override_fields = {"PRICING SOURCE"};
+    String[] overrides = {"CG"};
+
+    try {
+      conn.blp(securities, fields, override_fields, overrides);
+      fail("Should have raised an error");
+    } catch (BloombergAPIWrapperException e) {
+      assertEquals("response error: Invalid override field: PRICING SOURCE [nid:200] ", e.getMessage());
+    }
   }
 }
 

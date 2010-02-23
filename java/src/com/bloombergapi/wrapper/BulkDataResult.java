@@ -31,11 +31,18 @@ public class BulkDataResult implements DataResult {
   }
 
   public void processResponse(Element response) throws BloombergAPIWrapperException {
+    if (response.hasElement("responseError")) {
+      Element response_error = response.getElement("responseError");
+      System.err.println(response_error);
+      throw new BloombergAPIWrapperException("response error: " + response_error.getElementAsString("message"));
+    }
     Element securityDataArray = response.getElement("securityData");
     int numItems = securityDataArray.numValues();
 
     for (int i = 0; i < numItems; i++) {
-      System.out.println("i :" + i);
+      if (i > 0) {
+        throw new BloombergAPIWrapperException("wasn't expecting i > 0");
+      }
       Element securityData = securityDataArray.getValueAsElement(i);
       Element fieldData = securityData.getElement("fieldData");
       int seq = securityData.getElementAsInt32("sequenceNumber");
@@ -72,35 +79,33 @@ public class BulkDataResult implements DataResult {
 
       // Iterate over fields for each security
       for (int j = 0; j < fieldData.numElements(); j++) { 
+        if (j > 0) {
+          throw new BloombergAPIWrapperException("wasn't expecting j > 0");
+        }
         Element field = fieldData.getElement(j);
 
-        if (seq==0) {
+        if (field.datatype().intValue() != Schema.Datatype.Constants.SEQUENCE) {
+          throw new BloombergAPIWrapperException("bulk data request can only handle SEQUENCE data in field " + field.name().toString());
+        }
+        
+        // Look at first element to get field names and types
+        Element x = field.getValueAsElement(0);
 
-          if (field.datatype().intValue() != Schema.Datatype.Constants.SEQUENCE) {
-            throw new BloombergAPIWrapperException("bulk data request can only handle SEQUENCE data in field " + field.name().toString());
-          }
+        returned_fields = new String[x.numElements()];
+        data_types = new String[x.numElements()];
+        result_data = new String[field.numValues()][x.numElements()];
 
-          Element x = field.getValueAsElement(0);
-          int num_data_fields = x.numElements();
-
-          returned_fields = new String[num_data_fields];
-          data_types = new String[num_data_fields];
-          result_data = new String[field.numElements()][num_data_fields];
-
-          for(int k = 0; k < num_data_fields; k++) {
-            Element y = x.getElement(k);
-            returned_fields[k] = y.name().toString();
-            data_types[k] = y.datatype().toString();
-          }
-
+        for (int k = 0; k < x.numElements(); k++) {
+          Element y = x.getElement(k);
+          returned_fields[k] = y.name().toString();
+          data_types[k] = y.datatype().toString();
         }
 
-        for (int l = 0; l < field.numElements(); l++) {
-          Element x = field.getValueAsElement(l);
+        for (int l = 0; l < field.numValues(); l++) {
+          Element z = field.getValueAsElement(l);
 
           for (int k = 0; k < x.numElements(); k++) {
-            System.out.println("l: " + l + "; k: " + k);
-            Element y = x.getElement(k);
+            Element y = z.getElement(k);
             result_data[l][k] = y.getValueAsString();
           }
         }

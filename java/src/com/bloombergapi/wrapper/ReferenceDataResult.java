@@ -36,6 +36,12 @@ public class ReferenceDataResult implements DataResult {
   }
 
   public void processResponse(Element response) throws BloombergAPIWrapperException {
+    if (response.hasElement("responseError")) {
+      Element response_error = response.getElement("responseError");
+      System.err.println(response_error);
+      throw new BloombergAPIWrapperException("response error: " + response_error.getElementAsString("message"));
+    }
+
     Element securityDataArray = response.getElement("securityData");
     int numItems = securityDataArray.numValues();
 

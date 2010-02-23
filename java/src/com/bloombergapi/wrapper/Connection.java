@@ -67,7 +67,7 @@ public class Connection {
     return(session.getService(refdata_service_name));
   }
 
-  private CorrelationID sendRefDataRequest(int result_type, String[] securities, String[] fields) throws Exception {
+  private CorrelationID sendRefDataRequest(int result_type, String[] securities, String[] fields, String[] override_fields, String[] overrides) throws Exception {
     Service service = getRefDataService();
     Request request = service.createRequest(refdata_request_name);
 
@@ -79,6 +79,15 @@ public class Connection {
     Element fields_element = request.getElement("fields");
     for (int i = 0; i < fields.length; i++) {
       fields_element.appendValue(fields[i]);
+    }
+    
+    if (override_fields.length > 0) {
+      Element overrides_element = request.getElement("overrides");
+      for (int i = 0; i < override_fields.length; i++) {
+        Element override = overrides_element.appendElement();
+        override.setElement("fieldId", override_fields[i]);
+        override.setElement("value", overrides[i]);
+      }
     }
 
     CorrelationID correlation_id = nextCorrelationID(result_type, securities, fields);
@@ -128,19 +137,31 @@ public class Connection {
   }
 
   public DataResult blp(String[] securities, String[] fields) throws Exception {
-    int response_id = (int)sendRefDataRequest(REFERENCE_DATA_RESULT, securities, fields).value();
+    String[] override_fields = new String[0];
+    String[] overrides = new String[0];
+    return(blp(securities, fields, override_fields, overrides));
+  }
+
+  public DataResult blp(String[] securities, String[] fields, String[] override_fields, String[] overrides) throws Exception {
+    int response_id = (int)sendRefDataRequest(REFERENCE_DATA_RESULT, securities, fields, override_fields, overrides).value();
     processEventLoop(REFERENCE_DATA_RESULT);
     return((DataResult)response_cache.get(response_id));
   }
 
   public DataResult bls(String security, String field) throws Exception {
+    String[] override_fields = new String[0];
+    String[] overrides = new String[0];
+    return(bls(security, field, override_fields, overrides));
+  }
+
+  public DataResult bls(String security, String field, String[] override_fields, String[] overrides) throws Exception {
     String[] securities = new String[1];
     securities[0] = security;
 
     String[] fields = new String[1];
     fields[0] = field;
 
-    int response_id = (int)sendRefDataRequest(BULK_DATA_RESULT, securities, fields).value();
+    int response_id = (int)sendRefDataRequest(BULK_DATA_RESULT, securities, fields, override_fields, overrides).value();
     processEventLoop(BULK_DATA_RESULT);
     return((DataResult)response_cache.get(response_id));
   }
