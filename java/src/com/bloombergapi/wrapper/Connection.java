@@ -15,11 +15,13 @@ public class Connection {
   private int server_port = 8194;
 
   private String refdata_service_name = "//blp/refdata";
-  private String refdata_request_name = "ReferenceDataRequest";
   private boolean refdata_service_open = false;
+  private String refdata_request_name = "ReferenceDataRequest";
+  private String histdata_request_name = "HistoricalDataRequest";
 
   public static final int REFERENCE_DATA_RESULT = 1;
   public static final int BULK_DATA_RESULT = 2;
+  public static final int HISTORICAL_DATA_RESULT = 3;
 
   public Connection() {
     response_cache = new ArrayList();
@@ -49,10 +51,11 @@ public class Connection {
   public CorrelationID nextCorrelationID(int result_type, String[] securities, String[] fields) throws Exception {
     DataResult result;
     switch(result_type) {
-        case REFERENCE_DATA_RESULT:   result = new ReferenceDataResult(securities, fields); break;
-        case BULK_DATA_RESULT:        result = new BulkDataResult(securities, fields); break;
-        default: throw new BloombergAPIWrapperException("unknown result_type " + result_type);
-      }
+      case REFERENCE_DATA_RESULT:   result = new ReferenceDataResult(securities, fields); break;
+      case BULK_DATA_RESULT:        result = new BulkDataResult(securities, fields); break;
+      case HISTORICAL_DATA_RESULT:  result = new HistoricalDataResult(securities, fields); break;
+      default: throw new BloombergAPIWrapperException("unknown result_type " + result_type);
+    }
     if (response_cache.add(result)) {
       return(new CorrelationID(response_cache.size()-1));
     } else {
@@ -67,9 +70,9 @@ public class Connection {
     return(session.getService(refdata_service_name));
   }
 
-  private CorrelationID sendRefDataRequest(int result_type, String[] securities, String[] fields, String[] override_fields, String[] overrides) throws Exception {
+  private CorrelationID sendRefDataRequest(int result_type, String request_name, String[] securities, String[] fields, String start_date, String end_date, String[] override_fields, String[] overrides) throws Exception {
     Service service = getRefDataService();
-    Request request = service.createRequest(refdata_request_name);
+    Request request = service.createRequest(request_name);
 
     Element securities_element = request.getElement("securities");
     for (int i = 0; i < securities.length; i++) {
@@ -79,6 +82,13 @@ public class Connection {
     Element fields_element = request.getElement("fields");
     for (int i = 0; i < fields.length; i++) {
       fields_element.appendValue(fields[i]);
+    }
+
+    if (start_date.length() > 0) {
+      request.set("startDate", start_date);
+      if (end_date.length() > 0) {
+        request.set("endDate", end_date);
+      }
     }
     
     if (override_fields.length > 0) {
@@ -129,6 +139,7 @@ public class Connection {
       switch(result_type) {
         case REFERENCE_DATA_RESULT:   result = (ReferenceDataResult)response_cache.get(response_id); break;
         case BULK_DATA_RESULT:        result = (BulkDataResult)response_cache.get(response_id); break;
+        case HISTORICAL_DATA_RESULT:  result = (HistoricalDataResult)response_cache.get(response_id); break;
         default: throw new BloombergAPIWrapperException("unknown result_type " + result_type);
       }
 
@@ -143,11 +154,25 @@ public class Connection {
   }
 
   public DataResult blp(String[] securities, String[] fields, String[] override_fields, String[] overrides) throws Exception {
-    int response_id = (int)sendRefDataRequest(REFERENCE_DATA_RESULT, securities, fields, override_fields, overrides).value();
+    String start_date = "";
+    String end_date = "";
+    int response_id = (int)sendRefDataRequest(REFERENCE_DATA_RESULT, refdata_request_name, securities, fields, start_date, end_date, override_fields, overrides).value();
     processEventLoop(REFERENCE_DATA_RESULT);
     return((DataResult)response_cache.get(response_id));
   }
+  
+  public DataResult blh(String[] securities, String[] fields, String start_date, String end_date) throws Exception {
+    String[] override_fields = new String[0];
+    String[] overrides = new String[0];
+    return((DataResult)blh(securities, fields, start_date, end_date, override_fields, overrides));
+  }
 
+  public DataResult blh(String[] securities, String[] fields, String start_date, String end_date, String[] override_fields, String[] overrides) throws Exception {
+    int response_id = (int)sendRefDataRequest(HISTORICAL_DATA_RESULT, histdata_request_name, securities, fields, start_date, end_date, override_fields, overrides).value();
+    processEventLoop(HISTORICAL_DATA_RESULT);
+    return((DataResult)response_cache.get(response_id));
+  }
+  
   public DataResult bls(String security, String field) throws Exception {
     String[] override_fields = new String[0];
     String[] overrides = new String[0];
@@ -161,7 +186,10 @@ public class Connection {
     String[] fields = new String[1];
     fields[0] = field;
 
-    int response_id = (int)sendRefDataRequest(BULK_DATA_RESULT, securities, fields, override_fields, overrides).value();
+    String start_date = "";
+    String end_date = "";
+
+    int response_id = (int)sendRefDataRequest(BULK_DATA_RESULT, refdata_request_name, securities, fields, start_date, end_date, override_fields, overrides).value();
     processEventLoop(BULK_DATA_RESULT);
     return((DataResult)response_cache.get(response_id));
   }
