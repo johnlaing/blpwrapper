@@ -1,4 +1,5 @@
 import junit.framework.*;
+import java.util.regex.*;
 import com.bloombergapi.wrapper.*;
 
 public class ReferenceDataResultTest extends TestCase {
@@ -74,7 +75,7 @@ public class ReferenceDataResultTest extends TestCase {
     String[] override_fields = {"EQY_FUND_CRNCY"};
     String[] overrides = {"JPY"};
 
-    ReferenceDataResult result = (ReferenceDataResult)conn.blp(securities, fields, override_fields, overrides);
+    DataResult result = conn.blp(securities, fields, override_fields, overrides);
     String[][] data = result.getData();
     
     System.out.println(data[0][0]);
@@ -93,7 +94,9 @@ public class ReferenceDataResultTest extends TestCase {
       conn.blp(securities, fields, override_fields, overrides);
       fail("Should have raised an error");
     } catch (BloombergAPIWrapperException e) {
-      assertEquals("response error: Invalid override field: PRICING SOURCE [nid:200] ", e.getMessage());
+      System.out.println(e.getMessage());
+      boolean b = Pattern.matches("^response error: Invalid override field: PRICING SOURCE.*$", e.getMessage());
+      assertTrue("unexpected message", b);
     }
   }
 }

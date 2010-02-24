@@ -80,5 +80,29 @@ sec1 <- call.bls(conn, "RAY Index", "INDX_MEMBERS")[,1]
 sec2 <- call.bls(conn, "RAY Index", "INDX_MEMBERS2")[,1]
 
 securities <- paste(c(sec1, sec2, recursive=TRUE), " EQUITY")
-call.blp(conn, securities, fields)
+#call.blp(conn, securities, fields)
 
+result <- conn$blh("OCN US Equity", c("BID", "PX_LAST"), "20100101", "20100202")
+result <- conn$blh("OCN US Equity", c("BID", "PX_LAST"), "20100101")
+l <- result$getData()
+colnames(l) <- result$getFields()
+rownames(l) <- l[,1]
+df <- as.data.frame(l)
+df
+data_types = result$getDataTypes()
+
+
+for (i in 1:(dim(df)[2])) {
+  string_values = as.vector(df[,i])
+
+  new_values <- switch(data_types[i],
+      FLOAT64 = as.numeric(string_values),
+      STRING = string_values,
+      DATE = sapply(string_values, convert.to.date.if.present),
+      DATETIME = as.POSIXct(string_values, format="%H:%M:%S"),
+      stop(paste("unknown type", data_types[i]))
+      )
+  df[,i] <- new_values
+}
+
+df

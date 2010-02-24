@@ -161,13 +161,30 @@ public class Connection {
     return((DataResult)response_cache.get(response_id));
   }
   
-  public DataResult blh(String[] securities, String[] fields, String start_date, String end_date) throws Exception {
+  public DataResult blh(String security, String[] fields, String start_date, String end_date) throws Exception {
     String[] override_fields = new String[0];
     String[] overrides = new String[0];
-    return((DataResult)blh(securities, fields, start_date, end_date, override_fields, overrides));
+    return(blh(security, fields, start_date, end_date, override_fields, overrides));
   }
 
-  public DataResult blh(String[] securities, String[] fields, String start_date, String end_date, String[] override_fields, String[] overrides) throws Exception {
+  public DataResult blh(String security, String[] fields, String start_date) throws Exception {
+    String[] override_fields = new String[0];
+    String[] overrides = new String[0];
+    String end_date = "";
+
+    return(blh(security, fields, start_date, end_date, override_fields, overrides));
+  }
+
+  public DataResult blh(String security, String[] fields, String start_date, String[] override_fields, String[] overrides) throws Exception {
+    String end_date = "";
+
+    return(blh(security, fields, start_date, end_date, override_fields, overrides));
+  }
+  
+  public DataResult blh(String security, String[] fields, String start_date, String end_date, String[] override_fields, String[] overrides) throws Exception {
+    String[] securities = new String[1];
+    securities[0] = security;
+
     int response_id = (int)sendRefDataRequest(HISTORICAL_DATA_RESULT, histdata_request_name, securities, fields, start_date, end_date, override_fields, overrides).value();
     processEventLoop(HISTORICAL_DATA_RESULT);
     return((DataResult)response_cache.get(response_id));
