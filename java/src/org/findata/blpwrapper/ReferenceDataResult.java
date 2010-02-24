@@ -1,4 +1,4 @@
-package com.bloombergapi.wrapper;
+package org.findata.blpwrapper;
 
 import com.bloomberglp.blpapi.*;
 
@@ -35,11 +35,11 @@ public class ReferenceDataResult implements DataResult {
     return(data_types);
   }
 
-  public void processResponse(Element response) throws BloombergAPIWrapperException {
+  public void processResponse(Element response) throws WrapperException {
     if (response.hasElement("responseError")) {
       Element response_error = response.getElement("responseError");
       System.err.println(response_error);
-      throw new BloombergAPIWrapperException("response error: " + response_error.getElementAsString("message"));
+      throw new WrapperException("response error: " + response_error.getElementAsString("message"));
     }
 
     Element securityDataArray = response.getElement("securityData");
@@ -56,7 +56,7 @@ public class ReferenceDataResult implements DataResult {
         System.err.println(securityData.getElement("security"));
         System.err.println(securityData.getElement("securityError"));
         // Note this will only show the first invalid security.
-        throw new BloombergAPIWrapperException("invalid security " + submitted_securities[seq]);
+        throw new WrapperException("invalid security " + submitted_securities[seq]);
       }
 
       Element field_exceptions = securityData.getElement("fieldExceptions");
@@ -75,9 +75,9 @@ public class ReferenceDataResult implements DataResult {
 
         // Throws all invalid fields, but only for the first security which has invalid fields.
         if (field_exceptions.numValues() > 1) {
-          throw new BloombergAPIWrapperException("invalid fields " + fields_with_errors);
+          throw new WrapperException("invalid fields " + fields_with_errors);
         } else {
-          throw new BloombergAPIWrapperException("invalid field " + fields_with_errors);
+          throw new WrapperException("invalid field " + fields_with_errors);
         }
       }
 
@@ -87,7 +87,7 @@ public class ReferenceDataResult implements DataResult {
         
         if (seq==0) {
           if (field.datatype().intValue() == Schema.Datatype.Constants.SEQUENCE) {
-            throw new BloombergAPIWrapperException("reference data request cannot handle SEQUENCE data in field " + field.name().toString());
+            throw new WrapperException("reference data request cannot handle SEQUENCE data in field " + field.name().toString());
           } 
           data_types[j] = field.datatype().toString();
           returned_fields[j] = field.name().toString();

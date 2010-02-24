@@ -1,6 +1,6 @@
 import junit.framework.*;
 import java.util.regex.*;
-import com.bloombergapi.wrapper.*;
+import org.findata.blpwrapper.*;
 
 public class ReferenceDataResultTest extends TestCase {
   private Connection conn;
@@ -21,7 +21,7 @@ public class ReferenceDataResultTest extends TestCase {
     try {
       conn.blp(securities, fields);
       fail("Should have raised an error");
-    } catch (BloombergAPIWrapperException e) {
+    } catch (WrapperException e) {
       assertEquals("reference data request cannot handle SEQUENCE data in field DVD_HIST", e.getMessage());
     }
   }
@@ -33,7 +33,7 @@ public class ReferenceDataResultTest extends TestCase {
     try {
       conn.blp(securities, fields);
       fail("Should have raised an error");
-    } catch (BloombergAPIWrapperException e) {
+    } catch (WrapperException e) {
       assertEquals("invalid security XXJIOJFDIOSJ US Equity", e.getMessage());
     }
   }
@@ -45,7 +45,7 @@ public class ReferenceDataResultTest extends TestCase {
     try {
       conn.blp(securities, fields);
       fail("Should have raised an error");
-    } catch (BloombergAPIWrapperException e) {
+    } catch (WrapperException e) {
       assertEquals("invalid field JIODJOIADFSJFOI", e.getMessage());
     }
   }
@@ -57,7 +57,7 @@ public class ReferenceDataResultTest extends TestCase {
     try {
       conn.blp(securities, fields);
       fail("Should have raised an error");
-    } catch (BloombergAPIWrapperException e) {
+    } catch (WrapperException e) {
       assertEquals("invalid fields XXX1, XXX2", e.getMessage());
     }
   }
@@ -93,7 +93,7 @@ public class ReferenceDataResultTest extends TestCase {
     try {
       conn.blp(securities, fields, override_fields, overrides);
       fail("Should have raised an error");
-    } catch (BloombergAPIWrapperException e) {
+    } catch (WrapperException e) {
       System.out.println(e.getMessage());
       boolean b = Pattern.matches("^response error: Invalid override field: PRICING SOURCE.*$", e.getMessage());
       assertTrue("unexpected message", b);

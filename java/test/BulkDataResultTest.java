@@ -1,5 +1,5 @@
 import junit.framework.*;
-import com.bloombergapi.wrapper.*;
+import org.findata.blpwrapper.*;
 
 public class BulkDataResultTest extends TestCase {
   private Connection conn;
@@ -27,7 +27,7 @@ public class BulkDataResultTest extends TestCase {
     try {
       conn.bls(security, field);
       fail("Should have raised an error");
-    } catch (BloombergAPIWrapperException e) {
+    } catch (WrapperException e) {
       assertEquals("invalid security XXJIOJFDIOSJ US Equity", e.getMessage());
     }
   }
@@ -39,7 +39,7 @@ public class BulkDataResultTest extends TestCase {
     try {
       conn.bls(security, field);
       fail("Should have raised an error");
-    } catch (BloombergAPIWrapperException e) {
+    } catch (WrapperException e) {
       assertEquals("invalid field JIODJOIADFSJFOI", e.getMessage());
     }
   }

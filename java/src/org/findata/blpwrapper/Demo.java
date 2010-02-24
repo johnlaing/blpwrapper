@@ -1,4 +1,4 @@
-package com.bloombergapi.wrapper;
+package org.findata.blpwrapper;
 
 import com.bloombergapi.wrapper.*;
 

@@ -1,14 +1,14 @@
-package com.bloombergapi.wrapper;
+package org.findata.blpwrapper;
 import com.bloomberglp.blpapi.*;
 
-public class BloombergAPIWrapperException extends Exception {
+public class WrapperException extends Exception {
   private String message;
 
-  public BloombergAPIWrapperException(String custom_message) {
+  public WrapperException(String custom_message) {
     message = custom_message;
   }
 
-  public BloombergAPIWrapperException(Event.EventType event_type) {
+  public WrapperException(Event.EventType event_type) {
     message = "Don't know how to handle event type " + event_type.toString();
   }
 

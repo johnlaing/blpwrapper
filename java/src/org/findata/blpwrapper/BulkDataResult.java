@@ -1,4 +1,4 @@
-package com.bloombergapi.wrapper;
+package org.findata.blpwrapper;
 
 import com.bloomberglp.blpapi.*;
 
@@ -30,18 +30,18 @@ public class BulkDataResult implements DataResult {
     return(data_types);
   }
 
-  public void processResponse(Element response) throws BloombergAPIWrapperException {
+  public void processResponse(Element response) throws WrapperException {
     if (response.hasElement("responseError")) {
       Element response_error = response.getElement("responseError");
       System.err.println(response_error);
-      throw new BloombergAPIWrapperException("response error: " + response_error.getElementAsString("message"));
+      throw new WrapperException("response error: " + response_error.getElementAsString("message"));
     }
     Element securityDataArray = response.getElement("securityData");
     int numItems = securityDataArray.numValues();
 
     for (int i = 0; i < numItems; i++) {
       if (i > 0) {
-        throw new BloombergAPIWrapperException("wasn't expecting i > 0");
+        throw new WrapperException("wasn't expecting i > 0");
       }
       Element securityData = securityDataArray.getValueAsElement(i);
       Element fieldData = securityData.getElement("fieldData");
@@ -52,7 +52,7 @@ public class BulkDataResult implements DataResult {
         System.err.println(securityData.getElement("security"));
         System.err.println(securityData.getElement("securityError"));
         // Note this will only show the first invalid security.
-        throw new BloombergAPIWrapperException("invalid security " + submitted_securities[seq]);
+        throw new WrapperException("invalid security " + submitted_securities[seq]);
       }
 
       Element field_exceptions = securityData.getElement("fieldExceptions");
@@ -71,21 +71,21 @@ public class BulkDataResult implements DataResult {
 
         // Throws all invalid fields, but only for the first security which has invalid fields.
         if (field_exceptions.numValues() > 1) {
-          throw new BloombergAPIWrapperException("invalid fields " + fields_with_errors);
+          throw new WrapperException("invalid fields " + fields_with_errors);
         } else {
-          throw new BloombergAPIWrapperException("invalid field " + fields_with_errors);
+          throw new WrapperException("invalid field " + fields_with_errors);
         }
       }
 
       // Iterate over fields for each security
       for (int j = 0; j < fieldData.numElements(); j++) { 
         if (j > 0) {
-          throw new BloombergAPIWrapperException("wasn't expecting j > 0");
+          throw new WrapperException("wasn't expecting j > 0");
         }
         Element field = fieldData.getElement(j);
 
         if (field.datatype().intValue() != Schema.Datatype.Constants.SEQUENCE) {
-          throw new BloombergAPIWrapperException("bulk data request can only handle SEQUENCE data in field " + field.name().toString());
+          throw new WrapperException("bulk data request can only handle SEQUENCE data in field " + field.name().toString());
         }
         
         // Look at first element to get field names and types

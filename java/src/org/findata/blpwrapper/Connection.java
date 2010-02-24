@@ -1,4 +1,4 @@
-package com.bloombergapi.wrapper;
+package org.findata.blpwrapper;
 
 import com.bloomberglp.blpapi.*;
 
@@ -27,7 +27,7 @@ public class Connection {
     response_cache = new ArrayList();
   }
 
-  public void connect() throws java.io.IOException, java.lang.InterruptedException, BloombergAPIWrapperException {
+  public void connect() throws java.io.IOException, java.lang.InterruptedException, WrapperException {
     setupSessionOptions();
     setupSession();
     processEventLoop();
@@ -54,7 +54,7 @@ public class Connection {
       case REFERENCE_DATA_RESULT:   result = new ReferenceDataResult(securities, fields); break;
       case BULK_DATA_RESULT:        result = new BulkDataResult(securities, fields); break;
       case HISTORICAL_DATA_RESULT:  result = new HistoricalDataResult(securities, fields); break;
-      default: throw new BloombergAPIWrapperException("unknown result_type " + result_type);
+      default: throw new WrapperException("unknown result_type " + result_type);
     }
     if (response_cache.add(result)) {
       return(new CorrelationID(response_cache.size()-1));
@@ -105,11 +105,11 @@ public class Connection {
     return(correlation_id);
   }
   
-  private void processEventLoop() throws java.lang.InterruptedException, BloombergAPIWrapperException {
+  private void processEventLoop() throws java.lang.InterruptedException, WrapperException {
     processEventLoop(0);
   }
 
-  private void processEventLoop(int result_type) throws java.lang.InterruptedException, BloombergAPIWrapperException {
+  private void processEventLoop(int result_type) throws java.lang.InterruptedException, WrapperException {
     boolean await_response = (result_type > 0);
     boolean cont = true;
     while (cont) {
@@ -120,7 +120,7 @@ public class Connection {
         case Event.EventType.Constants.SERVICE_STATUS:       processStatusEvent(event); cont=await_response; break;
         case Event.EventType.Constants.RESPONSE:             processResponseEvent(result_type, event); cont=false; break;
         case Event.EventType.Constants.PARTIAL_RESPONSE:     processResponseEvent(result_type, event); break;
-        default: throw new BloombergAPIWrapperException(event.eventType());
+        default: throw new WrapperException(event.eventType());
       }
     }
   }
@@ -128,7 +128,7 @@ public class Connection {
   private void processStatusEvent(Event event) {
   }
 
-  private void processResponseEvent(int result_type, Event event) throws BloombergAPIWrapperException {
+  private void processResponseEvent(int result_type, Event event) throws WrapperException {
     MessageIterator msgIter = event.messageIterator();
 
     while (msgIter.hasNext()) {
@@ -140,7 +140,7 @@ public class Connection {
         case REFERENCE_DATA_RESULT:   result = (ReferenceDataResult)response_cache.get(response_id); break;
         case BULK_DATA_RESULT:        result = (BulkDataResult)response_cache.get(response_id); break;
         case HISTORICAL_DATA_RESULT:  result = (HistoricalDataResult)response_cache.get(response_id); break;
-        default: throw new BloombergAPIWrapperException("unknown result_type " + result_type);
+        default: throw new WrapperException("unknown result_type " + result_type);
       }
 
       result.processResponse(message.asElement());

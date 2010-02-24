@@ -1,6 +1,6 @@
 import junit.framework.*;
 import java.util.regex.*;
-import com.bloombergapi.wrapper.*;
+import org.findata.blpwrapper.*;
 
 public class HistoricalDataResultTest extends TestCase {
   private Connection conn;
@@ -65,7 +65,7 @@ public class HistoricalDataResultTest extends TestCase {
     try {
       conn.blh(security, fields, start_date, end_date);
       fail("Should have raised an error");
-    } catch (BloombergAPIWrapperException e) {
+    } catch (WrapperException e) {
       assertEquals("invalid security XXJIOJFDIOSJ US Equity", e.getMessage());
     }
   }
@@ -79,7 +79,7 @@ public class HistoricalDataResultTest extends TestCase {
     try {
       conn.blh(security, fields, start_date, end_date);
       fail("Should have raised an error");
-    } catch (BloombergAPIWrapperException e) {
+    } catch (WrapperException e) {
       assertEquals("invalid field JIODJOIADFSJFOI", e.getMessage());
     }
   }
@@ -93,7 +93,7 @@ public class HistoricalDataResultTest extends TestCase {
     try {
       conn.blh(security, fields, start_date, end_date);
       fail("Should have raised an error");
-    } catch (BloombergAPIWrapperException e) {
+    } catch (WrapperException e) {
       boolean b = Pattern.matches("^response error: Invalid start date.*$", e.getMessage());
       assertTrue("unexpected message", b);
     }
@@ -110,7 +110,7 @@ public class HistoricalDataResultTest extends TestCase {
     try {
       conn.blh(security, fields, start_date, end_date, override_fields, overrides);
       fail("Should have raised an error");
-    } catch (BloombergAPIWrapperException e) {
+    } catch (WrapperException e) {
       boolean b = Pattern.matches("^response error: Invalid override field id specified.*$", e.getMessage());
       assertTrue("unexpected message", b);
     }
