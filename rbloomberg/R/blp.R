@@ -1,129 +1,88 @@
-blpGetData <- function(x, ...) {
-  cat("blpGetData is deprecated, please update your code to call blp() instead. blpGetData will be removed in an upcoming version of RBloomberg.\n")
-  blp(x, ...)
+blp <- function(conn, securities, fields, override_fields = NULL, overrides = NULL) {
+  securities <- .jarray(securities)
+  fields <- .jarray(fields)
+  if (is.null(override_fields)) {
+    result <- conn$blp(securities, fields)
+  } else {
+    override_fields <- .jarray(override_fields)
+    overrides <- .jarray(overrides)
+    result <- conn$blp(securities, fields, override_fields, overrides)
+  }
+
+  return(process.result(result, use.security.names=TRUE))
 }
 
-### @export "blp-definition"
-blp <- function(conn, securities, fields, start = NULL, end = NULL,
-                                barsize = NULL, barfields = NULL, retval = NULL, 
-                                override_fields = NULL, overrides = NULL, currency = NULL) {
-### @end
+bls <- function(conn, security, field) {
+  result <- conn$bls(security, field)
 
-   if (is.null(conn) || is.null(securities) || is.null(fields)) {
-     stop("conn, securities, and fields are all required parameters.")
-   }
-   
-   if (!is.null(end) && is.null(start)) {
-     stop("You must pass a date to the start parameter.")
-   }
-   
-   if (!is.null(retval)) {
-      allowed <- c("matrix","data.frame","zoo","raw")
-      stopmsg <- paste("retval must be one of ", paste(allowed, collapse=", "))
-     if (!retval %in% allowed) {
-       stop(stopmsg)
-     }
-   }
-   
-   if (!is.null(barsize)) {
-     if (barsize > 0) {
-        if (length(securities) > 1) {
-           stop("Bar data can only be requested for one security at a time.")
-        }
-        
-        allowed <- c("OPEN", "HIGH","LOW", "LAST_PRICE","VOLUME","NUMBER_TICKS")
-        allowed_barfields_msg <- paste("barfields must be one or more of ", paste(allowed, collapse=", "))
-        
-        if (is.null(barfields) || !all(barfields %in% allowed)) {
-         stop(allowed_barfields_msg)
-       }
-     }
-   }
-   
-   securities <- toupper(securities)
-   fields <- toupper(fields)
-
-   if (!is.null(barfields)) {
-     barfields <- toupper(barfields)
-   }
-
-   if (!is.null(start)) {
-     start <- timeDate(start)
-   }
-
-   if (!is.null(end)) {
-     end <- timeDate(end)
-   }
-   
-   fn.name <- paste("blp", class(conn), sep=".")
-   fn.call <- call(fn.name, conn, securities, fields, start, end, barsize, barfields, retval, override_fields, overrides, currency)
-   lst <- eval(fn.call)
-   
-   # Everything comes back in the same format, BlpRawReturn, regardless of how it's obtained.
-   class(lst) <- "BlpRawReturn"
-   attr(lst, "securities") <- securities
-   attr(lst, "fields") <- fields
-   attr(lst, "override_fields") <- override_fields
-   attr(lst, "overrides") <- overrides
-   
-   if (is.null(attr(lst, "num.of.date.cols"))) {
-      attr(lst, "num.of.date.cols") <- 0
-   }
-   
-   # If not specified, default to a data frame, or zoo for time series.
-   if (is.null(retval)) {
-      if (attr(lst, "num.of.date.cols") > 0) {
-       retval <- "zoo"
-     } else {
-       retval <- "data.frame"
-     }
-   }
-   
-   return(convert.to.retval(lst, retval))
+  return(process.result(result))
 }
 
-convert.to.retval <- function(x, retval) {
-   fn.name <- paste("as", retval, class(x), sep =".") 
-   eval(call(fn.name, x))
-}
-
-as.raw.BlpRawReturn <- function(x) {
-   return(x)
-}
-
-# blp methods for individual classes called by blp()
-blp.JavaObject <- function(conn, securities, fields, start, end, barsize, barfields, 
-      retval, override_fields, overrides, currency) {
+blh <- function(conn, security, fields, start_date, end_date = NULL, override_fields = NULL, overrides = NULL) {
+  fields <- .jarray(fields)
 
   if (!is.null(override_fields)) {
-     stop("overrides not implemented!")
+    override_fields <- .jarray(override_fields)
+    overrides <- .jarray(overrides)
   }
+
+  if (is.null(end_date)) {
+    if (is.null(override_fields)) {
+      result <- conn$blh(security, fields, start_date)
+    } else {
+      result <- conn$blh(security, fields, start_date, override_fields, overrides)
+    }
+  } else {
+    if(is.null(override_fields)) {
+      result <- conn$blh(security, fields, start_date, end_date)
+    } else {
+      result <- conn$blh(security, fields, start_date, end_date, override_fields, overrides)
+    }
+  }
+
+  return(process.result(result))
+}
+
+process.result <- function(result, use.security.names = FALSE) {
+  matrix.data <- result$getData()
   
-  request <- prepare_request(conn$service, securities, fields, start, end)
-  submit_request(conn$session, request)
+  if (use.security.names) {
+    rownames(matrix.data) <- result$getSecurities()
+  }
+  colnames(matrix.data) <- result$getFields()
 
-  lst <- process_event(conn$session, "RESPONSE")
-  if (!is.null(start)) attr(list, "num.of.date.cols") <- 1
-  return(lst)
-}
-
-# These are identical. Handling is done in blpSubscribe and blpGetHistoricalData.
-blp.COMIDispatch <- function(conn, securities, fields, start, end, barsize, barfields, 
-      retval, override_fields, overrides, currency) {
-         
-  if (!is.null(start)) {
-    comGetHistoricalData(conn, securities, fields, start, end, barsize, barfields, currency)
+  df.data <- as.data.frame(matrix.data)
+  data_types <- result$getDataTypes()
+  
+  if (dim(df.data)[2] > 0) {
+    convert.to.type(df.data, data_types)
   } else {
-    comSubscribe(conn, securities, fields, override_fields, overrides)
+    df.data
   }
 }
 
-blp.COMObject <- function(conn, securities, fields, start, end, barsize, barfields, 
-      retval, override_fields, overrides, currency) {
-         
-  if (!is.null(start)) {
-    comGetHistoricalData(conn, securities, fields, start, end, barsize, barfields, currency)
+convert.to.type <- function(df.data, data_types) {
+  for (i in 1:(dim(df.data)[2])) {
+    string_values = as.vector(df.data[,i])
+
+    new_values <- switch(data_types[i],
+        FLOAT64 = as.numeric(string_values),
+        STRING = string_values,
+        DATE = sapply(string_values, convert.to.date.if.present),
+        DATETIME = as.POSIXct(string_values, format="%H:%M:%S"),
+        NOT_APPLICABLE = string_values,
+        stop(paste("unknown type", data_types[i]))
+        )
+    df.data[,i] <- new_values
+  }
+
+  return(df.data)
+}
+
+convert.to.date.if.present <- function(x) {
+  if (nchar(x) < 5) {
+    NA
   } else {
-    comSubscribe(conn, securities, fields, override_fields, overrides)
+    as.POSIXct(x)
   }
 }

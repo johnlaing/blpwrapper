@@ -1,3 +1,4 @@
-blpDisconnect <- function(conn){
-  gc(verbose=FALSE);
+blpDisconnect <- function(conn) {
+  conn$close()
+  gc(verbose=FALSE)
 }
