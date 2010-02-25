@@ -1,9 +1,9 @@
 library(rJava)
 .jinit()
 .jaddClassPath("C:\\blp\\API\\APIv3\\JavaAPI\\lib\\blpapi3.jar")
-.jaddClassPath("C:\\bloombergapi\\java\\build\\prod")
+.jaddClassPath("C:\\blpwrapper\\java\\build\\prod")
 
-conn <- .jnew("com/bloombergapi/wrapper/Connection")
+conn <- .jnew("org.findata/blpwrapper/Connection")
 .jcall(conn, returnSig="V", method="connect")
 
 securities <- c("BKIR ID Equity", "OCN US Equity")
@@ -105,4 +105,16 @@ for (i in 1:(dim(df)[2])) {
   df[,i] <- new_values
 }
 
+df
+
+
+fields <- c("NAME", "COUNTRY", "INDUSTRY_SECTOR", "PX_LAST", "EXCH_CODE", "ID_ISIN", "CRNCY_ADJ_MKT_CAP", "CHG_PCT_YTD", "DVD_PAYOUT_RATIO", "TOT_ANALYST_REC", "ALTMAN_Z_SCORE")
+result <- conn$fieldInfo(fields)
+
+l <- result$getData()
+l
+
+colnames(l) <- result$getFields()
+
+df <- as.data.frame(l)
 df

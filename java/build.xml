@@ -52,7 +52,7 @@
   </target>
 
   <target name="jar" depends="compile">
-    <jar basedir="${build.prod.dir}" destfile="bloombergapi.jar" />
+    <jar basedir="${build.prod.dir}" destfile="blpwrapper.jar" />
   </target>
 
   <target name="demo" depends="compile">

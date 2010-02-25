@@ -33,13 +33,7 @@ public class HistoricalDataResult implements DataResult {
     return(data_types);
   }
 
-  public void processResponse(Element response) throws WrapperException {
-    if (response.hasElement("responseError")) {
-      Element response_error = response.getElement("responseError");
-      System.err.println(response_error);
-      throw new WrapperException("response error: " + response_error.getElementAsString("message"));
-    }
-
+  public void processResponse(Element response, boolean verbose) throws WrapperException {
     Element securityData = response.getElement("securityData");
     Element fieldData = securityData.getElement("fieldData");
     int seq = securityData.getElementAsInt32("sequenceNumber");
@@ -48,30 +42,35 @@ public class HistoricalDataResult implements DataResult {
     }
 
     if (securityData.hasElement("securityError")) {
-      System.err.println(securityData.getElement("security"));
-      System.err.println(securityData.getElement("securityError"));
+      if (verbose) {
+        System.err.println(securityData.getElement("security"));
+        System.err.println(securityData.getElement("securityError"));
+      }
       throw new WrapperException("invalid security " + submitted_securities[seq]);
     }
 
     Element field_exceptions = securityData.getElement("fieldExceptions");
     if (field_exceptions.numValues() > 0) {
-      String fields_with_errors = "";
-
       for (int k = 0; k < field_exceptions.numValues(); k++) {
         Element exception = field_exceptions.getValueAsElement(k);
-        System.err.println(exception.getElement("fieldId"));
-        System.err.println(exception.getElement("errorInfo"));
-        if (k > 0) {
-          fields_with_errors += ", ";
+        if (verbose) {
+          System.err.println("********** fieldError info **********");
+          System.err.println(securityData.getElement("security"));
+          System.err.println(exception.getElement("fieldId"));
         }
-        fields_with_errors += exception.getElementAsString("fieldId");
-      }
 
-      // Throws all invalid fields, but only for the first security which has invalid fields.
-      if (field_exceptions.numValues() > 1) {
-        throw new WrapperException("invalid fields " + fields_with_errors);
-      } else {
-        throw new WrapperException("invalid field " + fields_with_errors);
+        Element errorInfo = exception.getElement("errorInfo");
+        if (verbose) {
+          System.err.println(errorInfo);
+        }
+        String errorType = errorInfo.getElementAsString("subcategory");
+        if (errorType.equals("INVALID_FIELD")) {
+          throw new WrapperException("invalid field " + exception.getElementAsString("fieldId"));
+        } else if (errorType.equals("NOT_APPLICABLE_TO_HIST_DATA")) {
+          // Not a fatal error. Just return null value.
+        } else {
+          throw new WrapperException("unknown field error type " + errorType);
+        } 
       }
     }
 
@@ -82,7 +81,8 @@ public class HistoricalDataResult implements DataResult {
       if (j==0) {
         result_data = new String[fieldData.numValues()][submitted_fields.length+1];
       }
-
+      
+      // TODO iterate over submitted fields instead as in ReferenceDataResult
       // Iterate over returned fields
       for (int k = 0; k < field.numElements(); k++) {
         Element x = field.getElement(k);

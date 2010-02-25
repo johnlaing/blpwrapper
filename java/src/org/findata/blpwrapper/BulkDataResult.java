@@ -3,15 +3,15 @@ package org.findata.blpwrapper;
 import com.bloomberglp.blpapi.*;
 
 public class BulkDataResult implements DataResult {
-  private String[] submitted_fields;
+  private String[] requested_fields;
   private String[] returned_fields;
-  private String[] submitted_securities;
+  private String[] securities;
   private String[] data_types;
   private String[][] result_data;
 
-  public BulkDataResult(String[] securities, String[] fields) {
-    submitted_fields = fields;
-    submitted_securities = securities;
+  public BulkDataResult(String[] argSecurities, String[] argFields) {
+    securities = argSecurities;
+    requested_fields = argFields;
   }
 
   public String[] getFields() {
@@ -19,7 +19,7 @@ public class BulkDataResult implements DataResult {
   }
 
   public String[] getSecurities() {
-    return(submitted_securities);
+    return(securities);
   }
 
   public String[][] getData() {
@@ -30,86 +30,80 @@ public class BulkDataResult implements DataResult {
     return(data_types);
   }
 
-  public void processResponse(Element response) throws WrapperException {
-    if (response.hasElement("responseError")) {
-      Element response_error = response.getElement("responseError");
-      System.err.println(response_error);
-      throw new WrapperException("response error: " + response_error.getElementAsString("message"));
-    }
+  public void processResponse(Element response, boolean verbose) throws WrapperException {
     Element securityDataArray = response.getElement("securityData");
-    int numItems = securityDataArray.numValues();
+    Element securityData = securityDataArray.getValueAsElement(0);
+    Element fieldData = securityData.getElement("fieldData");
 
-    for (int i = 0; i < numItems; i++) {
-      if (i > 0) {
-        throw new WrapperException("wasn't expecting i > 0");
-      }
-      Element securityData = securityDataArray.getValueAsElement(i);
-      Element fieldData = securityData.getElement("fieldData");
-      int seq = securityData.getElementAsInt32("sequenceNumber");
+    int seq = securityData.getElementAsInt32("sequenceNumber");
+    if (seq > 0) {
+      throw new WrapperException("do not expect seq " + seq + " to be greater than 0.");
+    }
 
-      // Check for errors.
-      if (securityData.hasElement("securityError")) {
+    if (securityData.hasElement("securityError")) {
+      if (verbose) {
+        System.err.println("********** securityError info **********");
         System.err.println(securityData.getElement("security"));
         System.err.println(securityData.getElement("securityError"));
-        // Note this will only show the first invalid security.
-        throw new WrapperException("invalid security " + submitted_securities[seq]);
       }
+      // Note this will only show the first invalid security.
+      throw new WrapperException("invalid security " + securities[seq]);
+    }
 
-      Element field_exceptions = securityData.getElement("fieldExceptions");
-      if (field_exceptions.numValues() > 0) {
-        String fields_with_errors = "";
-
-        for (int k = 0; k < field_exceptions.numValues(); k++) {
-          Element exception = field_exceptions.getValueAsElement(k);
+    Element field_exceptions = securityData.getElement("fieldExceptions");
+    if (field_exceptions.numValues() > 0) {
+      for (int k = 0; k < field_exceptions.numValues(); k++) {
+        Element exception = field_exceptions.getValueAsElement(k);
+        if (verbose) {
+          System.err.println("********** fieldError info **********");
+          System.err.println(securityData.getElement("security"));
           System.err.println(exception.getElement("fieldId"));
-          System.err.println(exception.getElement("errorInfo"));
-          if (k > 0) {
-            fields_with_errors += ", ";
-          }
-          fields_with_errors += exception.getElementAsString("fieldId");
         }
 
-        // Throws all invalid fields, but only for the first security which has invalid fields.
-        if (field_exceptions.numValues() > 1) {
-          throw new WrapperException("invalid fields " + fields_with_errors);
+        Element errorInfo = exception.getElement("errorInfo");
+        if (verbose) {
+          System.err.println(errorInfo);
+        }
+        String errorType = errorInfo.getElementAsString("subcategory");
+        if (errorType.equals("INVALID_FIELD")) {
+          throw new WrapperException("invalid field " + exception.getElementAsString("fieldId"));
+        } else if (errorType.equals("NOT_APPLICABLE_TO_REF_DATA")) {
+          // Not a fatal error. Just return null value.
         } else {
-          throw new WrapperException("invalid field " + fields_with_errors);
+          throw new WrapperException("unknown field error type " + errorType);
         }
       }
+    }
 
-      // Iterate over fields for each security
-      for (int j = 0; j < fieldData.numElements(); j++) { 
-        if (j > 0) {
-          throw new WrapperException("wasn't expecting j > 0");
+    if (fieldData.numElements() > 1) {
+      throw new WrapperException("not expecting more than 1 element in fieldData, got " + fieldData.numElements());
+    }
+
+    Element x = fieldData.getElement(0);
+
+    if (x.datatype().intValue() != Schema.Datatype.Constants.SEQUENCE) {
+      throw new WrapperException("bulk data request can only handle SEQUENCE data in field " + x.name().toString());
+    }
+
+    for (int i = 0; i < x.numValues(); i++) {
+      Element field = x.getValueAsElement(i);
+      
+      if (i == 0) {
+        returned_fields = new String[field.numElements()];
+        data_types = new String[field.numElements()];
+        result_data = new String[x.numValues()][field.numElements()];
+      }
+
+      for (int j = 0; j < field.numElements(); j++) {
+        Element y = field.getElement(j);
+
+        if (i == 0) {
+          returned_fields[j] = y.name().toString();
+          data_types[j] = y.datatype().toString();
         }
-        Element field = fieldData.getElement(j);
 
-        if (field.datatype().intValue() != Schema.Datatype.Constants.SEQUENCE) {
-          throw new WrapperException("bulk data request can only handle SEQUENCE data in field " + field.name().toString());
-        }
-        
-        // Look at first element to get field names and types
-        Element x = field.getValueAsElement(0);
-
-        returned_fields = new String[x.numElements()];
-        data_types = new String[x.numElements()];
-        result_data = new String[field.numValues()][x.numElements()];
-
-        for (int k = 0; k < x.numElements(); k++) {
-          Element y = x.getElement(k);
-          returned_fields[k] = y.name().toString();
-          data_types[k] = y.datatype().toString();
-        }
-
-        for (int l = 0; l < field.numValues(); l++) {
-          Element z = field.getValueAsElement(l);
-
-          for (int k = 0; k < x.numElements(); k++) {
-            Element y = z.getElement(k);
-            result_data[l][k] = y.getValueAsString();
-          }
-        }
-      } 
+        result_data[i][j] = y.getValueAsString();
+      }
     }
   }
 }

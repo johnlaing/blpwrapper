@@ -13,11 +13,25 @@ public class BulkDataResultTest extends TestCase {
     conn.close();
   }
 
+  public void testEmptyResult() throws Exception {
+    String security = "UKX Index";
+    String field = "INDX_MEMBERS";
+
+    conn.bls(security, field);
+
+    field = "INDX_MEMBERS2";
+    BulkDataResult result = (BulkDataResult)conn.bls(security, field);
+    result.getData();
+    result.getFields();
+    result.getDataTypes();
+  }
+
   public void testValidBulkDataRequest() throws Exception {
     String security = "BKIR ID Equity";
     String field = "DVD_HIST";
 
-    conn.bls(security, field);
+    DataResult result = conn.bls(security, field);
+    System.out.println(result.getData()[0][0]);
   }
 
   public void testRaisesErrorOnInvalidSecurity() throws Exception {

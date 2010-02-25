@@ -19,9 +19,13 @@ public class Connection {
   private String refdata_request_name = "ReferenceDataRequest";
   private String histdata_request_name = "HistoricalDataRequest";
 
+  private String apifields_service_name = "//blp/apiflds";
+  private boolean apifields_service_open = false;
+
   public static final int REFERENCE_DATA_RESULT = 1;
   public static final int BULK_DATA_RESULT = 2;
   public static final int HISTORICAL_DATA_RESULT = 3;
+  public static final int FIELD_INFO_RESULT = 4;
 
   public Connection() {
     response_cache = new ArrayList();
@@ -54,6 +58,7 @@ public class Connection {
       case REFERENCE_DATA_RESULT:   result = new ReferenceDataResult(securities, fields); break;
       case BULK_DATA_RESULT:        result = new BulkDataResult(securities, fields); break;
       case HISTORICAL_DATA_RESULT:  result = new HistoricalDataResult(securities, fields); break;
+      case FIELD_INFO_RESULT:       result = new FieldInfoResult(securities); break;
       default: throw new WrapperException("unknown result_type " + result_type);
     }
     if (response_cache.add(result)) {
@@ -63,11 +68,32 @@ public class Connection {
     }
   }
 
-  private Service getRefDataService() throws Exception {
+  private Service getRefDataService() throws java.io.IOException, java.lang.InterruptedException {
     if (!refdata_service_open) {
       refdata_service_open = session.openService(refdata_service_name);
     }
     return(session.getService(refdata_service_name));
+  }
+
+  private Service getApiDataService() throws java.io.IOException, java.lang.InterruptedException {
+    if (!apifields_service_open) {
+      apifields_service_open = session.openService(apifields_service_name);
+    }
+    return(session.getService(apifields_service_name));
+  }
+
+  private CorrelationID sendApiDataRequest(int result_type, String[] field_identifiers) throws Exception {
+    Service service = getApiDataService();
+    Request request = service.createRequest("FieldInfoRequest");
+
+    for (int i = 0; i < field_identifiers.length; i++) {
+      request.append("id", field_identifiers[i]);
+    }
+
+    String[] mock_fields = {""};
+    CorrelationID correlation_id = nextCorrelationID(result_type, field_identifiers, mock_fields);
+    session.sendRequest(request, correlation_id);
+    return(correlation_id);
   }
 
   private CorrelationID sendRefDataRequest(int result_type, String request_name, String[] securities, String[] fields, String start_date, String end_date, String[] override_fields, String[] overrides) throws Exception {
@@ -90,7 +116,7 @@ public class Connection {
         request.set("endDate", end_date);
       }
     }
-    
+
     if (override_fields.length > 0) {
       Element overrides_element = request.getElement("overrides");
       for (int i = 0; i < override_fields.length; i++) {
@@ -104,7 +130,7 @@ public class Connection {
     session.sendRequest(request, correlation_id);
     return(correlation_id);
   }
-  
+
   private void processEventLoop() throws java.lang.InterruptedException, WrapperException {
     processEventLoop(0);
   }
@@ -140,11 +166,29 @@ public class Connection {
         case REFERENCE_DATA_RESULT:   result = (ReferenceDataResult)response_cache.get(response_id); break;
         case BULK_DATA_RESULT:        result = (BulkDataResult)response_cache.get(response_id); break;
         case HISTORICAL_DATA_RESULT:  result = (HistoricalDataResult)response_cache.get(response_id); break;
+        case FIELD_INFO_RESULT:       result = (FieldInfoResult)response_cache.get(response_id); break;
         default: throw new WrapperException("unknown result_type " + result_type);
       }
 
-      result.processResponse(message.asElement());
+      boolean verbose = false;
+      Element response = message.asElement();
+
+      if (response.hasElement("responseError")) {
+        Element response_error = response.getElement("responseError");
+        if (verbose) {
+          System.err.println(response_error);
+        }
+        throw new WrapperException("response error: " + response_error.getElementAsString("message"));
+      }
+
+      result.processResponse(response, verbose);
     }
+  }
+
+  public DataResult fieldInfo(String[] fields) throws Exception {
+    int response_id = (int)sendApiDataRequest(FIELD_INFO_RESULT, fields).value();
+    processEventLoop(FIELD_INFO_RESULT);
+    return((DataResult)response_cache.get(response_id));
   }
 
   public DataResult blp(String[] securities, String[] fields) throws Exception {
@@ -160,7 +204,7 @@ public class Connection {
     processEventLoop(REFERENCE_DATA_RESULT);
     return((DataResult)response_cache.get(response_id));
   }
-  
+
   public DataResult blh(String security, String[] fields, String start_date, String end_date) throws Exception {
     String[] override_fields = new String[0];
     String[] overrides = new String[0];
@@ -180,7 +224,7 @@ public class Connection {
 
     return(blh(security, fields, start_date, end_date, override_fields, overrides));
   }
-  
+
   public DataResult blh(String security, String[] fields, String start_date, String end_date, String[] override_fields, String[] overrides) throws Exception {
     String[] securities = new String[1];
     securities[0] = security;
@@ -189,7 +233,7 @@ public class Connection {
     processEventLoop(HISTORICAL_DATA_RESULT);
     return((DataResult)response_cache.get(response_id));
   }
-  
+
   public DataResult bls(String security, String field) throws Exception {
     String[] override_fields = new String[0];
     String[] overrides = new String[0];

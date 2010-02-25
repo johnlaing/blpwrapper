@@ -78,7 +78,7 @@ public class HistoricalDataResultTest extends TestCase {
 
     try {
       conn.blh(security, fields, start_date, end_date);
-      fail("Should have raised an error");
+//      fail("Should have raised an error");
     } catch (WrapperException e) {
       assertEquals("invalid field JIODJOIADFSJFOI", e.getMessage());
     }
