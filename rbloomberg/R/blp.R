@@ -12,10 +12,38 @@ blp <- function(conn, securities, fields, override_fields = NULL, overrides = NU
   return(process.result(result, use.security.names=TRUE))
 }
 
-bls <- function(conn, security, field) {
-  result <- conn$bls(security, field)
+bls <- function(conn, securities, fields) {
+  # Pass each security+field separately. Merge resulting data frames
+  # if the results are conformal, raise an error if they're not.
+  stored.names <- NULL
+  combined <- NULL
 
-  return(process.result(result))
+  combine.multiple = (length(securities) + length(fields) > 2)
+
+  for (security in securities) {
+    for (field in fields) {
+      result <- conn$bls(security, field)
+      if (all(dim(result$getData()) == 0)) next # Skip empty results.
+      result <- process.result(result) # Convert to data frame.
+      
+      if (combine.multiple) {
+        # Prepend data frame with new row containing security ticker.
+        result <- data.frame(ticker = security, result)
+      }
+
+      if (is.null(stored.names)) {
+        stored.names <- colnames(result)
+        if (!is.null(combined)) stop("combined should be null if stored.names is null")
+        combined <- result
+      } else {
+        if (!all(colnames(result) == stored.names)) stop(paste("returned names", colnames(result), "do not match previous names", stored.names))
+        if (!combine.multiple) stop("combine.multiple should be true if we are running through loop more than once")
+        combined <- rbind(combined, result)
+      }
+    }
+  }
+
+  return(combined)
 }
 
 blh <- function(conn, security, fields, start_date, end_date = NULL, override_fields = NULL, overrides = NULL) {
@@ -39,13 +67,13 @@ blh <- function(conn, security, fields, start_date, end_date = NULL, override_fi
       result <- conn$blh(security, fields, start_date, end_date, override_fields, overrides)
     }
   }
-
+  
   return(process.result(result))
 }
 
 process.result <- function(result, use.security.names = FALSE) {
   matrix.data <- result$getData()
-  
+
   if (use.security.names) {
     rownames(matrix.data) <- result$getSecurities()
   }
@@ -53,7 +81,7 @@ process.result <- function(result, use.security.names = FALSE) {
 
   df.data <- as.data.frame(matrix.data)
   data_types <- result$getDataTypes()
-  
+
   if (dim(df.data)[2] > 0) {
     convert.to.type(df.data, data_types)
   } else {
