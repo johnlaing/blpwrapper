@@ -13,6 +13,13 @@ public class BulkDataResultTest extends TestCase {
     conn.close();
   }
 
+  public void testFutDeliverableBonds() throws Exception {
+    String security = "TYA Comdty";
+    String field = "FUT_DELIVERABLE_BONDS";
+
+    conn.bls(security, field);
+  }
+
   public void testEmptyResult() throws Exception {
     String security = "UKX Index";
     String field = "INDX_MEMBERS";

@@ -14,7 +14,15 @@ public class HistoricalDataResult implements DataResult {
     submitted_securities = securities;
 
     returned_fields = new String[fields.length + 1];
-    data_types = new String[fields.length + 1];
+    returned_fields[0] = "date";
+    for (int i = 0; i < fields.length; i++) {
+      returned_fields[i+1] = fields[i];
+    }
+
+    data_types = new String[returned_fields.length];
+    for (int i = 0; i < data_types.length; i++) {
+      data_types[i] = "NOT_APPLICABLE";
+    }
   }
 
   public String[] getFields() {
@@ -76,22 +84,36 @@ public class HistoricalDataResult implements DataResult {
 
     // Iterate over historical data points
     for (int j = 0; j < fieldData.numValues(); j++) { 
-      Element field = fieldData.getValueAsElement(j);
+      Element x = fieldData.getValueAsElement(j);
 
       if (j==0) {
-        result_data = new String[fieldData.numValues()][submitted_fields.length+1];
+        result_data = new String[fieldData.numValues()][returned_fields.length];
       }
-      
-      // TODO iterate over submitted fields instead as in ReferenceDataResult
-      // Iterate over returned fields
-      for (int k = 0; k < field.numElements(); k++) {
-        Element x = field.getElement(k);
-        if (j==0) {
-          data_types[k] = x.datatype().toString();
-          returned_fields[k] = x.name().toString();
+
+      int field_data_counter = 0;
+      for (int k = 0; k < returned_fields.length; k++) {
+        String field_name = returned_fields[k];
+        String field_value = null;
+
+        if (field_data_counter < x.numElements()) {
+          Element field = x.getElement(k);
+          if (field.name().toString().equals(field_name)) {
+            // Store data type for later.
+            if (data_types[k].equals("NOT_APPLICABLE")) {
+              String data_type = field.datatype().toString();
+              if (!data_type.equals("NA")) {
+                data_types[k] = data_type;
+              }
+            }
+
+            field_value = field.getValueAsString();
+            field_data_counter++;
+          }
         }
-        result_data[j][k] = x.getValueAsString();
-      }
-    } 
+
+        result_data[j][k] = field_value;
+      } 
+    }
   }
 }
+
