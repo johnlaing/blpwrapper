@@ -1,0 +1,17 @@
+---
+title: blpwrapper
+layout:  web
+filter:
+  - erb
+  - textile
+---
+
+org.findata.blpwrapper is a Java package to wrap the Bloomberg API.
+
+blpwrapper is used in the RBloomberg R package. Examples are available for incorporating blpwrapper into JRuby and Jython.
+
+To obtain the source code you can
+
+@bzr branch http://findata.org/code/blpwrapper@
+
+View the "javadocs":javadoc

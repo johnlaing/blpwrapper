@@ -1,4 +1,9 @@
 > # A shared init file for all examples, to make it easy for example to switch APIs.
 > library(RBloomberg)
-Error in library(RBloomberg) : there is no package called 'RBloomberg'
-Execution halted
+Loading required package: rJava
+Loading required package: RUnit
+> conn <- blpConnect()
+> 
+> proc.time()
+   user  system elapsed 
+   1.12    0.67    1.81 

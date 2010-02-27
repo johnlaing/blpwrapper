@@ -16,7 +16,7 @@ filter:    erb
 	<meta name="author" content="LoadFoO" />
 	<meta name="description" content="Site description" />
 	<meta name="keywords" content="key, words" />
-	<title>BloombergAPI :: <%= @page.title %></title>
+	<title>findata.org :: <%= @page.title %></title>
 	<link rel="stylesheet" type="text/css" href="/css/style.css" media="screen" />
 	<link rel="stylesheet" href="/css/pygments.css" type="text/css" />
 	<link rel="shortcut icon" href="/favicon.ico" />
@@ -25,10 +25,11 @@ filter:    erb
 <body>
 <div id="wrap">
 <div id="top">
-<h2><a href="/" title="Back to main page">BloombergAPI</a></h2>
+<h2><a href="/" title="Back to main page">findata.org</a></h2>
 <div id="menu">
 <ul>
     <% [
+        ['/blpwrapper', 'blpwrapper'],
         ['/rbloomberg', 'RBloomberg'],
         ['/commits', 'Changelog']
         ].each do |a, t| -%>

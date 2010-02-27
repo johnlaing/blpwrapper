@@ -1,4 +1,0 @@
-> source("init.R")
-Error in library(RBloomberg) : there is no package called 'RBloomberg'
-Calls: source -> eval.with.vis -> eval.with.vis -> library
-Execution halted

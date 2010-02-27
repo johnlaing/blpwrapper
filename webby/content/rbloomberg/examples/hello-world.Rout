@@ -1,3 +1,0 @@
-> library(RBloomberg)
-Error in library(RBloomberg) : there is no package called 'RBloomberg'
-Execution halted
