@@ -28,5 +28,6 @@ Overrides which are dates must be passed in "YYYYMMDD" format as per Bloomberg V
 \dontrun{
 #EXAMPLE
 }
+}
 \author{Ana Nelson \email{ana@ananelson.com}}
 
