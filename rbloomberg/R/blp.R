@@ -9,7 +9,7 @@ blp <- function(conn, securities, fields, override_fields = NULL, overrides = NU
     result <- conn$blp(securities, fields, override_fields, overrides)
   }
 
-  return(process.result(result, use.security.names=TRUE))
+  return(process.result(result, "tickers"))
 }
 
 bls <- function(conn, securities, fields) {
@@ -54,6 +54,11 @@ blh <- function(conn, security, fields, start_date, end_date = NULL, override_fi
     overrides <- .jarray(overrides)
   }
 
+  start_date = format(start_date, format="%Y%m%d")
+  if (!is.null(end_date)) {
+    end_date = format(end_date, format="%Y%m%d")
+  }
+
   if (is.null(end_date)) {
     if (is.null(override_fields)) {
       result <- conn$blh(security, fields, start_date)
@@ -68,15 +73,19 @@ blh <- function(conn, security, fields, start_date, end_date = NULL, override_fi
     }
   }
   
-  return(process.result(result))
+  return(process.result(result, "dates"))
 }
 
-process.result <- function(result, use.security.names = FALSE) {
+process.result <- function(result, row.name.source = "none") {
   matrix.data <- result$getData()
 
-  if (use.security.names) {
-    rownames(matrix.data) <- result$getSecurities()
-  }
+  rownames(matrix.data) <- switch(row.name.source,
+      tickers = result$getSecurities(),
+      dates = matrix.data[,1],
+      none = NULL,
+      stop(paste("don't know how to handle this row name source", row.name.source))
+  )
+
   colnames(matrix.data) <- result$getFields()
 
   df.data <- as.data.frame(matrix.data)
@@ -96,8 +105,8 @@ convert.to.type <- function(df.data, data_types) {
     new_values <- switch(data_types[i],
         FLOAT64 = as.numeric(string_values),
         STRING = string_values,
-        DATE = sapply(string_values, convert.to.date.if.present),
-        DATETIME = as.POSIXct(string_values, format="%H:%M:%S"),
+        DATE = string_values,
+        DATETIME = string_values,
         NOT_APPLICABLE = string_values,
         stop(paste("unknown type", data_types[i]))
         )
@@ -107,10 +116,3 @@ convert.to.type <- function(df.data, data_types) {
   return(df.data)
 }
 
-convert.to.date.if.present <- function(x) {
-  if (nchar(x) < 5) {
-    NA
-  } else {
-    as.POSIXct(x)
-  }
-}
