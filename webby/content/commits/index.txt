@@ -1,5 +1,5 @@
 ---
-title: BloombergAPI Commits
+title: blpwrapper Commits
 layout: web
 dirty: true
 filter:

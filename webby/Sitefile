@@ -17,7 +17,7 @@ def rbloomberg_manual_filename
 end
 
 def rbloomberg_manual_url
-  %{http://bloombergapi.com/rbloomberg/#{rbloomberg_manual_filename}}
+  %{http://findata.org/rbloomberg/#{rbloomberg_manual_filename}}
 end
 
 desc "Rename generated file with RBloomberg version number."

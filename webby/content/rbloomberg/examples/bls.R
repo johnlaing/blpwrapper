@@ -1,4 +1,6 @@
-source("init.R")
+library(RBloomberg)
+conn <- blpConnect()
+
 
 security <- c("BKIR ID Equity")
 field <- c("DVD_HIST")

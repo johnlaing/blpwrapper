@@ -37,10 +37,10 @@ There is an extensive PDF manual available "here":<%= rbloomberg_manual_url %>.
 
 h2. Browse the Source
 
-RBloomberg is an R package, and an R package is just a bunch of files written in R, so you might find the answer to your question by just looking at the source itself. It's worth a try. Either open up the source you have in your R installation, or grab "this tar.gz file":http://r.bloombergapi.com/src/contrib/RBloomberg.tar.gz and take a look inside. The good stuff is in the @R/@ directory but also take a look at the unit tests in @inst/runit-tests@ which might have some helpful examples.
+RBloomberg is an R package, and an R package is just a bunch of files written in R, so you might find the answer to your question by just looking at the source itself. It's worth a try. Either open up the source you have in your R installation, or grab "this tar.gz file":http://r.findata.org/src/contrib/RBloomberg.tar.gz and take a look inside. The good stuff is in the @R/@ directory but also take a look at the unit tests in @inst/runit-tests@ which might have some helpful examples.
 
 h2. Ask Nicely for Help
 
 If all else fails, then you are welcome to ask for help. You can send a note to the "R-Sig-Finance mailing list":https://stat.ethz.ch/mailman/listinfo/r-sig-finance. This is an R mailing list for people with an interest in finance, not specific to RBloomberg but there are a lot of RBloomberg users on there. Please explain your problem clearly, and please include the output from running @sessionInfo()@ so we know what version of R and RBloomberg you are using.
 
-Another option is to ask a question, submit a bug report or request a new feature at the "Launchpad page":http://launchpad.net/rbloomberg for RBloomberg.
+Another option is to ask a question, submit a bug report or request a new feature by email. Look in the package for maintainer info.

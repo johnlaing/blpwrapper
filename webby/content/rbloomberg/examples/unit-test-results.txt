@@ -1,4 +1,4 @@
-RUNIT TEST PROTOCOL -- Mon Mar 01 18:16:31 2010 
+RUNIT TEST PROTOCOL -- Mon Mar 01 18:26:31 2010 
 *********************************************** 
 Number of test functions: 9 
 Number of errors: 0 
@@ -72,11 +72,11 @@ Attributes: < Component 2: target is array, current is character >
 Component 1: Mean relative difference: 8.108356e-05
 --------------------------- 
 Test file: C:/PROGRA~1/R/R-210~1.1/library/RBloomberg/runit-tests/test_blpConnect.R 
-test.default.iface: (0 checks) ... OK (0.13 seconds)
+test.default.iface: (0 checks) ... OK (0.12 seconds)
 test.future.iface: (1 checks) ... OK (0 seconds)
 test.invalid.iface: (1 checks) ... OK (0 seconds)
 test.java.iface: (0 checks) ... OK (0.14 seconds)
 --------------------------- 
 Test file: C:/PROGRA~1/R/R-210~1.1/library/RBloomberg/runit-tests/test_bls.R 
-test.combine.multiple.bls: (0 checks) ... OK (0.95 seconds)
-test.dvd.hist: (0 checks) ... OK (0.39 seconds)
+test.combine.multiple.bls: (0 checks) ... OK (1.01 seconds)
+test.dvd.hist: (0 checks) ... OK (0.41 seconds)

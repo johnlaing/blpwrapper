@@ -1,9 +1,0 @@
-> # A shared init file for all examples, to make it easy for example to switch APIs.
-> library(RBloomberg)
-Loading required package: rJava
-Loading required package: RUnit
-> conn <- blpConnect()
-> 
-> proc.time()
-   user  system elapsed 
-   1.14    0.59    1.76 

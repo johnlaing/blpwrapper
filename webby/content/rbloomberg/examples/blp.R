@@ -1,4 +1,5 @@
-source("init.R")
+library(RBloomberg)
+conn <- blpConnect()
 
 blp(conn, "AMZN US Equity", "NAME")
 
