@@ -25,7 +25,7 @@ blpConnect.Java <- function() {
   library(rJava)
   .jinit()
   .jaddClassPath("C:\\blp\\API\\APIv3\\JavaAPI\\lib\\blpapi3.jar")
-  .jaddClassPath("C:\\blpwrapper\\rbloomberg\\R\\blpwrapper.jar")
+  .jaddClassPath("C:\\blpwrapper\\rbloomberg\\java\\blpwrapper.jar")
 
   conn <- .jnew("org.findata/blpwrapper/Connection")
   conn$connect()

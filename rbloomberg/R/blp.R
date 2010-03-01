@@ -1,18 +1,25 @@
-blp <- function(conn, securities, fields, override_fields = NULL, overrides = NULL) {
+blp <- function(conn, securities, fields, override_fields = NULL, override_values = NULL, option_names = NULL, option_values = NULL) {
   securities <- .jarray(securities)
   fields <- .jarray(fields)
-  if (is.null(override_fields)) {
+
+  if (is.null(override_fields) && is.null(option_names)) {
     result <- conn$blp(securities, fields)
+  } else if (is.null(option_names)) {
+    override_fields <- .jarray(override_fields)
+    override_values <- .jarray(override_values)
+    result <- conn$blp(securities, fields, override_fields, override_values)
   } else {
     override_fields <- .jarray(override_fields)
-    overrides <- .jarray(overrides)
-    result <- conn$blp(securities, fields, override_fields, overrides)
+    override_values <- .jarray(override_values)
+    option_names <- .jarray(option_names)
+    option_values <- .jarray(option_values)
+    result <- conn$blp(securities, fields, override_fields, override_values, option_names, option_values)
   }
 
-  return(process.result(result, "tickers"))
+  return(process.result(result, "java"))
 }
 
-bls <- function(conn, securities, fields) {
+bls <- function(conn, securities, fields, override_fields = NULL, override_values = NULL, option_names = NULL, option_values = NULL) {
   # Pass each security+field separately. Merge resulting data frames
   # if the results are conformal, raise an error if they're not.
   stored.names <- NULL
@@ -22,10 +29,23 @@ bls <- function(conn, securities, fields) {
 
   for (security in securities) {
     for (field in fields) {
-      result <- conn$bls(security, field)
+      if (is.null(override_fields) && is.null(option_names)) {
+        result <- conn$bls(security, field)
+      } else if (is.null(option_names)) {
+        override_fields <- .jarray(override_fields)
+        override_values <- .jarray(override_values)
+        result <- conn$bls(security, field, override_fields, override_values)
+      } else {
+        override_fields <- .jarray(override_fields)
+        override_values <- .jarray(override_values)
+        option_names <- .jarray(option_names)
+        option_values <- .jarray(option_values)
+        result <- conn$bls(security, field, override_fields, override_values, option_names, option_values)
+      }
+
       if (all(dim(result$getData()) == 0)) next # Skip empty results.
       result <- process.result(result) # Convert to data frame.
-      
+
       if (combine.multiple) {
         # Prepend data frame with new row containing security ticker.
         result <- data.frame(ticker = security, result)
@@ -46,12 +66,23 @@ bls <- function(conn, securities, fields) {
   return(combined)
 }
 
-blh <- function(conn, security, fields, start_date, end_date = NULL, override_fields = NULL, overrides = NULL) {
-  fields <- .jarray(fields)
+bar <- function(conn, security, field, start_date_time, end_date_time, interval) {
+  result <- conn$bar(security, field, start_date_time, end_date_time, interval)
+  return(process.result(result))
+}
 
+tick <- function(conn, security, fields, start_date_time, end_date_time) {
+  fields <- .jarray(fields);
+  result <- conn$tick(security, fields, start_date_time, end_date_time)
+  return(process.result(result))
+}
+
+blh <- function(conn, security, fields, start_date, end_date = NULL, override_fields = NULL, override_values = NULL, option_names = NULL, option_values = NULL) {
+  fields <- .jarray(fields)
+  
   if (!is.null(override_fields)) {
     override_fields <- .jarray(override_fields)
-    overrides <- .jarray(overrides)
+    override_values <- .jarray(override_values)
   }
 
   start_date = format(start_date, format="%Y%m%d")
@@ -59,34 +90,43 @@ blh <- function(conn, security, fields, start_date, end_date = NULL, override_fi
     end_date = format(end_date, format="%Y%m%d")
   }
 
+  if (!is.null(option_names)) {
+    option_names <- .jarray(option_names)
+    option_values <- .jarray(option_values)
+  }
+
   if (is.null(end_date)) {
-    if (is.null(override_fields)) {
+    if (is.null(override_fields) && is.null(option_names)) {
       result <- conn$blh(security, fields, start_date)
+    } else if (is.null(option_names)) {
+      result <- conn$blh(security, fields, start_date, override_fields, override_values)
     } else {
-      result <- conn$blh(security, fields, start_date, override_fields, overrides)
+      result <- conn$blh(security, fields, start_date, override_fields, override_values, option_names, option_values)
     }
   } else {
-    if(is.null(override_fields)) {
+    if (is.null(override_fields) && is.null(option_names)) {
       result <- conn$blh(security, fields, start_date, end_date)
+    } else if (is.null(option_names)) {
+      result <- conn$blh(security, fields, start_date, end_date, override_fields, override_values)
     } else {
-      result <- conn$blh(security, fields, start_date, end_date, override_fields, overrides)
+      result <- conn$blh(security, fields, start_date, end_date, override_fields, override_values, option_names, option_values)
     }
   }
-  
-  return(process.result(result, "dates"))
+
+  return(process.result(result, "first.row"))
 }
 
 process.result <- function(result, row.name.source = "none") {
   matrix.data <- result$getData()
 
   rownames(matrix.data) <- switch(row.name.source,
-      tickers = result$getSecurities(),
-      dates = matrix.data[,1],
+      java = result$getRowNames(),
+      first.row = matrix.data[,1],
       none = NULL,
       stop(paste("don't know how to handle this row name source", row.name.source))
-  )
+      )
 
-  colnames(matrix.data) <- result$getFields()
+  colnames(matrix.data) <- result$getColumnNames()
 
   df.data <- as.data.frame(matrix.data)
   data_types <- result$getDataTypes()
@@ -104,6 +144,8 @@ convert.to.type <- function(df.data, data_types) {
 
     new_values <- switch(data_types[i],
         FLOAT64 = as.numeric(string_values),
+        INT32 = as.numeric(string_values),
+        INT64 = as.numeric(string_values),
         STRING = string_values,
         DATE = string_values,
         DATETIME = string_values,
