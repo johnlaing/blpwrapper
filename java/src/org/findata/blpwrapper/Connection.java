@@ -2,7 +2,11 @@ package org.findata.blpwrapper;
 
 import com.bloomberglp.blpapi.*;
 
+import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.regex.Pattern;
+
 
 public class Connection {
   private SessionOptions session_options;
@@ -18,6 +22,8 @@ public class Connection {
   private boolean refdata_service_open = false;
   private String refdata_request_name = "ReferenceDataRequest";
   private String histdata_request_name = "HistoricalDataRequest";
+  private String intraday_tick_request_name = "IntradayTickRequest";
+  private String intraday_bar_request_name = "IntradayBarRequest";
 
   private String apifields_service_name = "//blp/apiflds";
   private boolean apifields_service_open = false;
@@ -26,6 +32,8 @@ public class Connection {
   public static final int BULK_DATA_RESULT = 2;
   public static final int HISTORICAL_DATA_RESULT = 3;
   public static final int FIELD_INFO_RESULT = 4;
+  public static final int INTRADAY_TICK_RESULT = 5;
+  public static final int INTRADAY_BAR_RESULT = 6;
 
   public Connection() {
     response_cache = new ArrayList();
@@ -55,10 +63,12 @@ public class Connection {
   public CorrelationID nextCorrelationID(int result_type, String[] securities, String[] fields) throws Exception {
     DataResult result;
     switch(result_type) {
-      case REFERENCE_DATA_RESULT:   result = new ReferenceDataResult(securities, fields); break;
-      case BULK_DATA_RESULT:        result = new BulkDataResult(securities, fields); break;
-      case HISTORICAL_DATA_RESULT:  result = new HistoricalDataResult(securities, fields); break;
-      case FIELD_INFO_RESULT:       result = new FieldInfoResult(securities); break;
+      case REFERENCE_DATA_RESULT:           result = new ReferenceDataResult(securities, fields); break;
+      case BULK_DATA_RESULT:                result = new BulkDataResult(securities, fields); break;
+      case HISTORICAL_DATA_RESULT:          result = new HistoricalDataResult(securities, fields); break;
+      case FIELD_INFO_RESULT:               result = new FieldInfoResult(securities); break;
+      case INTRADAY_TICK_RESULT:    result = new IntradayTickDataResult(securities, fields); break;
+      case INTRADAY_BAR_RESULT:    result = new IntradayBarDataResult(securities, fields); break;
       default: throw new WrapperException("unknown result_type " + result_type);
     }
     if (response_cache.add(result)) {
@@ -96,33 +106,62 @@ public class Connection {
     return(correlation_id);
   }
 
-  private CorrelationID sendRefDataRequest(int result_type, String request_name, String[] securities, String[] fields, String start_date, String end_date, String[] override_fields, String[] overrides) throws Exception {
+  private CorrelationID sendRefDataRequest(int result_type, String request_name, String[] securities, String[] fields, String[] override_fields, String[] override_values, String[] option_names, String[] option_values) throws Exception {
+    String[] event_types = new String[0];
+    return(sendRefDataRequest(result_type, request_name, securities, fields, override_fields, override_values, option_names, option_values, event_types));
+  }
+
+  private CorrelationID sendRefDataRequest(int result_type, String request_name, String[] securities, String[] fields, String[] override_fields, String[] override_values, String[] option_names, String[] option_values, String[] event_types) throws Exception {
     Service service = getRefDataService();
     Request request = service.createRequest(request_name);
-
-    Element securities_element = request.getElement("securities");
-    for (int i = 0; i < securities.length; i++) {
-      securities_element.appendValue(securities[i]);
+    
+    if (request.hasElement("securities")) {
+      Element securities_element = request.getElement("securities");
+      for (int i = 0; i < securities.length; i++) {
+        securities_element.appendValue(securities[i]);
+      }
     }
-
-    Element fields_element = request.getElement("fields");
-    for (int i = 0; i < fields.length; i++) {
-      fields_element.appendValue(fields[i]);
-    }
-
-    if (start_date.length() > 0) {
-      request.set("startDate", start_date);
-      if (end_date.length() > 0) {
-        request.set("endDate", end_date);
+    
+    if (request.hasElement("fields")) {
+      Element fields_element = request.getElement("fields");
+      for (int i = 0; i < fields.length; i++) {
+        fields_element.appendValue(fields[i]);
       }
     }
 
     if (override_fields.length > 0) {
-      Element overrides_element = request.getElement("overrides");
+      Element override_values_element = request.getElement("overrides");
       for (int i = 0; i < override_fields.length; i++) {
-        Element override = overrides_element.appendElement();
+        Element override = override_values_element.appendElement();
         override.setElement("fieldId", override_fields[i]);
-        override.setElement("value", overrides[i]);
+        override.setElement("value", override_values[i]);
+      }
+    }
+
+    if (event_types.length > 0) {
+      for (int i = 0; i < event_types.length; i++) {
+        request.append("eventTypes", event_types[i]);
+      }
+    }
+
+    for (int i = 0; i < option_names.length; i++) {
+      String n = option_names[i];
+      if (n.equals("startDateTime") || n.equals("endDateTime")) {
+        Pattern p = Pattern.compile(":|-|\\.|\\s"); // Expecting e.g. 2010-01-01 09:00:00.000
+        String[] time_parts = p.split(option_values[i]);
+
+        int year = new Integer(time_parts[0]).intValue();
+        int month = new Integer(time_parts[1]).intValue();
+        int day_of_month = new Integer(time_parts[2]).intValue();
+        int hour = new Integer(time_parts[3]).intValue();
+        int minute = new Integer(time_parts[4]).intValue();
+        int second = new Integer(time_parts[5]).intValue();
+        int millisecond = new Integer(time_parts[6]).intValue();
+
+        Datetime d = new Datetime(year, month, day_of_month, hour, minute, second, millisecond);
+        request.set(n, d);
+      } else {
+        request.set(option_names[i], option_values[i]);
       }
     }
 
@@ -163,10 +202,12 @@ public class Connection {
       DataResult result;
 
       switch(result_type) {
-        case REFERENCE_DATA_RESULT:   result = (ReferenceDataResult)response_cache.get(response_id); break;
-        case BULK_DATA_RESULT:        result = (BulkDataResult)response_cache.get(response_id); break;
-        case HISTORICAL_DATA_RESULT:  result = (HistoricalDataResult)response_cache.get(response_id); break;
-        case FIELD_INFO_RESULT:       result = (FieldInfoResult)response_cache.get(response_id); break;
+        case REFERENCE_DATA_RESULT:     result = (ReferenceDataResult)response_cache.get(response_id); break;
+        case BULK_DATA_RESULT:          result = (BulkDataResult)response_cache.get(response_id); break;
+        case HISTORICAL_DATA_RESULT:    result = (HistoricalDataResult)response_cache.get(response_id); break;
+        case FIELD_INFO_RESULT:         result = (FieldInfoResult)response_cache.get(response_id); break;
+        case INTRADAY_TICK_RESULT:      result = (IntradayTickDataResult)response_cache.get(response_id); break;
+        case INTRADAY_BAR_RESULT:       result = (IntradayBarDataResult)response_cache.get(response_id); break;
         default: throw new WrapperException("unknown result_type " + result_type);
       }
 
@@ -193,65 +234,203 @@ public class Connection {
 
   public DataResult blp(String[] securities, String[] fields) throws Exception {
     String[] override_fields = new String[0];
-    String[] overrides = new String[0];
-    return(blp(securities, fields, override_fields, overrides));
+    String[] override_values = new String[0];
+    String[] option_names = new String[0];
+    String[] option_values = new String[0];
+    return(blp(securities, fields, override_fields, override_values, option_names, option_values));
   }
 
-  public DataResult blp(String[] securities, String[] fields, String[] override_fields, String[] overrides) throws Exception {
-    String start_date = "";
-    String end_date = "";
-    int response_id = (int)sendRefDataRequest(REFERENCE_DATA_RESULT, refdata_request_name, securities, fields, start_date, end_date, override_fields, overrides).value();
+  public DataResult blp(String[] securities, String[] fields, String[] override_fields, String[] override_values) throws Exception {
+    String[] option_names = new String[0];
+    String[] option_values = new String[0];
+    return(blp(securities, fields, override_fields, override_values, option_names, option_values));
+  }
+
+  public DataResult blp(String[] securities, String[] fields, String[] override_fields, String[] override_values, String[] option_names, String[] option_values) throws Exception {
+    int response_id = (int)sendRefDataRequest(REFERENCE_DATA_RESULT, refdata_request_name, securities, fields, override_fields, override_values, option_names, option_values).value();
     processEventLoop(REFERENCE_DATA_RESULT);
     return((DataResult)response_cache.get(response_id));
   }
 
   public DataResult blh(String security, String[] fields, String start_date, String end_date) throws Exception {
     String[] override_fields = new String[0];
-    String[] overrides = new String[0];
-    return(blh(security, fields, start_date, end_date, override_fields, overrides));
+    String[] override_values = new String[0];
+
+    String[] option_names = {"startDate", "endDate"};
+    String[] option_values = new String[2];
+    option_values[0] = start_date;
+    option_values[1] = end_date;
+
+    return(blh(security, fields, override_fields, override_values, option_names, option_values));
   }
 
   public DataResult blh(String security, String[] fields, String start_date) throws Exception {
     String[] override_fields = new String[0];
-    String[] overrides = new String[0];
-    String end_date = "";
+    String[] override_values = new String[0];
 
-    return(blh(security, fields, start_date, end_date, override_fields, overrides));
+    String[] option_names = {"startDate"};
+    String[] option_values = new String[1];
+    option_values[0] = start_date;
+
+    return(blh(security, fields, override_fields, override_values, option_names, option_values));
   }
 
-  public DataResult blh(String security, String[] fields, String start_date, String[] override_fields, String[] overrides) throws Exception {
-    String end_date = "";
+  public DataResult blh(String security, String[] fields, String start_date, String end_date, String[] override_fields, String[] override_values) throws Exception {
+    String[] option_names = {"startDate", "endDate"};
+    String[] option_values = new String[2];
+    option_values[0] = start_date;
+    option_values[1] = end_date;
 
-    return(blh(security, fields, start_date, end_date, override_fields, overrides));
+    return(blh(security, fields, override_fields, override_values, option_names, option_values));
   }
 
-  public DataResult blh(String security, String[] fields, String start_date, String end_date, String[] override_fields, String[] overrides) throws Exception {
+  public DataResult blh(String security, String[] fields, String start_date, String[] override_fields, String[] override_values) throws Exception {
+    String[] option_names = {"startDate"};
+    String[] option_values = new String[1];
+    option_values[0] = start_date;
+
+    return(blh(security, fields, override_fields, override_values, option_names, option_values));
+  }
+
+  public DataResult blh(String security, String[] fields, String start_date, String[] override_fields, String[] override_values, String[] option_names, String[] option_values) throws Exception {
+
+    int len = option_names.length;
+    String[] option_names_with_start = new String[len + 1];
+    String[] option_values_with_start = new String[len + 1];
+
+    for (int i = 0; i < len; i++) {
+      option_names_with_start[i] = option_names[i];
+      option_values_with_start[i] = option_values[i];
+    }
+
+    option_names_with_start[len] = "startDate";
+    option_values_with_start[len] = start_date;
+
+    return(blh(security, fields, override_fields, override_values, option_names, option_values));
+  }
+
+  public DataResult blh(String security, String[] fields, String[] override_fields, String[] override_values, String[] option_names, String[] option_values) throws Exception {
     String[] securities = new String[1];
     securities[0] = security;
 
-    int response_id = (int)sendRefDataRequest(HISTORICAL_DATA_RESULT, histdata_request_name, securities, fields, start_date, end_date, override_fields, overrides).value();
+    int response_id = (int)sendRefDataRequest(HISTORICAL_DATA_RESULT, histdata_request_name, securities, fields, override_fields, override_values, option_names, option_values).value();
     processEventLoop(HISTORICAL_DATA_RESULT);
     return((DataResult)response_cache.get(response_id));
   }
-
+  
+  /**
+   * Request bulk data from Bloomberg. Shortcut method which allows you to call bls simply by passing a security and field.
+   * @param security A string containing security ticker.
+   * @param field A string containing field mnemonic.
+   */
   public DataResult bls(String security, String field) throws Exception {
     String[] override_fields = new String[0];
-    String[] overrides = new String[0];
-    return(bls(security, field, override_fields, overrides));
+    String[] override_values = new String[0];
+    String[] option_names = new String[0];
+    String[] option_values = new String[0];
+    return(bls(security, field, override_fields, override_values, option_names, option_values));
   }
 
-  public DataResult bls(String security, String field, String[] override_fields, String[] overrides) throws Exception {
+  /**
+   * Request bulk data from Bloomberg. Bulk data may return several different fields for a single requested field.
+   * @param security A string containing security ticker.
+   * @param field A string containing field mnemonic.
+   * @param override_fields Array of strings with field mnemonics for override fields.
+   * @param override_values Array of strings with override values, must be in same order as override_fields.
+   */
+  public DataResult bls(String security, String field, String[] override_fields, String[] override_values) throws Exception {
+    String[] option_names = new String[0];
+    String[] option_values = new String[0];
+    return(bls(security, field, override_fields, override_values, option_names, option_values));
+  }
+
+  /**
+   * Request bulk data from Bloomberg. Bulk data may return several different fields for a single requested field.
+   * @param security A string containing security ticker.
+   * @param field A string containing field mnemonic.
+   * @param override_fields Array of strings with field mnemonics for override fields.
+   * @param override_values Array of strings with override values, must be in same order as override_fields.
+   * @param option_names Array of strings with option names.
+   * @param option_values Array of strings with option values, must be in same order as option_names.
+   */
+  public DataResult bls(String security, String field, String[] override_fields, String[] override_values, String[] option_names, String[] option_values) throws Exception {
     String[] securities = new String[1];
     securities[0] = security;
 
     String[] fields = new String[1];
     fields[0] = field;
 
-    String start_date = "";
-    String end_date = "";
-
-    int response_id = (int)sendRefDataRequest(BULK_DATA_RESULT, refdata_request_name, securities, fields, start_date, end_date, override_fields, overrides).value();
+    int response_id = (int)sendRefDataRequest(BULK_DATA_RESULT, refdata_request_name, securities, fields, override_fields, override_values, option_names, option_values).value();
     processEventLoop(BULK_DATA_RESULT);
+    return((DataResult)response_cache.get(response_id));
+  }
+
+  public DataResult tick(String security, String[] event_types, String start_date_time, String end_date_time) throws Exception {
+    String[] override_fields = new String[0];
+    String[] override_values = new String[0];
+
+    String[] option_names = new String[0];
+    String[] option_values = new String[0];
+
+    return(tick(security, event_types, start_date_time, end_date_time, override_fields, override_values, option_names, option_values));
+  }
+
+  public DataResult tick(String security, String[] event_types, String start_date_time, String end_date_time, String[] override_fields, String[] override_values, String[] option_names, String[] option_values) throws Exception {
+    String[] securities = new String[0];
+    String[] fields = new String[0];
+  
+    int len = option_names.length;
+    String[] option_names_with_start = new String[len + 3];
+    String[] option_values_with_start = new String[len + 3];
+    
+    for (int i = 0; i < option_names.length; i++) {
+      option_names_with_start[i] = option_names[i];
+      option_values_with_start[i] = option_values[i];
+    }
+
+    option_names_with_start[len] = "security";
+    option_values_with_start[len] = security;
+    option_names_with_start[len+1] = "startDateTime";
+    option_values_with_start[len+1] = start_date_time;
+    option_names_with_start[len+2] = "endDateTime";
+    option_values_with_start[len+2] = end_date_time;
+
+    int response_id = (int)sendRefDataRequest(INTRADAY_TICK_RESULT, intraday_tick_request_name, securities, fields, override_fields, override_values, option_names_with_start, option_values_with_start, event_types).value();
+    processEventLoop(INTRADAY_TICK_RESULT);
+    return((DataResult)response_cache.get(response_id));
+  }
+
+  public DataResult bar(String security, String event_type, String start_date_time, String end_date_time, String interval) throws Exception {
+    String[] securities = new String[0];
+    String[] fields = new String[0];
+
+    String[] option_names = new String[0];
+    String[] option_values = new String[0];
+    String[] override_fields = new String[0];
+    String[] override_values = new String[0];
+  
+    int len = option_names.length;
+    String[] option_names_with_start = new String[len + 5];
+    String[] option_values_with_start = new String[len + 5];
+    
+    for (int i = 0; i < option_names.length; i++) {
+      option_names_with_start[i] = option_names[i];
+      option_values_with_start[i] = option_values[i];
+    }
+
+    option_names_with_start[len] = "security";
+    option_values_with_start[len] = security;
+    option_names_with_start[len+1] = "startDateTime";
+    option_values_with_start[len+1] = start_date_time;
+    option_names_with_start[len+2] = "endDateTime";
+    option_values_with_start[len+2] = end_date_time;
+    option_names_with_start[len+3] = "eventType";
+    option_values_with_start[len+3] = event_type;
+    option_names_with_start[len+4] = "interval";
+    option_values_with_start[len+4] = interval;
+
+    int response_id = (int)sendRefDataRequest(INTRADAY_BAR_RESULT, intraday_bar_request_name, securities, fields, override_fields, override_values, option_names_with_start, option_values_with_start).value();
+    processEventLoop(INTRADAY_BAR_RESULT);
     return((DataResult)response_cache.get(response_id));
   }
 }

@@ -36,23 +36,42 @@ public class HistoricalDataResultTest extends TestCase {
   public void testValidRequestWithOverrides() throws Exception {
     String security = "OCN US Equity";
     String[] fields = {"PX_LAST", "PX_BID"};
-    String start_date = "20100101";
-    String end_date = "20100201";
     String[] override_fields = {"EQY_FUND_CRNCY"};
-    String[] overrides = {"JPY"};
+    String[] override_values = {"JPY"};
 
-    DataResult result = conn.blh(security, fields, start_date, end_date, override_fields, overrides);
+    String[] option_names = {"startDate", "endDate"};
+    String[] option_values = {"20100101", "20100201"};
+
+    DataResult result = conn.blh(security, fields, override_fields, override_values, option_names, option_values);
     String[][] data = result.getData();
+    System.out.println(data[0][0]);
+  }
+
+  public void testValidRequestWithOptions() throws Exception {
+    String security = "OCN US Equity";
+    String[] fields = {"PX_LAST", "PX_BID"};
+  
+    String[] override_fields = new String[0];
+    String[] override_values = new String[0];
+
+    String[] option_names = {"startDate", "endDate", "currency"};
+    String[] option_values = {"20100101", "20100201", "JPY"};
+
+    DataResult result = conn.blh(security, fields, override_fields, override_values, option_names, option_values);
+    String[][] data = result.getData();
+    System.out.println(data[0][0]);
   }
 
   public void testValidRequestWithOverridesWithoutEndDate() throws Exception {
     String security = "OCN US Equity";
     String[] fields = {"PX_LAST", "PX_BID"};
-    String start_date = "20100101";
     String[] override_fields = {"EQY_FUND_CRNCY"};
-    String[] overrides = {"JPY"};
+    String[] override_values = {"JPY"};
 
-    DataResult result = conn.blh(security, fields, start_date, override_fields, overrides);
+    String[] option_names = {"startDate"};
+    String[] option_values = {"20100101"};
+
+    DataResult result = conn.blh(security, fields, override_fields, override_values, option_names, option_values);
     String[][] data = result.getData();
   }
 
@@ -102,13 +121,13 @@ public class HistoricalDataResultTest extends TestCase {
   public void testValidRequestWithInvalidOverrides() throws Exception {
     String security = "OCN US Equity";
     String[] fields = {"NAME", "BID", "LOW_DT_52WEEK"};
-    String start_date = "20100101";
-    String end_date = "20100201";
     String[] override_fields = {"PRICING SOURCE"};
-    String[] overrides = {"CG"};
+    String[] override_values = {"CG"};
+    String[] option_names = {"startDate", "endDate"};
+    String[] option_values = {"20100101", "20100201"};
 
     try {
-      conn.blh(security, fields, start_date, end_date, override_fields, overrides);
+      DataResult result = conn.blh(security, fields, override_fields, override_values, option_names, option_values);
       fail("Should have raised an error");
     } catch (WrapperException e) {
       boolean b = Pattern.matches("^response error: Invalid override field id specified.*$", e.getMessage());

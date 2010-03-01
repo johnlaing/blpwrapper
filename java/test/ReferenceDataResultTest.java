@@ -19,7 +19,7 @@ public class ReferenceDataResultTest extends TestCase {
     String[] fields = {"name"};
 
     ReferenceDataResult result = (ReferenceDataResult)conn.blp(securities, fields);
-    assertEquals("name", result.getFields()[0]);
+    assertEquals("name", result.getColumnNames()[0]);
   }
 
   public void testReturnNullForInapplicableFields() throws Exception {
@@ -118,6 +118,22 @@ public class ReferenceDataResultTest extends TestCase {
       assertTrue("unexpected message", b);
     }
   }
+
+  public void testPassingOptions() throws Exception {
+    String[] securities = {"AMZN US Equity"};
+    String[] fields = {"PX_LAST"};
+    String[] override_fields = new String[0];
+    String[] overrides = new String[0];
+    String[] option_names = {"returnFormattedValue"};
+    String[] option_values = {"true"};
+
+    DataResult result = conn.blp(securities, fields, override_fields, overrides);
+    assertEquals("FLOAT64", result.getDataTypes()[0]);
+
+    result = conn.blp(securities, fields, override_fields, overrides, option_names, option_values);
+    assertEquals("STRING", result.getDataTypes()[0]);
+  }
+
   public void testHugeRequest() throws Exception {
     String[] securities = 
     {"ABBY ID Equity"   , "AERL ID Equity"   , "AEX ID Equity"    ,
@@ -218,6 +234,6 @@ public class ReferenceDataResultTest extends TestCase {
 
     String[] fields = {"NAME", "COUNTRY", "INDUSTRY_SECTOR", "PX_LAST", "EXCH_CODE", "ID_ISIN", "CRNCY_ADJ_MKT_CAP", "CHG_PCT_YTD", "DVD_PAYOUT_RATIO", "TOT_ANALYST_REC", "ALTMAN_Z_SCORE", "BEST_EEPS_NXT_YR", "BEST_EEPS_CUR_YR", "SALES_GROWTH", "BEST_EST_PE_NXT_YR", "RETURN_ON_CAP", "WACC_TOTAL_CAPITAL", "TOT_BUY_REC", "LT_DEBT_TO_COM_EQY", "RETURN_COM_EQY"};
 
-    DataResult result = conn.blp(securities, fields);
+//    DataResult result = conn.blp(securities, fields);
   }
 }

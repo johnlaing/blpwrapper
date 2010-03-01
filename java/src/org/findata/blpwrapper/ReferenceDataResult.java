@@ -22,16 +22,16 @@ public class ReferenceDataResult implements DataResult {
     result_data = new String[securities.length][fields.length];
   }
 
-  public String[] getFields() {
+  public String[][] getData() {
+    return(result_data);
+  }
+
+  public String[] getColumnNames() {
     return(fields);
   }
 
-  public String[] getSecurities() {
+  public String[] getRowNames() {
     return(securities);
-  }
-
-  public String[][] getData() {
-    return(result_data);
   }
 
   public String[] getDataTypes() {
@@ -81,7 +81,7 @@ public class ReferenceDataResult implements DataResult {
           }
         }
       }
-
+      
       int field_data_counter = 0;
       for (int j = 0; j < fields.length; j++) { 
         String field_name = fields[j];

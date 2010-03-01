@@ -27,10 +27,7 @@ public class BulkDataResultTest extends TestCase {
     conn.bls(security, field);
 
     field = "INDX_MEMBERS2";
-    BulkDataResult result = (BulkDataResult)conn.bls(security, field);
-    result.getData();
-    result.getFields();
-    result.getDataTypes();
+    DataResult result = conn.bls(security, field);
   }
 
   public void testValidBulkDataRequest() throws Exception {

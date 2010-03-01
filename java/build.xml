@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="bloombergapi" default="compile" basedir=".">
+<project name="blpwrapper" default="compile" basedir=".">
   <property name="build.dir" location="build" />
   <property name="build.prod.dir" location="${build.dir}/prod" />
   <property name="build.test.dir" location="${build.dir}/test" />
@@ -18,13 +18,17 @@
     </fileset>
   </path>
 
+  <target name="clean">
+    <delete dir="${build.prod.dir}" />
+  </target>
+
   <target name="prepare">
     <tstamp/>
     <mkdir dir="${build.prod.dir}" />
     <mkdir dir="${build.test.dir}" />
   </target>
 
-  <target name="compile" depends="prepare">
+  <target name="compile" depends="clean, prepare">
     <javac srcdir="${src.dir}" destdir="${build.prod.dir}">
       <compilerarg value="-Xlint" />
       <classpath refid="project.classpath" />
@@ -55,9 +59,10 @@
     <jar basedir="${build.prod.dir}" destfile="blpwrapper.jar" />
   </target>
 
-  <target name="demo" depends="compile">
-    <java classname="com.bloombergapi.wrapper.Demo" fork="yes">
+  <target name="doc">
+    <javadoc sourcepath="${src.dir}" destdir="..\webby\content\blpwrapper\javadoc">
       <classpath refid="project.classpath" />
-    </java>
+    </javadoc>
   </target>
+
 </project>

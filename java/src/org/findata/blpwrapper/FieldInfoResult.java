@@ -3,19 +3,24 @@ package org.findata.blpwrapper;
 import com.bloomberglp.blpapi.*;
 
 public class FieldInfoResult implements DataResult {
-  private static final String[] returned_fields = {"id", "mnemonic", "description", "datatype"};
+  public static final String[] returned_fields = {"id", "mnemonic", "description", "datatype"};
   private String[][] result_data;
 
   public FieldInfoResult(String[] fields) {
     result_data = new String[fields.length][returned_fields.length];
   }
 
-  public String[] getFields() {
-    return(returned_fields);
-  }
-
   public String[][] getData() {
     return(result_data);
+  }
+
+  public String[] getDataTypes() {
+    String[] data_types = {"STRING", "STRING", "STRING", "STRING"};
+    return(data_types);
+  }
+
+  public String[] getColumnNames() {
+    return(returned_fields);
   }
 
   public void processResponse(Element response, boolean verbose) throws WrapperException {

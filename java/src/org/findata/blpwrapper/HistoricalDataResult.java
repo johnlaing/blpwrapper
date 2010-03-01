@@ -7,6 +7,7 @@ public class HistoricalDataResult implements DataResult {
   private String[] returned_fields;
   private String[] submitted_securities;
   private String[] data_types;
+  private String[] returned_dates;
   private String[][] result_data;
 
   public HistoricalDataResult(String[] securities, String[] fields) {
@@ -25,16 +26,16 @@ public class HistoricalDataResult implements DataResult {
     }
   }
 
-  public String[] getFields() {
+  public String[][] getData() {
+    return(result_data);
+  }
+
+  public String[] getColumnNames() {
     return(returned_fields);
   }
 
-  public String[] getSecurities() {
-    return(submitted_securities);
-  }
-
-  public String[][] getData() {
-    return(result_data);
+  public String[] getRowNames() {
+    return(returned_dates);
   }
 
   public String[] getDataTypes() {
@@ -88,6 +89,7 @@ public class HistoricalDataResult implements DataResult {
 
       if (j==0) {
         result_data = new String[fieldData.numValues()][returned_fields.length];
+        returned_dates = new String[fieldData.numValues()];
       }
 
       int field_data_counter = 0;
@@ -113,6 +115,7 @@ public class HistoricalDataResult implements DataResult {
 
         result_data[j][k] = field_value;
       } 
+      returned_dates[j] = result_data[j][0];
     }
   }
 }

@@ -14,20 +14,16 @@ public class BulkDataResult implements DataResult {
     requested_fields = argFields;
   }
 
-  public String[] getFields() {
-    return(returned_fields);
-  }
-
-  public String[] getSecurities() {
-    return(securities);
-  }
-
   public String[][] getData() {
     return(result_data);
   }
 
   public String[] getDataTypes() {
     return(data_types);
+  }
+
+  public String[] getColumnNames() {
+    return(returned_fields);
   }
 
   public void processResponse(Element response, boolean verbose) throws WrapperException {
