@@ -6,4 +6,4 @@ Loading required package: RUnit
 > 
 > proc.time()
    user  system elapsed 
-   1.12    0.67    1.81 
+   1.14    0.59    1.76 
