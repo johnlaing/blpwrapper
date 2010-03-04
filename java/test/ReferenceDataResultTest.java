@@ -94,7 +94,7 @@ public class ReferenceDataResultTest extends TestCase {
     String[] override_fields = {"EQY_FUND_CRNCY"};
     String[] overrides = {"JPY"};
 
-    DataResult result = conn.blp(securities, fields, override_fields, overrides);
+    ReferenceDataResult result = (ReferenceDataResult)conn.blp(securities, fields, override_fields, overrides);
     String[][] data = result.getData();
 
     System.out.println(data[0][0]);
@@ -127,10 +127,10 @@ public class ReferenceDataResultTest extends TestCase {
     String[] option_names = {"returnFormattedValue"};
     String[] option_values = {"true"};
 
-    DataResult result = conn.blp(securities, fields, override_fields, overrides);
+    ReferenceDataResult result = (ReferenceDataResult)conn.blp(securities, fields, override_fields, overrides);
     assertEquals("FLOAT64", result.getDataTypes()[0]);
 
-    result = conn.blp(securities, fields, override_fields, overrides, option_names, option_values);
+    result = (ReferenceDataResult)conn.blp(securities, fields, override_fields, overrides, option_names, option_values);
     assertEquals("STRING", result.getDataTypes()[0]);
   }
 

@@ -2,7 +2,9 @@ package org.findata.blpwrapper;
 
 import com.bloomberglp.blpapi.*;
 
-public class IntradayBarDataResult implements DataResult {
+import java.util.logging.Logger;
+
+public class IntradayBarDataResult extends DataResult {
   private String[] requested_fields;
   private static final String[] returned_fields = {"time", "open", "high", "low", "close", "numEvents", "volume"};
   private String[] securities;
@@ -26,7 +28,7 @@ public class IntradayBarDataResult implements DataResult {
     return(returned_fields);
   }
 
-  public void processResponse(Element response, boolean verbose) throws WrapperException {
+  public void processResponse(Element response, Logger logger) throws WrapperException {
     Element barDataArray = response.getElement("barData").getElement("barTickData");
 
     result_data = new String[barDataArray.numValues()][returned_fields.length];

@@ -20,7 +20,7 @@ public class HistoricalDataResultTest extends TestCase {
     String start_date = "20100101";
     String end_date = "20100201";
 
-    DataResult result = conn.blh(security, fields, start_date, end_date);
+    HistoricalDataResult result = (HistoricalDataResult)conn.blh(security, fields, start_date, end_date);
     String[][] data = result.getData();
   }
 
@@ -29,7 +29,7 @@ public class HistoricalDataResultTest extends TestCase {
     String[] fields = {"PX_LAST", "PX_BID"};
     String start_date = "20100101";
 
-    DataResult result = conn.blh(security, fields, start_date);
+    HistoricalDataResult result = (HistoricalDataResult)conn.blh(security, fields, start_date);
     String[][] data = result.getData();
   }
 
@@ -42,7 +42,7 @@ public class HistoricalDataResultTest extends TestCase {
     String[] option_names = {"startDate", "endDate"};
     String[] option_values = {"20100101", "20100201"};
 
-    DataResult result = conn.blh(security, fields, override_fields, override_values, option_names, option_values);
+    HistoricalDataResult result = (HistoricalDataResult)conn.blh(security, fields, override_fields, override_values, option_names, option_values);
     String[][] data = result.getData();
     System.out.println(data[0][0]);
   }
@@ -57,7 +57,7 @@ public class HistoricalDataResultTest extends TestCase {
     String[] option_names = {"startDate", "endDate", "currency"};
     String[] option_values = {"20100101", "20100201", "JPY"};
 
-    DataResult result = conn.blh(security, fields, override_fields, override_values, option_names, option_values);
+    HistoricalDataResult result = (HistoricalDataResult)conn.blh(security, fields, override_fields, override_values, option_names, option_values);
     String[][] data = result.getData();
     System.out.println(data[0][0]);
   }
@@ -71,7 +71,7 @@ public class HistoricalDataResultTest extends TestCase {
     String[] option_names = {"startDate"};
     String[] option_values = {"20100101"};
 
-    DataResult result = conn.blh(security, fields, override_fields, override_values, option_names, option_values);
+    HistoricalDataResult result = (HistoricalDataResult)conn.blh(security, fields, override_fields, override_values, option_names, option_values);
     String[][] data = result.getData();
   }
 
@@ -127,7 +127,7 @@ public class HistoricalDataResultTest extends TestCase {
     String[] option_values = {"20100101", "20100201"};
 
     try {
-      DataResult result = conn.blh(security, fields, override_fields, override_values, option_names, option_values);
+      HistoricalDataResult result = (HistoricalDataResult)conn.blh(security, fields, override_fields, override_values, option_names, option_values);
       fail("Should have raised an error");
     } catch (WrapperException e) {
       boolean b = Pattern.matches("^response error: Invalid override field id specified.*$", e.getMessage());

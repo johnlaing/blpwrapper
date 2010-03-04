@@ -2,7 +2,9 @@ package org.findata.blpwrapper;
 
 import com.bloomberglp.blpapi.*;
 
-public class ReferenceDataResult implements DataResult {
+import java.util.logging.Logger;
+
+public class ReferenceDataResult extends DataResult {
   private String[] fields;
   private String[] securities;
   private String[] data_types;
@@ -38,7 +40,7 @@ public class ReferenceDataResult implements DataResult {
     return(data_types);
   }
 
-  public void processResponse(Element response, boolean verbose) throws WrapperException {
+  public void processResponse(Element response, Logger logger) throws WrapperException {
     Element securityDataArray = response.getElement("securityData");
     int numItems = securityDataArray.numValues();
 
@@ -47,41 +49,9 @@ public class ReferenceDataResult implements DataResult {
       Element fieldData = securityData.getElement("fieldData");
       int seq = securityData.getElementAsInt32("sequenceNumber");
 
-      if (securityData.hasElement("securityError")) {
-        if (verbose) {
-          System.err.println("********** securityError info **********");
-          System.err.println(securityData.getElement("security"));
-          System.err.println(securityData.getElement("securityError"));
-        }
-        // Note this will only show the first invalid security.
-        throw new WrapperException("invalid security " + securities[seq]);
-      }
+      processSecurityError(securityData, logger);
+      processFieldExceptions(securityData, logger);
 
-      Element field_exceptions = securityData.getElement("fieldExceptions");
-      if (field_exceptions.numValues() > 0) {
-        for (int k = 0; k < field_exceptions.numValues(); k++) {
-          Element exception = field_exceptions.getValueAsElement(k);
-          if (verbose) {
-            System.err.println("********** fieldError info **********");
-            System.err.println(securityData.getElement("security"));
-            System.err.println(exception.getElement("fieldId"));
-          }
-
-          Element errorInfo = exception.getElement("errorInfo");
-          if (verbose) {
-            System.err.println(errorInfo);
-          }
-          String errorType = errorInfo.getElementAsString("subcategory");
-          if (errorType.equals("INVALID_FIELD")) {
-            throw new WrapperException("invalid field " + exception.getElementAsString("fieldId"));
-          } else if (errorType.equals("NOT_APPLICABLE_TO_REF_DATA")) {
-            // Not a fatal error. Just return null value.
-          } else {
-            throw new WrapperException("unknown field error type " + errorType);
-          }
-        }
-      }
-      
       int field_data_counter = 0;
       for (int j = 0; j < fields.length; j++) { 
         String field_name = fields[j];

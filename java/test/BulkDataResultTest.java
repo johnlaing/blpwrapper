@@ -27,14 +27,14 @@ public class BulkDataResultTest extends TestCase {
     conn.bls(security, field);
 
     field = "INDX_MEMBERS2";
-    DataResult result = conn.bls(security, field);
+    BulkDataResult result = (BulkDataResult)conn.bls(security, field);
   }
 
   public void testValidBulkDataRequest() throws Exception {
     String security = "BKIR ID Equity";
     String field = "DVD_HIST";
 
-    DataResult result = conn.bls(security, field);
+    BulkDataResult result = (BulkDataResult)conn.bls(security, field);
     System.out.println(result.getData()[0][0]);
   }
 

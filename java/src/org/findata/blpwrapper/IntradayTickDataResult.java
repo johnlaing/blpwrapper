@@ -2,7 +2,9 @@ package org.findata.blpwrapper;
 
 import com.bloomberglp.blpapi.*;
 
-public class IntradayTickDataResult implements DataResult {
+import java.util.logging.Logger;
+
+public class IntradayTickDataResult extends DataResult {
   private String[] requested_fields;
   private static final String[] returned_fields = {"time", "type", "value", "size"};
   private String[] securities;
@@ -26,7 +28,7 @@ public class IntradayTickDataResult implements DataResult {
     return(returned_fields);
   }
 
-  public void processResponse(Element response, boolean verbose) throws WrapperException {
+  public void processResponse(Element response, Logger logger) throws WrapperException {
     Element tickDataArray = response.getElement("tickData").getElement("tickData");
 
     result_data = new String[tickDataArray.numValues()][returned_fields.length];

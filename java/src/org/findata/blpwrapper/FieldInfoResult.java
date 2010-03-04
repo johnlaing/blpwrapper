@@ -2,7 +2,9 @@ package org.findata.blpwrapper;
 
 import com.bloomberglp.blpapi.*;
 
-public class FieldInfoResult implements DataResult {
+import java.util.logging.Logger;
+
+public class FieldInfoResult extends DataResult {
   public static final String[] returned_fields = {"id", "mnemonic", "description", "datatype"};
   private String[][] result_data;
 
@@ -23,7 +25,7 @@ public class FieldInfoResult implements DataResult {
     return(returned_fields);
   }
 
-  public void processResponse(Element response, boolean verbose) throws WrapperException {
+  public void processResponse(Element response, Logger logger) throws WrapperException {
     Element field_data = response.getElement("fieldData");
     for (int i = 0; i < field_data.numValues(); i++) {
       Element field = field_data.getValueAsElement(i);

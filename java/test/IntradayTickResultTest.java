@@ -17,7 +17,7 @@ public class IntradayTickResultTest extends TestCase {
     String security = "C US Equity";
     String[] fields = {"TRADE", "BID_BEST"};
 
-    DataResult result = conn.tick(security, fields, "2010-03-01 15:00:00.000", "2010-03-01 15:00:01.000");
+    IntradayTickDataResult result = (IntradayTickDataResult)conn.tick(security, fields, "2010-03-01 15:00:00.000", "2010-03-01 15:00:01.000");
     System.out.println(result.getData()[0][0]);
   }
 
@@ -31,7 +31,7 @@ public class IntradayTickResultTest extends TestCase {
     String[] option_fields = {"returnEids"};
     String[] option_values = {"true"};
 
-    DataResult result = conn.tick(security, fields, "2010-03-01 15:00:00.000", "2010-03-01 15:00:01.000", override_fields, override_values, option_fields, option_values);
+    IntradayTickDataResult result = (IntradayTickDataResult)conn.tick(security, fields, "2010-03-01 15:00:00.000", "2010-03-01 15:00:01.000", override_fields, override_values, option_fields, option_values);
     System.out.println(result.getData()[0][0]);
   }
 }

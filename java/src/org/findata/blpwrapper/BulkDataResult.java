@@ -2,7 +2,9 @@ package org.findata.blpwrapper;
 
 import com.bloomberglp.blpapi.*;
 
-public class BulkDataResult implements DataResult {
+import java.util.logging.Logger;
+
+public class BulkDataResult extends DataResult {
   private String[] requested_fields;
   private String[] returned_fields;
   private String[] securities;
@@ -26,7 +28,7 @@ public class BulkDataResult implements DataResult {
     return(returned_fields);
   }
 
-  public void processResponse(Element response, boolean verbose) throws WrapperException {
+  public void processResponse(Element response, Logger logger) throws WrapperException {
     Element securityDataArray = response.getElement("securityData");
     Element securityData = securityDataArray.getValueAsElement(0);
     Element fieldData = securityData.getElement("fieldData");
@@ -35,41 +37,9 @@ public class BulkDataResult implements DataResult {
     if (seq > 0) {
       throw new WrapperException("do not expect seq " + seq + " to be greater than 0.");
     }
-
-    if (securityData.hasElement("securityError")) {
-      if (verbose) {
-        System.err.println("********** securityError info **********");
-        System.err.println(securityData.getElement("security"));
-        System.err.println(securityData.getElement("securityError"));
-      }
-      // Note this will only show the first invalid security.
-      throw new WrapperException("invalid security " + securities[seq]);
-    }
-
-    Element field_exceptions = securityData.getElement("fieldExceptions");
-    if (field_exceptions.numValues() > 0) {
-      for (int k = 0; k < field_exceptions.numValues(); k++) {
-        Element exception = field_exceptions.getValueAsElement(k);
-        if (verbose) {
-          System.err.println("********** fieldError info **********");
-          System.err.println(securityData.getElement("security"));
-          System.err.println(exception.getElement("fieldId"));
-        }
-
-        Element errorInfo = exception.getElement("errorInfo");
-        if (verbose) {
-          System.err.println(errorInfo);
-        }
-        String errorType = errorInfo.getElementAsString("subcategory");
-        if (errorType.equals("INVALID_FIELD")) {
-          throw new WrapperException("invalid field " + exception.getElementAsString("fieldId"));
-        } else if (errorType.equals("NOT_APPLICABLE_TO_REF_DATA")) {
-          // Not a fatal error. Just return null value.
-        } else {
-          throw new WrapperException("unknown field error type " + errorType);
-        }
-      }
-    }
+    
+    processSecurityError(securityData, logger);
+    processFieldExceptions(securityData, logger);
 
     if (fieldData.numElements() > 1) {
       throw new WrapperException("not expecting more than 1 element in fieldData, got " + fieldData.numElements());

@@ -7,10 +7,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.FileHandler;
+import java.util.logging.SimpleFormatter;
 
 public class Connection {
   private SessionOptions session_options;
   private Session session;
+
+  private Logger logger;
 
   public ArrayList response_cache;
 
@@ -35,7 +41,20 @@ public class Connection {
   public static final int INTRADAY_TICK_RESULT = 5;
   public static final int INTRADAY_BAR_RESULT = 6;
 
-  public Connection() {
+  public static final int MB = 1048576;
+
+  public Connection() throws java.io.IOException {
+    logger = Logger.getLogger("org.findata.blpwrapper");
+    if (logger.getHandlers().length == 0) {
+      System.out.println("No logger, creating a new logger.");
+      FileHandler handler = new FileHandler("%h/org.findata.blpwrapper.%g.log", 100*MB, 100, true);
+      handler.setFormatter(new SimpleFormatter());
+      logger.addHandler(handler);
+      logger.setLevel(Level.FINEST);
+    } else {
+      System.out.println("Already have a logger.");
+    }
+    System.out.println("log level " + logger.getLevel());
     response_cache = new ArrayList();
   }
 
@@ -211,18 +230,15 @@ public class Connection {
         default: throw new WrapperException("unknown result_type " + result_type);
       }
 
-      boolean verbose = false;
       Element response = message.asElement();
 
       if (response.hasElement("responseError")) {
         Element response_error = response.getElement("responseError");
-        if (verbose) {
-          System.err.println(response_error);
-        }
+        logger.warning(response_error.toString());
         throw new WrapperException("response error: " + response_error.getElementAsString("message"));
       }
-
-      result.processResponse(response, verbose);
+      logger.fine("Processing response:\n" + response);
+      result.processResponse(response, logger);
     }
   }
 
