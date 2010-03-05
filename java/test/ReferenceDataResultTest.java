@@ -7,7 +7,6 @@ public class ReferenceDataResultTest extends TestCase {
 
   public void setUp() throws Exception{
     conn = new Connection();
-    conn.connect();
   }
 
   public void tearDown() throws Exception{

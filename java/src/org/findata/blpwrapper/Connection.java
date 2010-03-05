@@ -43,22 +43,19 @@ public class Connection {
 
   public static final int MB = 1048576;
 
-  public Connection() throws java.io.IOException {
+  public Connection() throws java.io.IOException, java.lang.InterruptedException, WrapperException {
     logger = Logger.getLogger("org.findata.blpwrapper");
     if (logger.getHandlers().length == 0) {
-      System.out.println("No logger, creating a new logger.");
       FileHandler handler = new FileHandler("%h/org.findata.blpwrapper.%g.log", 100*MB, 100, true);
       handler.setFormatter(new SimpleFormatter());
       logger.addHandler(handler);
       logger.setLevel(Level.FINEST);
-    } else {
-      System.out.println("Already have a logger.");
     }
-    System.out.println("log level " + logger.getLevel());
     response_cache = new ArrayList();
+    connect();
   }
 
-  public void connect() throws java.io.IOException, java.lang.InterruptedException, WrapperException {
+  private void connect() throws java.io.IOException, java.lang.InterruptedException, WrapperException {
     setupSessionOptions();
     setupSession();
     processEventLoop();
@@ -154,6 +151,7 @@ public class Connection {
         Element override = override_values_element.appendElement();
         override.setElement("fieldId", override_fields[i]);
         override.setElement("value", override_values[i]);
+        logger.fine("override " + override_fields[i] + " set to " + override_values[i]);
       }
     }
 
@@ -322,7 +320,27 @@ public class Connection {
     option_names_with_start[len] = "startDate";
     option_values_with_start[len] = start_date;
 
-    return(blh(security, fields, override_fields, override_values, option_names, option_values));
+    return(blh(security, fields, override_fields, override_values, option_names_with_start, option_values_with_start));
+  }
+
+  public DataResult blh(String security, String[] fields, String start_date, String end_date, String[] override_fields, String[] override_values, String[] option_names, String[] option_values) throws Exception {
+
+    int len = option_names.length;
+    String[] option_names_with_start = new String[len + 2];
+    String[] option_values_with_start = new String[len + 2];
+
+    for (int i = 0; i < len; i++) {
+      option_names_with_start[i] = option_names[i];
+      option_values_with_start[i] = option_values[i];
+    }
+
+    option_names_with_start[len] = "startDate";
+    option_values_with_start[len] = start_date;
+
+    option_names_with_start[len+1] = "endDate";
+    option_values_with_start[len+1] = end_date;
+    
+    return(blh(security, fields, override_fields, override_values, option_names_with_start, option_values_with_start));
   }
 
   public DataResult blh(String security, String[] fields, String[] override_fields, String[] override_values, String[] option_names, String[] option_values) throws Exception {
