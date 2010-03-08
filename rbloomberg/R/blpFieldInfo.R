@@ -3,7 +3,7 @@ blpFieldInfo <- function(conn, fields) {
   result <- conn$fieldInfo(fields)
 
   l <- result$getData()
-  colnames(l) <- result$getFields()
+  colnames(l) <- result$getColumnNames()
   rownames(l) <- result$getData()[,2]
   df.data <- as.data.frame(l)
   

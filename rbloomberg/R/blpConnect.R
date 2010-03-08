@@ -28,7 +28,6 @@ blpConnect.Java <- function() {
   .jaddClassPath("C:\\blpwrapper\\rbloomberg\\java\\blpwrapper.jar")
 
   conn <- .jnew("org.findata/blpwrapper/Connection")
-  conn$connect()
 
   return(conn)
 }

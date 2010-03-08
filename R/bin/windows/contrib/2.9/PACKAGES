@@ -1,7 +1,7 @@
 Package: RBloomberg
-Version: 0.4-123
+Version: 0.4-129
 Depends: rJava, RUnit
 OS_type: windows
 License: GPL
-File: RBloomberg_0.4-123.zip
+File: RBloomberg_0.4-129.zip
 

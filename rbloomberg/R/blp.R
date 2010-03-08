@@ -68,7 +68,7 @@ bls <- function(conn, securities, fields, override_fields = NULL, override_value
 
 bar <- function(conn, security, field, start_date_time, end_date_time, interval) {
   result <- conn$bar(security, field, start_date_time, end_date_time, interval)
-  return(process.result(result))
+  return(process.result(result, "first.row"))
 }
 
 tick <- function(conn, security, fields, start_date_time, end_date_time) {

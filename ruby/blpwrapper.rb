@@ -17,11 +17,11 @@ class Blpwrapper
     rescue Exception => e
       puts e.inspect
       puts e.backtrace
-      raise e
+      raise e.message # Re-raise errors as RuntimeErrors rather than a special class of error.
     end
   end
 
-  def blp(securities, fields, override_fields = nil, override_values = nil, return_format = :array)
+  def blp(securities, fields, return_format = :array, override_fields = nil, override_values = nil)
     show_errors do
       securities = [securities] unless securities.is_a?(Array)
       fields = [fields] unless fields.is_a?(Array)
