@@ -1,4 +1,38 @@
-blp <- function(conn, securities, fields, override_fields = NULL, override_values = NULL, option_names = NULL, option_values = NULL) {
+blp <- function(conn, securities, fields, start = NULL, end = NULL, 
+barsize = NULL, barfields = NULL, retval = NULL, 
+override_fields = NULL, overrides = NULL, currency = NULL) { 
+  if (is.null(start)) {
+    stop("The blp() function has been removed. Please consult documentation for the bdp() function, or the bds() function for making bulk data calls.")
+  } else {
+    if (is.null(barsize)){
+      stop("The blp() function has been removed. Please consult documentation for the bdh() function.")
+    } else if (barsize == 0) {
+      stop("The blp() function has been removed. Please consult documentation for the tick() function.")
+    } else {
+      stop("The blp() function has been removed. Please consult documentation for the bar() function.")
+    }
+  }
+}
+
+blpGetData <- function(conn, securities, fields, start = NULL, end = NULL, 
+barsize = NULL, barfields = NULL, retval = NULL, 
+override_fields = NULL, overrides = NULL, currency = NULL) { 
+  if (is.null(start)) {
+    stop("The blpGetData() function has been removed. Please consult documentation for the bdp() function, or the bds() function for making bulk data calls.")
+  } else {
+    if (is.null(barsize)){
+      stop("The blpGetData() function has been removed. Please consult documentation for the bdh() function.")
+    } else if (barsize == 0) {
+      stop("The blpGetData() function has been removed. Please consult documentation for the tick() function.")
+    } else {
+      stop("The blpGetData() function has been removed. Please consult documentation for the bar() function.")
+    }
+  }
+}
+
+### @export "bdp-definition"
+bdp <- function(conn, securities, fields, override_fields = NULL, override_values = NULL, option_names = NULL, option_values = NULL) {
+### @end
   securities <- .jarray(securities)
   fields <- .jarray(fields)
 
@@ -19,7 +53,9 @@ blp <- function(conn, securities, fields, override_fields = NULL, override_value
   return(process.result(result, "java"))
 }
 
-bls <- function(conn, securities, fields, override_fields = NULL, override_values = NULL, option_names = NULL, option_values = NULL) {
+### @export "bds-definition"
+bds <- function(conn, securities, fields, override_fields = NULL, override_values = NULL, option_names = NULL, option_values = NULL) {
+### @end
   # Pass each security+field separately. Merge resulting data frames
   # if the results are conformal, raise an error if they're not.
   stored.names <- NULL
@@ -66,18 +102,24 @@ bls <- function(conn, securities, fields, override_fields = NULL, override_value
   return(combined)
 }
 
+### @export "bar-definition"
 bar <- function(conn, security, field, start_date_time, end_date_time, interval) {
+### @end
   result <- conn$bar(security, field, start_date_time, end_date_time, interval)
   return(process.result(result, "first.row"))
 }
 
+### @export "tick-definition"
 tick <- function(conn, security, fields, start_date_time, end_date_time) {
+### @end
   fields <- .jarray(fields);
   result <- conn$tick(security, fields, start_date_time, end_date_time)
   return(process.result(result))
 }
 
-blh <- function(conn, security, fields, start_date, end_date = NULL, override_fields = NULL, override_values = NULL, option_names = NULL, option_values = NULL) {
+### @export "bdh-definition"
+bdh <- function(conn, security, fields, start_date, end_date = NULL, override_fields = NULL, override_values = NULL, option_names = NULL, option_values = NULL) {
+### @end
   fields <- .jarray(fields)
   
   if (!is.null(override_fields)) {

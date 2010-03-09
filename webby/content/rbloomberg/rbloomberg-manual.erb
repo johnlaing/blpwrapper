@@ -26,7 +26,7 @@ To download the latest version of this document, please visit the \href{http://f
 \subsection{Installation} % (fold)
 \label{sub:installation}
 
-RBloomberg will only work on a Bloomberg workstation, using the Desktop COM API. Support for the Desktop Java and C APIs are in development. You will need to install either RDCOMClient or rcom to act as a com server. By default, RBloomberg will connect to RDCOMClient. See blpConnect() for details.
+RBloomberg will only work on a Bloomberg workstation. RBloomberg uses the Java Version 3 API, and depends on the rJava package. Java must also be installed.
 
 To install RBloomberg:
 
@@ -36,147 +36,69 @@ To install RBloomberg:
 
 % subsection installation (end)
 
-\subsection{Hello, World} % (fold)
-\label{sub:hello_world}
+\subsection{Hello, World}
 
-Once you have RBloomberg installed, load the library just like any other via:
-<%= gorgl("examples/hello-world.R", "library") %>
-
-The first order of business is to connect to the Bloomberg data application, and store a reference to this connection object. You will use this in all subsequent calls:
-<%= gorgl("examples/hello-world.R", "connect") %>
-
-Then we can make a simple request to ensure that the connection is working:
-<%= gorgl("examples/hello-world.R", "basic-request") %>
+Once you have RBloomberg installed, load the library just like any other. The blpConnect() function initializes a connection to Bloomberg and returns a connection object which will be used in all subsequent calls. The bdp() function fetches a basic data call.
+<%= gorgl("examples/hello-world.R") %>
 
 The result of running these three commands should be something like this:
 <%= gorgl("examples/hello-world.Rout") %>
 
-% subsection hello_world (end)
 
-\section{Getting Current Data} % (fold)
-\label{sec:getting_current_data}
+\section{Current Data} 
 
-This section covers getting current, i.e. non-historical, data from Bloomberg. This may be live (or delayed as per your availability) market data, or static descriptive data. All such data is called using the blp() function, as defined below:
+This section covers getting current, i.e. non-historical, data from Bloomberg. This may be live (or delayed as per your availability) market data, or static descriptive data. All such data is called using the bdp() function, as defined below:
 
-<%= gorgl("rbloomberg/R/blp.R", "blp-definition") %>
+<%= gorgl("../rbloomberg/R/blp.R", "bdp-definition") %>
 
-As we will always be passing a connection object, securities and fields, these are typically not named parameters. It is usually more convenient to name later parameters, except perhaps for start and end, rather than trying to remember the order of them all.
+<%= gorgl("examples/blp.R") %>
+<%= gorgl("examples/blp.Rout") %>
 
-Note that the fields employed here are the same fields you may be familiar with using the Excel add-in, and the FLDS function within your Bloomberg terminal is a convenient way to search for fields.
+\section{Using Overrides}
 
-\subsection{Basic Calls} % (fold)
-\label{sub:basic_calls}
-
-You have already seen the simplest type of call you can make. At minimum we need to pass a connection object, a single ticker, and a single field.
-<%= gorgl("examples/current-basic-calls.R", "minimal") %>
-
-This can be expanded by passing vectors of tickers and/or fields, to obtain data on multiple securities at once, or to return multiple fields at once, or both.
-<%= gorgl("examples/current-basic-calls.R", "lists") %>
-
-And, of course, you can pass these arguments by way of variables, just as you might for any other R function:
-<%= gorgl("examples/current-basic-calls.R", "variables") %>
-
-The data returned from these calls will look something like this:
-<%= gorgl("examples/current-basic-calls-output.txt") %>
-
-% subsection basic_calls (end)
-
-\subsection{Using Overrides} % (fold)
-\label{sub:using_overrides}
-
-The Bloomberg API allows you to make certain overrides to change the value that a function returns. We give a few examples here, to determine whether a field you wish to request can be overridden, consult the FLDS screen in your Bloomberg terminal (look for What Overrides Me), or use the what.overrides.me() function discussed below to look up overrides within R.
-
-A common use for overrides is to return data in a currency other than the security's default currency.
-<%= gorgl("examples/current-override-calls.R", "currency") %>
-<%= gorgl("examples/override-currency.out") %>
-
-Another very useful function involving overrides is the Custom Total Return family of calls. We can first use some of the helper functions to find the tickers by searching the list of available mnemonics, and to determine which overrides are available and which fields they apply to.
-<%= gorgl("examples/current-override-calls.R", "search-mnemonics") %>
-<%= gorgl("examples/search-mnemonics.out") %>
-
-Once we know the fields, we can construct our call to fetch the desired data:
-<%= gorgl("examples/current-override-calls.R", "total-return") %>
-<%= gorgl("examples/override-total-return.out") %>
-
-As you can see from this example, it is possible to specify multiple overrides in a single request. Take care to list the overrides in corresponding order to the fields passed to override\_fields.
+The Bloomberg API allows you to make certain overrides to change the value that a function returns. We give a few examples here, to determine whether a field you wish to request can be overridden, consult the FLDS screen in your Bloomberg terminal (look for What Overrides Me).
 
 Note that dates must be passed as strings in the form ``YYYYMMDD''. If you pass an invalid override field, or one that doesn't apply to the main field you are requesting, this will be silently ignored. So, make sure you know that your request is valid before you count on the returned value being correct. This is a feature rather than a bug since it makes it possible to specify override fields which only apply to 1 field requested. So, you can ask for CRNCY\_ADJ\_PX\_LAST and NAME in the same request, and you don't get an error saying that EQY\_FUND\_CRNCY doesn't apply to the NAME field.
 
-% subsection using_overrides (end)
 
-\subsection{Format of Returned Data} % (fold)
-\label{sub:format_of_returned_data}
+\section{Setting Options}
 
-By default, RBloomberg returns a data frame for current requests and a zoo for historical data. You can specify a particular format using the retval parameter. retval can take options "raw", "matrix", "zoo" or "data.frame". The "raw" retval is useful for troubleshooting. All other data is first converted to "matrix", then if necessary to "zoo" or "data.frame".
 
-% subsection format_of_returned_data (end)
+\section{Bulk Data}
 
-% section getting_current_data (end)
+<%= gorgl("../rbloomberg/R/blp.R", "bds-definition") %>
 
-\section{Field Information} % (fold)
-\label{sec:field_information}
+<%= gorgl("examples/bls.R") %>
+<%= gorgl("examples/bls.Rout") %>
 
-There are a number of utility methods within RBloomberg to help you identify fields available for calling. These were touched on in Section~\ref{sub:using_overrides} discussing overrides. Note that at this time, these fields rely on local information stored in .ovr and .bbfields and so can be used without making a connection to Bloomberg. As the next generation API has support for live field information, however, this will not always be the case.
+\section{Historical Data}
 
-\subsection{Field Mnemonics} % (fold)
-\label{sub:field_mnemonics}
+<%= gorgl("../rbloomberg/R/blp.R", "bdh-definition") %>
 
-Mnemonics are what we typically think of as field names such as PX\_LAST or NAME. You can research available mnemonics within your Bloomberg terminal using the FLDS function, and you may find this the most convenient way to search.
+<%= gorgl("examples/blh.R") %>
+<%= gorgl("examples/blh.Rout") %>
 
-To search (using grep) for all mnemonics matching a certain pattern, try:
-<%= gorgl("examples/field-mnemonics.R", "search-mnemonics") %>
-<%= gorgl("examples/search-mnemonics.txt") %>
+\section{Tick Data}
 
-Once you know the mnemonic you wish to use, you can get more information about it like this:
-<%= gorgl("examples/field-mnemonics.R", "field-info") %>
-<%= gorgl("examples/field-info.txt") %>
+<%= gorgl("../rbloomberg/R/blp.R", "tick-definition") %>
 
-\section{Historical Data} % (fold)
-\label{sec:historical_data}
+<%= gorgl("examples/tick.R") %>
+<%= gorgl("examples/tick.Rout") %>
 
-The same blp() function is used for historical interday and intraday data requests:
+\section{Bar Data}
 
-<%= gorgl("rbloomberg/R/blp.R", "blp-definition") %>
+<%= gorgl("../rbloomberg/R/blp.R", "bar-definition") %>
 
-\subsection{Intraday Data} % (fold)
-\label{sub:intraday_data}
+<%= gorgl("examples/bar.R") %>
+<%= gorgl("examples/bar.Rout") %>
 
-If you want daily or less frequent periodic data, or data for a specific day, then you want to make an intraday request.
-
-<%= gorgl("examples/historical-calls.R", "basic-intraday") %>
-<%= gorgl("examples/basic-intraday.out") %>
-
-If you pass just a start date, then all data from that start date up until the present is returned. You can also pass both a start and end date and this will determine the range of dates for which to return data. Dates can be passed as POSIX dates, strings in the form YYYY-MM-DD or any other format which can be coerced via a call to timeDate.
-
-Overrides can be passed in the same manner as for current data calls. Also there is a currency parameter, as documented in the Bloomberg API for the blpGetHistoricalData2 function. Again, test to be sure this is giving you what you expect as it does not apply to all fields.
-
-\section{Unit Tests} % (fold)
-\label{sec:unit_tests}
-
-Tests are live code examples that are tested for the expected output. They are useful to developers as a code quality tool, and they can also be very useful to users to help ensure everything is running smoothly and also as an extra source of reference material. Should you not be able to find the information you need in formal documentation (this is general advice, not just pertaining to RBloomberg), look for tests and study the syntax of examples there.
-
-To ensure that everything is running smoothly, we recommend that you run the RUnit test suite:
-<%= gorgl("examples/run-unit-tests.R", "run") %>
-
-The output of printTextProtocol should look like this:
-<%= gorgl("examples/unit-test-results.txt") %>
-
-In particular, take note of any errors or failures. Hopefully you will have none of either.
+\section{Field Lookup}
 
 \section{Troubleshooting}
-\label{sub:troubleshooting}
-
-The rcom API is experimental. You should be using RDCOMClient unless you have a particular reason to use rcom. If you are using rcom and having difficulty, please try using RDCOMClient instead.
-
-In this section, we discuss some quick things to try relating to specific problems, then more general troubleshooting tips if these quick fixes don't help.
 
 \subsection{Request Not Returning Data}
 
 If you are making a request using the blp() function and not getting data back, or getting an error message, here are some things to try.
-
-\subsubsection{Request Raw Data}
-
-By default, RBloomberg tries to convert data into a nice structure for you, but sometimes this doesn't help. If you are having trouble, try setting retval = "raw" in your blp() request and this may solve the problem for you or it may help you figure out what is going wrong.
 
 \subsubsection{Check Your Fields Somewhere Else}
 
@@ -197,11 +119,6 @@ If you are having a problem with RBloomberg, there's a number of places this iss
 \item{RBloomberg itself}
 \end{itemize}
 
-To check whether the Bloomberg API is working, you can try to access Bloomberg from within Excel or run one of the demo/diagnostic scripts in the Bloomberg API directory, such as Apidemo. To check whether the COM server is working, try connecting to another application, such as Excel or Internet Explorer. \href{http://www.omegahat.org/RDCOMClient/Docs/introduction.html}{This page} has an introduction to the RDCOMClient and includes instructions for making basic requests. If you have Word installed, you can try:
-
-<%= gorgl("examples/com-connect-word.R") %>
-
-When you run that, you should see Microsoft Word appear momentarily. If so, the COM server is installed and working.
 
 \subsubsection{Look For Error Messages}
 
