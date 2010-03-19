@@ -58,6 +58,7 @@ public class ReferenceDataResult extends DataResult {
         String field_value = null;
 
         if (field_data_counter < fieldData.numElements()) {
+          logger.finest("i = " + i + "\n" + "seq = " + seq + "\n" + "j = " + j + "\n" + "field_data_counter = " + field_data_counter);
           Element field = fieldData.getElement(field_data_counter);
           if (field.name().toString().equals(field_name)) {
             // Raise an error if we're trying to read SEQUENCE data.
@@ -68,12 +69,18 @@ public class ReferenceDataResult extends DataResult {
               }
               String data_type = field.datatype().toString();
               if (!data_type.equals("NA")) {
+                logger.finest("Setting field data type to " + data_type);
                 data_types[j] = data_type;
               }
+            } else {
+              logger.finest("Field data type is " + data_types[j]);
             }
 
             field_value = field.getValueAsString();
+            logger.finest("Setting field value to " + field_value);
             field_data_counter++;
+          } else {
+            logger.finest("Skipping field.");
           }
         }
 

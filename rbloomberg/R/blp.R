@@ -183,7 +183,9 @@ process.result <- function(result, row.name.source = "none") {
 convert.to.type <- function(df.data, data_types) {
   for (i in 1:(dim(df.data)[2])) {
     string_values = as.vector(df.data[,i])
-
+  
+    print(paste("converting column", i, "name", names(df.data)[i], "to data type", data_types[i]))
+    
     new_values <- switch(data_types[i],
         FLOAT64 = as.numeric(string_values),
         INT32 = as.numeric(string_values),

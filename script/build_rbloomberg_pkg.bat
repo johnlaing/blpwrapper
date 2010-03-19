@@ -27,5 +27,5 @@ R CMD BATCH script\package.R
 type script\package.Rout
 del script\package.Rout
 
-bzr revert rbloomberg\man
+bzr revert --no-backup rbloomberg\man
 

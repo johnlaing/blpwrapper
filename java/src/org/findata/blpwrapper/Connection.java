@@ -44,15 +44,31 @@ public class Connection {
   public static final int MB = 1048576;
 
   public Connection() throws java.io.IOException, java.lang.InterruptedException, WrapperException {
+    this(Level.FINEST);
+  }
+
+  public Connection(Level logLevel) throws java.io.IOException, java.lang.InterruptedException, WrapperException {
+    response_cache = new ArrayList();
+    setupLogger(logLevel);
+    connect();
+  }
+
+  public Connection(Level logLevel, String serverHost, int serverPort) throws java.io.IOException, java.lang.InterruptedException, WrapperException {
+    server_host = serverHost;
+    server_port = serverPort;
+    response_cache = new ArrayList();
+    setupLogger(logLevel);
+    connect();
+  }
+
+  private void setupLogger(Level log_level) throws java.io.IOException {
     logger = Logger.getLogger("org.findata.blpwrapper");
     if (logger.getHandlers().length == 0) {
-      FileHandler handler = new FileHandler("%h/org.findata.blpwrapper.%g.log", 100*MB, 100, true);
+      FileHandler handler = new FileHandler("%h/org.findata.blpwrapper.%g.log", 10*MB, 100, true);
       handler.setFormatter(new SimpleFormatter());
       logger.addHandler(handler);
-      logger.setLevel(Level.FINEST);
+      logger.setLevel(log_level);
     }
-    response_cache = new ArrayList();
-    connect();
   }
 
   private void connect() throws java.io.IOException, java.lang.InterruptedException, WrapperException {
@@ -198,8 +214,8 @@ public class Connection {
       Event event = session.nextEvent();
 
       switch (event.eventType().intValue()) {
-        case Event.EventType.Constants.SESSION_STATUS:       processStatusEvent(event); cont=await_response; break;
-        case Event.EventType.Constants.SERVICE_STATUS:       processStatusEvent(event); cont=await_response; break;
+        case Event.EventType.Constants.SESSION_STATUS:       processSessionStatusEvent(event); cont=await_response; break;
+        case Event.EventType.Constants.SERVICE_STATUS:       processServiceStatusEvent(event); cont=await_response; break;
         case Event.EventType.Constants.RESPONSE:             processResponseEvent(result_type, event); cont=false; break;
         case Event.EventType.Constants.PARTIAL_RESPONSE:     processResponseEvent(result_type, event); break;
         default: throw new WrapperException(event.eventType());
@@ -207,7 +223,40 @@ public class Connection {
     }
   }
 
-  private void processStatusEvent(Event event) {
+  private void processSessionStatusEvent(Event event) throws WrapperException {
+    MessageIterator msgIter = event.messageIterator();
+
+    while(msgIter.hasNext()) {
+      Message message = msgIter.next();
+      Element response = message.asElement();
+
+      if (response.name().equals("SessionStarted")) {
+        logger.info("Session Started");
+      } else if (response.name().equals("SessionStartupFailure")) {
+        logger.warning("" + response);
+        Element reason = response.getElement(0);
+        throw new WrapperException("Session not started because: " + reason.getElementAsString("description"));
+      } else {
+        logger.warning("" + response);
+        throw new WrapperException("Session not started. See logs. Please report this to blpwrapper maintainer.");
+      }
+    }
+  }
+
+  private void processServiceStatusEvent(Event event) throws WrapperException {
+    MessageIterator msgIter = event.messageIterator();
+
+    while(msgIter.hasNext()) {
+      Message message = msgIter.next();
+      Element response = message.asElement();
+
+      if (response.name().equals("ServiceOpened")) {
+        logger.info("Service Started");
+      } else {
+        logger.warning("" + response);
+        throw new WrapperException("Service not started. See logs. Please report this to blpwrapper maintainer.");
+      }
+    }
   }
 
   private void processResponseEvent(int result_type, Event event) throws WrapperException {

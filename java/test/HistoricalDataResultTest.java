@@ -26,7 +26,7 @@ public class HistoricalDataResultTest extends TestCase {
   public void testValidRequestWithoutEndDate() throws Exception {
     String security = "OCN US Equity";
     String[] fields = {"PX_LAST", "PX_BID"};
-    String start_date = "20100101";
+    String start_date = "20100315";
 
     HistoricalDataResult result = (HistoricalDataResult)conn.blh(security, fields, start_date);
     String[][] data = result.getData();
@@ -68,7 +68,7 @@ public class HistoricalDataResultTest extends TestCase {
     String[] override_values = {"JPY"};
 
     String[] option_names = {"startDate"};
-    String[] option_values = {"20100101"};
+    String[] option_values = {"20100315"};
 
     HistoricalDataResult result = (HistoricalDataResult)conn.blh(security, fields, override_fields, override_values, option_names, option_values);
     String[][] data = result.getData();

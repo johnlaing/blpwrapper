@@ -70,7 +70,8 @@ public class HistoricalDataResult extends DataResult {
         String field_value = null;
 
         if (field_data_counter < x.numElements()) {
-          Element field = x.getElement(k);
+          Element field = x.getElement(field_data_counter);
+
           if (field.name().toString().equals(field_name)) {
             // Store data type for later.
             if (data_types[k].equals("NOT_APPLICABLE")) {
