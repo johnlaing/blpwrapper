@@ -1,4 +1,4 @@
-blpConnect <- function(iface="Java", log.level = "finest", blpapi.jar.file = "C:\\blp\\API\\APIv3\\JavaAPI\\lib\\blpapi3.jar"){
+blpConnect <- function(iface="Java", log.level = "warning", blpapi.jar.file = "C:\\blp\\API\\APIv3\\JavaAPI\\lib\\blpapi3.jar"){
   valid.interfaces <- c('Java')
   future.interfaces <- c('C')
 
