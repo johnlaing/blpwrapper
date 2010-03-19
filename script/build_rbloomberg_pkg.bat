@@ -6,7 +6,7 @@ del /Q R\bin\windows\contrib\2.8\*
 del /Q R\bin\windows\contrib\2.9\*
 del /Q R\bin\windows\contrib\2.10\*
 
-cp java\blpwrapper.jar rbloomberg\java
+cp java\blpwrapper.jar rbloomberg\inst\java
 
 ruby script\check_rbloomberg_version.rb
 ruby script\substitute_examples.rb

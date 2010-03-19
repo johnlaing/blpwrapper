@@ -1,4 +1,4 @@
-blpConnect <- function(iface="Java"){
+blpConnect <- function(iface="Java", log.level = "finest", blpapi.jar.file = "C:\\blp\\API\\APIv3\\JavaAPI\\lib\\blpapi3.jar"){
   valid.interfaces <- c('Java')
   future.interfaces <- c('C')
 
@@ -17,17 +17,27 @@ blpConnect <- function(iface="Java"){
   }
 
   fn.name <- paste("blpConnect", iface, sep=".")
-  fn.call <- call(fn.name)
+  fn.call <- call(fn.name, log.level, blpapi.jar.file)
   eval(fn.call)
 }
 
-blpConnect.Java <- function() {
+blpConnect.Java <- function(log.level, blpapi.jar.file) {
   library(rJava)
   .jinit()
-  .jaddClassPath("C:\\blp\\API\\APIv3\\JavaAPI\\lib\\blpapi3.jar")
-  .jaddClassPath("C:\\blpwrapper\\rbloomberg\\java\\blpwrapper.jar")
+  .jaddClassPath(blpapi.jar.file)
+  .jaddClassPath(file.path(.Library, "RBloomberg", "java", "blpwrapper.jar"))
+  
+  java.logging.levels = J("java/util/logging/Level")
 
-  conn <- .jnew("org.findata/blpwrapper/Connection")
+  java.log.level <- switch(log.level,
+    finest = java.logging.levels$FINEST,
+    fine = java.logging.levels$FINE,
+    info = java.logging.levels$INFO,
+    warning = java.logging.levels$WARNING,
+    stop(paste("log level ", log.level, "not recognized"))
+  )
+
+  conn <- .jnew("org/findata/blpwrapper/Connection", java.log.level)
 
   return(conn)
 }

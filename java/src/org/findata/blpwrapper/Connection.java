@@ -63,11 +63,13 @@ public class Connection {
 
   private void setupLogger(Level log_level) throws java.io.IOException {
     logger = Logger.getLogger("org.findata.blpwrapper");
+    logger.setUseParentHandlers(false);
+    logger.setLevel(log_level);
+
     if (logger.getHandlers().length == 0) {
       FileHandler handler = new FileHandler("%h/org.findata.blpwrapper.%g.log", 10*MB, 100, true);
       handler.setFormatter(new SimpleFormatter());
       logger.addHandler(handler);
-      logger.setLevel(log_level);
     }
   }
 
