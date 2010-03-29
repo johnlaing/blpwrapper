@@ -45,14 +45,42 @@ The result of running these three commands should be something like this:
 <%= gorgl("examples/hello-world.Rout") %>
 
 
-\section{Current Data} 
+\section{Reference Data} 
 
 This section covers getting current, i.e. non-historical, data from Bloomberg. This may be live (or delayed as per your availability) market data, or static descriptive data. All such data is called using the bdp() function, as defined below:
 
 <%= gorgl("../rbloomberg/R/blp.R", "bdp-definition") %>
 
-<%= gorgl("examples/blp.R") %>
 <%= gorgl("examples/blp.Rout") %>
+
+\section{Bulk Data}
+
+Bulk data fields can return multiple fields and rows in response to a single requested field. Dividend history data (DVD\_HIST) and getting a list of members in an index (INDX\_MEMBERS) are examples of bulk data fields. If more than one security is requested, then the tickers are shown in the first column of the returned data frame. Multiple fields can be requested at a time if they return data with the same column names, for example INDX\_MEMBERS, INDX\_MEMBERS2 and INDX\_MEMBERS3.
+
+<%= gorgl("../rbloomberg/R/blp.R", "bds-definition") %>
+
+<%= gorgl("examples/bls.Rout") %>
+
+\section{Historical Data}
+
+For historical data, fetching a single security at a time is currently supported. Dates can be in string form using Bloomberg's YYYYMMDD format, or using any date/time class which responds to strftime. End dates are optional, if omitted all data from start time to current time will be requested.
+
+<%= gorgl("../rbloomberg/R/blp.R", "bdh-definition") %>
+
+<%= gorgl("examples/blh.Rout") %>
+
+\section{Tick Data}
+
+<%= gorgl("../rbloomberg/R/blp.R", "tick-definition") %>
+
+<%= gorgl("examples/tick.Rout") %>
+
+\section{Bar Data}
+
+<%= gorgl("../rbloomberg/R/blp.R", "bar-definition") %>
+
+<%= gorgl("examples/bar.Rout") %>
+
 
 \section{Using Overrides}
 
@@ -63,65 +91,16 @@ Note that dates must be passed as strings in the form ``YYYYMMDD''. If you pass 
 
 \section{Setting Options}
 
-
-\section{Bulk Data}
-
-<%= gorgl("../rbloomberg/R/blp.R", "bds-definition") %>
-
-<%= gorgl("examples/bls.R") %>
-<%= gorgl("examples/bls.Rout") %>
-
-\section{Historical Data}
-
-<%= gorgl("../rbloomberg/R/blp.R", "bdh-definition") %>
-
-<%= gorgl("examples/blh.R") %>
-<%= gorgl("examples/blh.Rout") %>
-
-\section{Tick Data}
-
-<%= gorgl("../rbloomberg/R/blp.R", "tick-definition") %>
-
-<%= gorgl("examples/tick.R") %>
-<%= gorgl("examples/tick.Rout") %>
-
-\section{Bar Data}
-
-<%= gorgl("../rbloomberg/R/blp.R", "bar-definition") %>
-
-<%= gorgl("examples/bar.R") %>
-<%= gorgl("examples/bar.Rout") %>
+The new Bloomberg API has per-request options. See Historical Data for an example of periodicitySelection.
 
 \section{Field Lookup}
 
 \section{Troubleshooting}
 
-\subsection{Request Not Returning Data}
+If you are having difficulty with RBloomberg, check the log files (located in your home directory, probably Documents and Settings/username) for possible error messages. Bloomberg creates its own very basic log files called blpjavaapi, and RBloomberg logs to org.findata.blpwrapper. You can make RBloomberg's logging much more verbose if you initialize it as follows:
 
-If you are making a request using the blp() function and not getting data back, or getting an error message, here are some things to try.
-
-\subsubsection{Check Your Fields Somewhere Else}
+<%= gorgl("examples/logging.Rout") %>
 
 You might have a typo in your ticker or in the fields you are requesting, or the fields might not be applicable to the ticker. Try making the same request from within your Bloomberg terminal. The FLDS page gives you access to all the same fields from RBloomberg, so you can re-create the request you are trying to make (for one security at a time). You could also use the Excel API to double-check your request.
 
-Also, check any override fields you are using to make sure they don't cause problems.
-
-\subsection{Troubleshooting Strategies}
-
-\subsubsection{Where Is The Problem?}
-
-If you are having a problem with RBloomberg, there's a number of places this issue could originate.
-\begin{itemize}
-\item{The Bloomberg API}
-\item{The COM server, which links R with the Bloomberg API.}
-\item{R itself (unlikely)}
-\item{Your request to RBloomberg}
-\item{RBloomberg itself}
-\end{itemize}
-
-
-\subsubsection{Look For Error Messages}
-
-The Bloomberg API writes error messages to a log file located in C blp API and called bbcomm or bbcomm.log. Check here for clues as to what is going wrong. Also, there is free software called DebugView available from Microsoft which can help to detect error messages. You need to have this software running, then make the request which is causing the problem. You should see debugging information appear in the DebugView console as you work.
-
-
+Also, check any override fields you are using.

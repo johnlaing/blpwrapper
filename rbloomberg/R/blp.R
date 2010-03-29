@@ -31,8 +31,11 @@ override_fields = NULL, overrides = NULL, currency = NULL) {
 }
 
 ### @export "bdp-definition"
-bdp <- function(conn, securities, fields, override_fields = NULL, override_values = NULL, option_names = NULL, option_values = NULL) {
+bdp <- function(conn, securities, fields,
+    override_fields = NULL, override_values = NULL, 
+    option_names = NULL, option_values = NULL)
 ### @end
+{
   securities <- .jarray(securities)
   fields <- .jarray(fields)
 
@@ -54,8 +57,11 @@ bdp <- function(conn, securities, fields, override_fields = NULL, override_value
 }
 
 ### @export "bds-definition"
-bds <- function(conn, securities, fields, override_fields = NULL, override_values = NULL, option_names = NULL, option_values = NULL) {
+bds <- function(conn, securities, fields, 
+    override_fields = NULL, override_values = NULL, 
+    option_names = NULL, option_values = NULL)
 ### @end
+{
   # Pass each security+field separately. Merge resulting data frames
   # if the results are conformal, raise an error if they're not.
   stored.names <- NULL
@@ -103,23 +109,28 @@ bds <- function(conn, securities, fields, override_fields = NULL, override_value
 }
 
 ### @export "bar-definition"
-bar <- function(conn, security, field, start_date_time, end_date_time, interval) {
+bar <- function(conn, security, field, start_date_time, end_date_time, interval)
 ### @end
+{
   result <- conn$bar(security, field, start_date_time, end_date_time, interval)
   return(process.result(result, "first.row"))
 }
 
 ### @export "tick-definition"
-tick <- function(conn, security, fields, start_date_time, end_date_time) {
+tick <- function(conn, security, fields, start_date_time, end_date_time)
 ### @end
+{
   fields <- .jarray(fields);
   result <- conn$tick(security, fields, start_date_time, end_date_time)
   return(process.result(result))
 }
 
 ### @export "bdh-definition"
-bdh <- function(conn, security, fields, start_date, end_date = NULL, override_fields = NULL, override_values = NULL, option_names = NULL, option_values = NULL) {
+bdh <- function(conn, security, fields, start_date, end_date = NULL, 
+    override_fields = NULL, override_values = NULL, 
+    option_names = NULL, option_values = NULL)
 ### @end
+{
   fields <- .jarray(fields)
   
   if (!is.null(override_fields)) {
@@ -142,6 +153,11 @@ bdh <- function(conn, security, fields, start_date, end_date = NULL, override_fi
       result <- conn$blh(security, fields, start_date)
     } else if (is.null(option_names)) {
       result <- conn$blh(security, fields, start_date, override_fields, override_values)
+    } else if (is.null(override_fields)) {
+      override_fields <- .jarray("IGNORE")
+      override_values <- .jarray("IGNORE")
+
+      result <- conn$blh(security, fields, start_date, override_fields, override_values, option_names, option_values)
     } else {
       result <- conn$blh(security, fields, start_date, override_fields, override_values, option_names, option_values)
     }

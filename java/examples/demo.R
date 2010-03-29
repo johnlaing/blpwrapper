@@ -3,6 +3,8 @@ library(rJava)
 .jaddClassPath("C:\\blp\\API\\APIv3\\JavaAPI\\lib\\blpapi3.jar")
 .jaddClassPath("C:\\blpwrapper\\java\\build\\prod")
 
+print(.jclassPath())
+
 conn <- .jnew("org.findata/blpwrapper/Connection")
 .jcall(conn, returnSig="V", method="connect")
 

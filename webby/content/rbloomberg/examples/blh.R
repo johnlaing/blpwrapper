@@ -13,4 +13,7 @@ library(zoo)
 result <- bdh(conn, "GOLDS Comdty", "PX_LAST", Sys.Date() - 10)
 zoo(result, order.by = rownames(result))
 
+bdh(conn, "GOLDS Comdty", "PX_LAST", Sys.Date() - 366, 
+    option_names = "periodicitySelection", option_values = "MONTHLY")
+
 blpDisconnect(conn)

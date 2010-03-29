@@ -166,10 +166,12 @@ public class Connection {
     if (override_fields.length > 0) {
       Element override_values_element = request.getElement("overrides");
       for (int i = 0; i < override_fields.length; i++) {
-        Element override = override_values_element.appendElement();
-        override.setElement("fieldId", override_fields[i]);
-        override.setElement("value", override_values[i]);
-        logger.fine("override " + override_fields[i] + " set to " + override_values[i]);
+        if (!override_fields[i].equals("IGNORE")) {
+          Element override = override_values_element.appendElement();
+          override.setElement("fieldId", override_fields[i]);
+          override.setElement("value", override_values[i]);
+          logger.fine("override " + override_fields[i] + " set to " + override_values[i]);
+        }
       }
     }
 
