@@ -65,9 +65,15 @@ Bulk data fields can return multiple fields and rows in response to a single req
 
 For historical data, fetching a single security at a time is currently supported. Dates can be in string form using Bloomberg's YYYYMMDD format, or using any date/time class which responds to strftime. End dates are optional, if omitted all data from start time to current time will be requested.
 
+If multiple securities are requested, then another column will be included containing the security ticker. If you wish to include this column when requesting a single security, which may be necessary if you don't know in advance whether your query will be for one or multiple securities, then pass \verb|always.display.tickers = TRUE|. By default, the dates will be used as row names unless multiple tickers are requested. To disable this, pass \verb|dates.as.row.names = FALSE|. Setting \verb|dates.as.row.names=TRUE| when requesting multiple tickers will result in an error.
+
 <%= gorgl("../rbloomberg/R/blp.R", "bdh-definition") %>
 
 <%= gorgl("examples/blh.Rout") %>
+
+If you wish to have a data frame with tickers as row names and dates as column names, and data for a single field displayed in this grid, then see the example below using the \verb|as.matrix| method from the \verb|plm| library.
+
+<%= gorgl("examples/plm.Rout") %>
 
 \section{Tick Data}
 

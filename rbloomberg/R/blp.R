@@ -108,31 +108,15 @@ bds <- function(conn, securities, fields,
   return(combined)
 }
 
-### @export "bar-definition"
-bar <- function(conn, security, field, start_date_time, end_date_time, interval)
-### @end
-{
-  result <- conn$bar(security, field, start_date_time, end_date_time, interval)
-  return(process.result(result, "first.row"))
-}
-
-### @export "tick-definition"
-tick <- function(conn, security, fields, start_date_time, end_date_time)
-### @end
-{
-  fields <- .jarray(fields);
-  result <- conn$tick(security, fields, start_date_time, end_date_time)
-  return(process.result(result))
-}
-
 ### @export "bdh-definition"
-bdh <- function(conn, security, fields, start_date, end_date = NULL, 
+bdh <- function(conn, securities, fields, start_date, end_date = NULL, 
     override_fields = NULL, override_values = NULL, 
-    option_names = NULL, option_values = NULL)
+    option_names = NULL, option_values = NULL,
+    always.display.tickers = FALSE, dates.as.row.names = (length(securities) == 1))
 ### @end
 {
   fields <- .jarray(fields)
-  
+
   if (!is.null(override_fields)) {
     override_fields <- .jarray(override_fields)
     override_values <- .jarray(override_values)
@@ -148,30 +132,71 @@ bdh <- function(conn, security, fields, start_date, end_date = NULL,
     option_values <- .jarray(option_values)
   }
 
-  if (is.null(end_date)) {
-    if (is.null(override_fields) && is.null(option_names)) {
-      result <- conn$blh(security, fields, start_date)
-    } else if (is.null(option_names)) {
-      result <- conn$blh(security, fields, start_date, override_fields, override_values)
-    } else if (is.null(override_fields)) {
-      override_fields <- .jarray("IGNORE")
-      override_values <- .jarray("IGNORE")
+  combined <- NULL
+  combine.multiple <- (length(securities) > 1)
 
-      result <- conn$blh(security, fields, start_date, override_fields, override_values, option_names, option_values)
+  for (security in securities) {
+    if (is.null(end_date)) {
+      if (is.null(override_fields) && is.null(option_names)) {
+        result <- conn$blh(security, fields, start_date)
+      } else if (is.null(option_names)) {
+        result <- conn$blh(security, fields, start_date, override_fields, override_values)
+      } else if (is.null(override_fields)) {
+        override_fields <- .jarray("IGNORE")
+        override_values <- .jarray("IGNORE")
+
+        result <- conn$blh(security, fields, start_date, override_fields, override_values, option_names, option_values)
+      } else {
+        result <- conn$blh(security, fields, start_date, override_fields, override_values, option_names, option_values)
+      }
     } else {
-      result <- conn$blh(security, fields, start_date, override_fields, override_values, option_names, option_values)
+      if (is.null(override_fields) && is.null(option_names)) {
+        result <- conn$blh(security, fields, start_date, end_date)
+      } else if (is.null(option_names)) {
+        result <- conn$blh(security, fields, start_date, end_date, override_fields, override_values)
+      } else {
+        result <- conn$blh(security, fields, start_date, end_date, override_fields, override_values, option_names, option_values)
+      }
     }
-  } else {
-    if (is.null(override_fields) && is.null(option_names)) {
-      result <- conn$blh(security, fields, start_date, end_date)
-    } else if (is.null(option_names)) {
-      result <- conn$blh(security, fields, start_date, end_date, override_fields, override_values)
+    
+    if (dates.as.row.names) {
+      if (combine.multiple) stop("Can't use dates as row names with multiple tickers, dates will not be unique.")
+      result <- process.result(result, "first.column")
     } else {
-      result <- conn$blh(security, fields, start_date, end_date, override_fields, override_values, option_names, option_values)
+      result <- process.result(result, "none")
+    }
+
+    if (combine.multiple || always.display.tickers) {
+      # Prepend data frame with new row containing security ticker.
+      result <- data.frame(ticker = security, result)
+    }
+
+    if (is.null(combined)) {
+      combined <- result
+    } else {
+      if (!combine.multiple) stop("combine.multiple should be true if we are running through loop more than once")
+      combined <- rbind(combined, result)
     }
   }
 
-  return(process.result(result, "first.row"))
+  return(combined)
+}
+
+### @export "bar-definition"
+bar <- function(conn, security, field, start_date_time, end_date_time, interval)
+### @end
+{
+  result <- conn$bar(security, field, start_date_time, end_date_time, interval)
+  return(process.result(result, "first.column"))
+}
+
+### @export "tick-definition"
+tick <- function(conn, security, fields, start_date_time, end_date_time)
+### @end
+{
+  fields <- .jarray(fields);
+  result <- conn$tick(security, fields, start_date_time, end_date_time)
+  return(process.result(result))
 }
 
 process.result <- function(result, row.name.source = "none") {
@@ -179,7 +204,7 @@ process.result <- function(result, row.name.source = "none") {
 
   rownames(matrix.data) <- switch(row.name.source,
       java = result$getRowNames(),
-      first.row = matrix.data[,1],
+      first.column = matrix.data[,1],
       none = NULL,
       stop(paste("don't know how to handle this row name source", row.name.source))
       )

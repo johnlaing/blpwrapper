@@ -41,8 +41,6 @@ h2. Compiling RBloomberg from Source
 If you wish to compile RBloomberg as an R package yourself, you will need to download and install "R Tools":http://www.murdoch-sutherland.com/Rtools/, and read the instructions for compiling R packages on Windows which is slightly more involved than on other platforms.
 
 The RBloomberg source is available to download from the R-Forge project page, or by checking it out from the Bazaar repository:
-<pre><code>bzr branch http://findata.org/code/blpwrapper
-</code</pre>
 
-
+@bzr branch http://findata.org/code/blpwrapper@
 
