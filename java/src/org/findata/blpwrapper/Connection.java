@@ -34,6 +34,8 @@ public class Connection {
   private String apifields_service_name = "//blp/apiflds";
   private boolean apifields_service_open = false;
 
+  private boolean throw_invalid_ticker_error = true;
+
   public static final int REFERENCE_DATA_RESULT = 1;
   public static final int BULK_DATA_RESULT = 2;
   public static final int HISTORICAL_DATA_RESULT = 3;
@@ -42,6 +44,24 @@ public class Connection {
   public static final int INTRADAY_BAR_RESULT = 6;
 
   public static final int MB = 1048576;
+
+  public static final String DATETIME_OPTION_NAMES[] = {
+    "startDateTime", 
+    "endDateTime"
+  };
+
+  public static final String BOOLEAN_OPTION_NAMES[] = {
+    "useUTCTime", 
+    "returnRelativeDate", 
+    "adjustmentNormal",
+    "adjustmentAbnormal",
+    "adjustmentSplit",
+    "adjustmentFollowDPDF",
+    "returnEids",
+    "includeConditionCodes",
+    "includeNonPlottableEvents",
+    "includeExchangeCodes"
+  };
 
   public Connection() throws java.io.IOException, java.lang.InterruptedException, WrapperException {
     this(Level.FINEST);
@@ -92,6 +112,10 @@ public class Connection {
   private void setupSession() throws java.io.IOException, java.lang.InterruptedException {
     session = new Session(session_options);
     session.start();
+  }
+
+  public void setThrowInvalidTickerError(boolean arg) {
+    throw_invalid_ticker_error = arg;
   }
 
   public CorrelationID nextCorrelationID(int result_type, String[] securities, String[] fields) throws Exception {
@@ -183,7 +207,11 @@ public class Connection {
 
     for (int i = 0; i < option_names.length; i++) {
       String n = option_names[i];
-      if (n.equals("startDateTime") || n.equals("endDateTime")) {
+
+      HashSet datetime_option_names = new HashSet(Arrays.asList(DATETIME_OPTION_NAMES));
+      HashSet boolean_option_names = new HashSet(Arrays.asList(BOOLEAN_OPTION_NAMES));
+      
+      if (datetime_option_names.contains(n)) {
         Pattern p = Pattern.compile(":|-|\\.|\\s"); // Expecting e.g. 2010-01-01 09:00:00.000
         String[] time_parts = p.split(option_values[i]);
 
@@ -196,9 +224,30 @@ public class Connection {
         int millisecond = new Integer(time_parts[6]).intValue();
 
         Datetime d = new Datetime(year, month, day_of_month, hour, minute, second, millisecond);
-        request.set(n, d);
+        logger.fine("option " + n + " set to Datetime value " + d + ".");
+        request.set(n, d); 
+      } else if (boolean_option_names.contains(n)) {
+        boolean option_value;
+
+        String true_value_elements[] = {"true", "TRUE", "True", "t", "T"};
+        HashSet true_values = new HashSet(Arrays.asList(true_value_elements));
+
+        String false_value_elements[] = {"false", "FALSE", "False", "f", "F"};
+        HashSet false_values = new HashSet(Arrays.asList(false_value_elements));
+        
+        if (true_values.contains(option_values[i])) {
+          option_value = true;
+        } else if (false_values.contains(option_values[i])) {
+          option_value = false;
+        } else {
+          throw new WrapperException("Unable to convert this string '" + option_values[i] + "' to a boolean.");
+        }
+
+        logger.fine("option " + n + " set to boolean value " + option_value + " original string '" + option_values[i] + "'.");
+        request.set(n, option_value);
       } else {
-        request.set(option_names[i], option_values[i]);
+        logger.fine("option " + n + " set to string value '" + option_values[i] + "'.");
+        request.set(n, option_values[i]);
       }
     }
 
@@ -289,7 +338,7 @@ public class Connection {
         throw new WrapperException("response error: " + response_error.getElementAsString("message"));
       }
       logger.fine("Processing response:\n" + response);
-      result.processResponse(response, logger);
+      result.processResponse(response, logger, throw_invalid_ticker_error);
     }
   }
 

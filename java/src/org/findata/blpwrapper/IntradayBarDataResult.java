@@ -28,7 +28,7 @@ public class IntradayBarDataResult extends DataResult {
     return(returned_fields);
   }
 
-  public void processResponse(Element response, Logger logger) throws WrapperException {
+  public void processResponse(Element response, Logger logger, boolean throwInvalidTickerError) throws WrapperException {
     Element barDataArray = response.getElement("barData").getElement("barTickData");
 
     result_data = new String[barDataArray.numValues()][returned_fields.length];

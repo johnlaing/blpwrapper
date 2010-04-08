@@ -5,17 +5,19 @@ import com.bloomberglp.blpapi.*;
 import java.util.logging.Logger;
 
 public abstract class DataResult {
-  public abstract void processResponse(Element response, Logger logger) throws WrapperException;
+  public abstract void processResponse(Element response, Logger logger, boolean throwInvalidSecurityError) throws WrapperException;
   public abstract String[][] getData() throws WrapperException;
   public abstract String[] getColumnNames() throws WrapperException;
   public abstract String[] getDataTypes() throws WrapperException;
 
-  public void processSecurityError(Element securityData, Logger logger) throws WrapperException {
+  public void processSecurityError(Element securityData, Logger logger, boolean throwError) throws WrapperException {
     if (securityData.hasElement("securityError")) {
       logger.info("securityError info\n" + securityData.getElement("security") + "\n" + securityData.getElement("securityError"));
-
-      // Note this will only show the first invalid security.
-      throw new WrapperException("invalid security " + securityData.getElementAsString("security"));
+      
+      if (throwError) {
+        // Note this will only show the first invalid security.
+        throw new WrapperException("invalid security " + securityData.getElementAsString("security"));
+      }
     }
   }
 

@@ -1,4 +1,8 @@
-blpConnect <- function(iface="Java", log.level = "warning", blpapi.jar.file = NULL){
+### @export "blpConnect-definition"
+blpConnect <- function(iface="Java", log.level = "warning",
+    blpapi.jar.file = NULL, throw.ticker.errors = TRUE)
+### @end
+{
   valid.interfaces <- c('Java')
   future.interfaces <- c('C')
 
@@ -17,11 +21,11 @@ blpConnect <- function(iface="Java", log.level = "warning", blpapi.jar.file = NU
   }
 
   fn.name <- paste("blpConnect", iface, sep=".")
-  fn.call <- call(fn.name, log.level, blpapi.jar.file)
+  fn.call <- call(fn.name, log.level, blpapi.jar.file, throw.ticker.errors)
   eval(fn.call)
 }
 
-blpConnect.Java <- function(log.level, blpapi.jar.file) {
+blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors) {
   cat(R.version.string, "\n")
   cat("rJava Version", read.dcf(system.file("DESCRIPTION", package="rJava"))[1, "Version"], "\n")
   cat("RBloomberg Version", read.dcf(system.file("DESCRIPTION", package="RBloomberg"))[1, "Version"], "\n")
@@ -31,11 +35,15 @@ blpConnect.Java <- function(log.level, blpapi.jar.file) {
 
   if (is.null(blpapi.jar.file)) {
     cat("Looking for most recent blpapi3.jar file...\n")
-    version.dir <- sort(list.files("C:\\blp\\API\\APIv3\\JavaAPI", "^v"), decreasing=TRUE)[1]
+    java_api_dir = "C:\\blp\\API\\APIv3\\JavaAPI"
+    missing_java_api_dir_message = paste("Can't find", java_api_dir, "please confirm you have Bloomberg Version 3 Java API installed. If it's in a different location, please report this to RBloomberg package maintainer.")
+    if (!file.exists(java_api_dir)) stop(missing_java_api_dir_message)
+
+    version.dir <- sort(list.files(, "^v"), decreasing=TRUE)[1]
     if (is.na(version.dir))
-      blpapi.jar.file <- paste("C:\\blp\\API\\APIv3\\JavaAPI\\lib\\blpapi3.jar", sep="")
+      blpapi.jar.file <- paste(java_api_dir, "\\lib\\blpapi3.jar", sep="")
     else
-      blpapi.jar.file <- paste("C:\\blp\\API\\APIv3\\JavaAPI\\", version.dir, "\\lib\\blpapi3.jar", sep="")
+      blpapi.jar.file <- paste(java_api_dir, version.dir, "\\lib\\blpapi3.jar", sep="")
     end
   }
 
@@ -64,6 +72,14 @@ blpConnect.Java <- function(log.level, blpapi.jar.file) {
   )
 
   conn <- .jnew("org/findata/blpwrapper/Connection", java.log.level)
+  
+  if (throw.ticker.errors) {
+    throw.ticker.errors.java = .jnew("java/lang/Boolean", TRUE)$booleanValue()
+  } else {
+    throw.ticker.errors.java = .jnew("java/lang/Boolean", FALSE)$booleanValue()
+  } 
+  conn$setThrowInvalidTickerError(throw.ticker.errors.java)
+
   cat("Bloomberg API Version", J("com.bloomberglp.blpapi.VersionInfo")$versionString(), "\n")
 
   return(conn)

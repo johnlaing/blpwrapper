@@ -45,6 +45,12 @@ bdp <- function(conn, securities, fields,
     override_fields <- .jarray(override_fields)
     override_values <- .jarray(override_values)
     result <- conn$blp(securities, fields, override_fields, override_values)
+  } else if (is.null(override_fields)) {
+    override_fields <- .jarray("IGNORE")
+    override_values <- .jarray("IGNORE")
+    option_names <- .jarray(option_names)
+    option_values <- .jarray(option_values)
+    result <- conn$blp(securities, fields, override_fields, override_values, option_names, option_values)
   } else {
     override_fields <- .jarray(override_fields)
     override_values <- .jarray(override_values)
@@ -77,6 +83,12 @@ bds <- function(conn, securities, fields,
         override_fields <- .jarray(override_fields)
         override_values <- .jarray(override_values)
         result <- conn$bls(security, field, override_fields, override_values)
+      } else if (is.null(override_fields)) {
+        override_fields <- .jarray("IGNORE")
+        override_values <- .jarray("IGNORE")
+        option_names <- .jarray(option_names)
+        option_values <- .jarray(option_values)
+        result <- conn$bls(security, field, override_fields, override_values, option_names, option_values)
       } else {
         override_fields <- .jarray(override_fields)
         override_values <- .jarray(override_values)

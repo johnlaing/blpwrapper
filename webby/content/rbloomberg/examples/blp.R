@@ -22,3 +22,6 @@ bdp(conn, securities, fields, override_fields, overrides)
 override_fields <- c("EQY_FUND_DT")
 overrides <- c("20061231")
 bdp(conn, securities, fields, override_fields, overrides)
+
+blpDisconnect(conn)
+

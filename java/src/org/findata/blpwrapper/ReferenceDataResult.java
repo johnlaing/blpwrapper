@@ -40,7 +40,7 @@ public class ReferenceDataResult extends DataResult {
     return(data_types);
   }
 
-  public void processResponse(Element response, Logger logger) throws WrapperException {
+  public void processResponse(Element response, Logger logger, boolean throwInvalidTickerError) throws WrapperException {
     Element securityDataArray = response.getElement("securityData");
     int numItems = securityDataArray.numValues();
 
@@ -49,7 +49,7 @@ public class ReferenceDataResult extends DataResult {
       Element fieldData = securityData.getElement("fieldData");
       int seq = securityData.getElementAsInt32("sequenceNumber");
 
-      processSecurityError(securityData, logger);
+      processSecurityError(securityData, logger, throwInvalidTickerError);
       processFieldExceptions(securityData, logger);
 
       int field_data_counter = 0;

@@ -12,9 +12,8 @@ Please remember that anyone providing help to you is a volunteer. Please show re
 h2. Troubleshooting Tips
 
 Here are some quick things to try which might help you figure out what's going wrong:
-* Try @retval = "raw"@ in your blp() request.
 * Try making the same request via the Bloomberg add-in for Excel, or in your Bloomberg workstation using the FLDS page. Make sure your fields and override fields are valid and appropriate for the securities you are requesting.
-* Check for errors in the Bloomberg API log file, usually located in @C:\blp\API@ and called @bbcomm@ or @bbcomm.log@.
+* Check for errors in the Bloomberg API log file, located in your Windows user home directory.
 
 There are more extensive troubleshooting tips in the Troubleshooting chapter of the "user guide":<%= rbloomberg_manual_url %>.
 

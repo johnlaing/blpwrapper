@@ -44,8 +44,12 @@ Once you have RBloomberg installed, load the library just like any other. The bl
 The result of running these three commands should be something like this:
 <%= gorgl("examples/hello-world.Rout") %>
 
+\subsection{blpConnect}
 
-\section{Reference Data} 
+<%= gorgl("../rbloomberg/R/blpConnect.R", "blpConnect-definition") %>
+
+\section{Requesting Data}
+\subsection{Reference Data} 
 
 This section covers getting current, i.e. non-historical, data from Bloomberg. This may be live (or delayed as per your availability) market data, or static descriptive data. All such data is called using the bdp() function, as defined below:
 
@@ -53,7 +57,7 @@ This section covers getting current, i.e. non-historical, data from Bloomberg. T
 
 <%= gorgl("examples/blp.Rout") %>
 
-\section{Bulk Data}
+\subsection{Bulk Data}
 
 Bulk data fields can return multiple fields and rows in response to a single requested field. Dividend history data (DVD\_HIST) and getting a list of members in an index (INDX\_MEMBERS) are examples of bulk data fields. If more than one security is requested, then the tickers are shown in the first column of the returned data frame. Multiple fields can be requested at a time if they return data with the same column names, for example INDX\_MEMBERS, INDX\_MEMBERS2 and INDX\_MEMBERS3.
 
@@ -61,7 +65,7 @@ Bulk data fields can return multiple fields and rows in response to a single req
 
 <%= gorgl("examples/bls.Rout") %>
 
-\section{Historical Data}
+\subsection{Historical Data}
 
 For historical data, fetching a single security at a time is currently supported. Dates can be in string form using Bloomberg's YYYYMMDD format, or using any date/time class which responds to strftime. End dates are optional, if omitted all data from start time to current time will be requested.
 
@@ -75,31 +79,43 @@ If you wish to have a data frame with tickers as row names and dates as column n
 
 <%= gorgl("examples/plm.Rout") %>
 
-\section{Tick Data}
+\subsection{Tick Data}
 
 <%= gorgl("../rbloomberg/R/blp.R", "tick-definition") %>
 
 <%= gorgl("examples/tick.Rout") %>
 
-\section{Bar Data}
+\subsection{Bar Data}
 
 <%= gorgl("../rbloomberg/R/blp.R", "bar-definition") %>
 
 <%= gorgl("examples/bar.Rout") %>
 
 
-\section{Using Overrides}
+\section{Overrides, Options, Tips and Tricks}
+\subsection{Using Overrides}
 
 The Bloomberg API allows you to make certain overrides to change the value that a function returns. We give a few examples here, to determine whether a field you wish to request can be overridden, consult the FLDS screen in your Bloomberg terminal (look for What Overrides Me).
 
 Note that dates must be passed as strings in the form ``YYYYMMDD''. If you pass an invalid override field, or one that doesn't apply to the main field you are requesting, this will be silently ignored. So, make sure you know that your request is valid before you count on the returned value being correct. This is a feature rather than a bug since it makes it possible to specify override fields which only apply to 1 field requested. So, you can ask for CRNCY\_ADJ\_PX\_LAST and NAME in the same request, and you don't get an error saying that EQY\_FUND\_CRNCY doesn't apply to the NAME field.
 
 
-\section{Setting Options}
+\subsection{Setting Options}
 
 The new Bloomberg API has per-request options. See Historical Data for an example of periodicitySelection.
 
-\section{Field Lookup}
+All options need to be provided as strings, where necessary they will be converted to the correct data type within the Java code. The following named options will be converted to Datetime and Boolean types respectively, all other options will be sent to the Bloomberg API as strings. If you are aware of an option that should be converted to a different data type which is not on this list, please report this issue.
+
+<%= gorgl("examples/options.Rout") %>
+
+\subsection{Ignoring Ticker Errors}
+
+By default, an error will be raised if you request data for an invalid ticker. If you would prefer to have NA values returned silently when you pass an invalid ticker, then connect to RBloomberg as follows:
+
+<%= gorgl("examples/blp-no-errors.Rout") %>
+
+
+\subsection{Field Lookup}
 
 \section{Troubleshooting}
 
@@ -110,3 +126,4 @@ If you are having difficulty with RBloomberg, check the log files (located in yo
 You might have a typo in your ticker or in the fields you are requesting, or the fields might not be applicable to the ticker. Try making the same request from within your Bloomberg terminal. The FLDS page gives you access to all the same fields from RBloomberg, so you can re-create the request you are trying to make (for one security at a time). You could also use the Excel API to double-check your request.
 
 Also, check any override fields you are using.
+

@@ -44,7 +44,7 @@ public class HistoricalDataResult extends DataResult {
     return(data_types);
   }
 
-  public void processResponse(Element response, Logger logger) throws WrapperException {
+  public void processResponse(Element response, Logger logger, boolean throwInvalidTickerError) throws WrapperException {
     Element securityData = response.getElement("securityData");
     Element fieldData = securityData.getElement("fieldData");
     int seq = securityData.getElementAsInt32("sequenceNumber");
@@ -52,7 +52,7 @@ public class HistoricalDataResult extends DataResult {
       throw new WrapperException("do not expect seq " + seq + " to be greater than 0.");
     }
     
-    processSecurityError(securityData, logger);
+    processSecurityError(securityData, logger, throwInvalidTickerError);
     processFieldExceptions(securityData, logger);
 
     // Iterate over historical data points

@@ -25,7 +25,7 @@ public class FieldInfoResult extends DataResult {
     return(returned_fields);
   }
 
-  public void processResponse(Element response, Logger logger) throws WrapperException {
+  public void processResponse(Element response, Logger logger, boolean throwInvalidSecurityError) throws WrapperException {
     Element field_data = response.getElement("fieldData");
     for (int i = 0; i < field_data.numValues(); i++) {
       Element field = field_data.getValueAsElement(i);

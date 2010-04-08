@@ -28,7 +28,7 @@ public class BulkDataResult extends DataResult {
     return(returned_fields);
   }
 
-  public void processResponse(Element response, Logger logger) throws WrapperException {
+  public void processResponse(Element response, Logger logger, boolean throwInvalidTickerError) throws WrapperException {
     Element securityDataArray = response.getElement("securityData");
     Element securityData = securityDataArray.getValueAsElement(0);
     Element fieldData = securityData.getElement("fieldData");
@@ -38,7 +38,7 @@ public class BulkDataResult extends DataResult {
       throw new WrapperException("do not expect seq " + seq + " to be greater than 0.");
     }
     
-    processSecurityError(securityData, logger);
+    processSecurityError(securityData, logger, throwInvalidTickerError);
     processFieldExceptions(securityData, logger);
 
     if (fieldData.numElements() > 1) {
