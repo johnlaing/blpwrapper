@@ -55,7 +55,6 @@ public class ReferenceDataResult extends DataResult {
       int field_data_counter = 0;
       for (int j = 0; j < fields.length; j++) { 
         String field_name = fields[j];
-        String field_value = null;
 
         if (field_data_counter < fieldData.numElements()) {
           logger.finest("i = " + i + "\n" + "seq = " + seq + "\n" + "j = " + j + "\n" + "field_data_counter = " + field_data_counter);
@@ -76,15 +75,21 @@ public class ReferenceDataResult extends DataResult {
               logger.finest("Field data type is " + data_types[j]);
             }
 
-            field_value = field.getValueAsString();
-            logger.finest("Setting field value to " + field_value);
+            String value = field.getValueAsString();
+
+            logger.finest("Setting field value to " + value);
             field_data_counter++;
+
+            if (value.equals("-2.4245362661989844E-14")) {
+              logger.info("Numeric of -2.4245362661989844E-14 encountered. Not a real value. Will be left NULL.");
+            } else {
+              result_data[seq][j] = value;
+            }
           } else {
             logger.finest("Skipping field.");
           }
         }
 
-        result_data[seq][j] = field_value;
       } 
     }
   }

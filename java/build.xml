@@ -60,7 +60,7 @@
   </target>
 
   <target name="doc">
-    <javadoc sourcepath="${src.dir}" destdir="..\webby\content\blpwrapper\javadoc">
+    <javadoc sourcepath="${src.dir}" destdir="..\webby\content\blpwrapper\javadoc" linksource="yes">
       <classpath refid="project.classpath" />
     </javadoc>
   </target>

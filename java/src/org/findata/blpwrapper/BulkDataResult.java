@@ -68,7 +68,13 @@ public class BulkDataResult extends DataResult {
           data_types[j] = y.datatype().toString();
         }
 
-        result_data[i][j] = y.getValueAsString();
+        String value = y.getValueAsString();
+
+        if (value.equals("-2.4245362661989844E-14")) {
+          logger.info("Numeric of -2.4245362661989844E-14 encountered. Not a real value. Will be left NULL.");
+        } else {
+          result_data[i][j] = value;
+        }
       }
     }
   }

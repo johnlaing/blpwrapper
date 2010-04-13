@@ -203,16 +203,25 @@ bar <- function(conn, security, field, start_date_time, end_date_time, interval)
 }
 
 ### @export "tick-definition"
-tick <- function(conn, security, fields, start_date_time, end_date_time)
+tick <- function(conn, security, fields, start_date_time, end_date_time, 
+    option_names = NULL, option_values = NULL)
 ### @end
 {
   fields <- .jarray(fields);
-  result <- conn$tick(security, fields, start_date_time, end_date_time)
+
+  if (is.null(option_names)) {
+    result <- conn$tick(security, fields, start_date_time, end_date_time)
+  } else {
+    option_names <- .jarray(option_names)
+    option_values <- .jarray(option_values)
+    result <- conn$tick(security, fields, start_date_time, end_date_time, option_names, option_values)
+  }
   return(process.result(result))
 }
 
 process.result <- function(result, row.name.source = "none") {
   matrix.data <- result$getData()
+  if (is.null(matrix.data)) return(NULL)
 
   rownames(matrix.data) <- switch(row.name.source,
       java = result$getRowNames(),

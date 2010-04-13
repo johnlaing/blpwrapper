@@ -1,0 +1,157 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    package org.findata.blpwrapper;<a name="line.1"></a>
+<FONT color="green">002</FONT>    <a name="line.2"></a>
+<FONT color="green">003</FONT>    import com.bloomberglp.blpapi.*;<a name="line.3"></a>
+<FONT color="green">004</FONT>    <a name="line.4"></a>
+<FONT color="green">005</FONT>    import java.util.logging.Logger;<a name="line.5"></a>
+<FONT color="green">006</FONT>    <a name="line.6"></a>
+<FONT color="green">007</FONT>    public class ReferenceDataResult extends DataResult {<a name="line.7"></a>
+<FONT color="green">008</FONT>      private String[] fields;<a name="line.8"></a>
+<FONT color="green">009</FONT>      private String[] securities;<a name="line.9"></a>
+<FONT color="green">010</FONT>      private String[] data_types;<a name="line.10"></a>
+<FONT color="green">011</FONT>      private String[][] result_data;<a name="line.11"></a>
+<FONT color="green">012</FONT>    <a name="line.12"></a>
+<FONT color="green">013</FONT>      public ReferenceDataResult(String[] argSecurities, String[] argFields) {<a name="line.13"></a>
+<FONT color="green">014</FONT>        securities = argSecurities;<a name="line.14"></a>
+<FONT color="green">015</FONT>        fields = argFields;<a name="line.15"></a>
+<FONT color="green">016</FONT>    <a name="line.16"></a>
+<FONT color="green">017</FONT>        data_types = new String[fields.length];<a name="line.17"></a>
+<FONT color="green">018</FONT>        // Because we may get data type info out of order, need to<a name="line.18"></a>
+<FONT color="green">019</FONT>        // initialize array at start with a default value.<a name="line.19"></a>
+<FONT color="green">020</FONT>        for (int i = 0; i &lt; fields.length; i++) {<a name="line.20"></a>
+<FONT color="green">021</FONT>          // Call this "NOT_APPLICABLE" since "NA" causes problems in R.<a name="line.21"></a>
+<FONT color="green">022</FONT>          data_types[i] = "NOT_APPLICABLE";<a name="line.22"></a>
+<FONT color="green">023</FONT>        }<a name="line.23"></a>
+<FONT color="green">024</FONT>        result_data = new String[securities.length][fields.length];<a name="line.24"></a>
+<FONT color="green">025</FONT>      }<a name="line.25"></a>
+<FONT color="green">026</FONT>    <a name="line.26"></a>
+<FONT color="green">027</FONT>      public String[][] getData() {<a name="line.27"></a>
+<FONT color="green">028</FONT>        return(result_data);<a name="line.28"></a>
+<FONT color="green">029</FONT>      }<a name="line.29"></a>
+<FONT color="green">030</FONT>    <a name="line.30"></a>
+<FONT color="green">031</FONT>      public String[] getColumnNames() {<a name="line.31"></a>
+<FONT color="green">032</FONT>        return(fields);<a name="line.32"></a>
+<FONT color="green">033</FONT>      }<a name="line.33"></a>
+<FONT color="green">034</FONT>    <a name="line.34"></a>
+<FONT color="green">035</FONT>      public String[] getRowNames() {<a name="line.35"></a>
+<FONT color="green">036</FONT>        return(securities);<a name="line.36"></a>
+<FONT color="green">037</FONT>      }<a name="line.37"></a>
+<FONT color="green">038</FONT>    <a name="line.38"></a>
+<FONT color="green">039</FONT>      public String[] getDataTypes() {<a name="line.39"></a>
+<FONT color="green">040</FONT>        return(data_types);<a name="line.40"></a>
+<FONT color="green">041</FONT>      }<a name="line.41"></a>
+<FONT color="green">042</FONT>    <a name="line.42"></a>
+<FONT color="green">043</FONT>      public void processResponse(Element response, Logger logger, boolean throwInvalidTickerError) throws WrapperException {<a name="line.43"></a>
+<FONT color="green">044</FONT>        Element securityDataArray = response.getElement("securityData");<a name="line.44"></a>
+<FONT color="green">045</FONT>        int numItems = securityDataArray.numValues();<a name="line.45"></a>
+<FONT color="green">046</FONT>    <a name="line.46"></a>
+<FONT color="green">047</FONT>        for (int i = 0; i &lt; numItems; i++) {<a name="line.47"></a>
+<FONT color="green">048</FONT>          Element securityData = securityDataArray.getValueAsElement(i);<a name="line.48"></a>
+<FONT color="green">049</FONT>          Element fieldData = securityData.getElement("fieldData");<a name="line.49"></a>
+<FONT color="green">050</FONT>          int seq = securityData.getElementAsInt32("sequenceNumber");<a name="line.50"></a>
+<FONT color="green">051</FONT>    <a name="line.51"></a>
+<FONT color="green">052</FONT>          processSecurityError(securityData, logger, throwInvalidTickerError);<a name="line.52"></a>
+<FONT color="green">053</FONT>          processFieldExceptions(securityData, logger);<a name="line.53"></a>
+<FONT color="green">054</FONT>    <a name="line.54"></a>
+<FONT color="green">055</FONT>          int field_data_counter = 0;<a name="line.55"></a>
+<FONT color="green">056</FONT>          for (int j = 0; j &lt; fields.length; j++) { <a name="line.56"></a>
+<FONT color="green">057</FONT>            String field_name = fields[j];<a name="line.57"></a>
+<FONT color="green">058</FONT>            String field_value = null;<a name="line.58"></a>
+<FONT color="green">059</FONT>    <a name="line.59"></a>
+<FONT color="green">060</FONT>            if (field_data_counter &lt; fieldData.numElements()) {<a name="line.60"></a>
+<FONT color="green">061</FONT>              logger.finest("i = " + i + "\n" + "seq = " + seq + "\n" + "j = " + j + "\n" + "field_data_counter = " + field_data_counter);<a name="line.61"></a>
+<FONT color="green">062</FONT>              Element field = fieldData.getElement(field_data_counter);<a name="line.62"></a>
+<FONT color="green">063</FONT>              if (field.name().toString().equals(field_name)) {<a name="line.63"></a>
+<FONT color="green">064</FONT>                // Raise an error if we're trying to read SEQUENCE data.<a name="line.64"></a>
+<FONT color="green">065</FONT>                // Store the data type for later (if it hasn't already been stored).<a name="line.65"></a>
+<FONT color="green">066</FONT>                if (data_types[j].equals("NOT_APPLICABLE")) {<a name="line.66"></a>
+<FONT color="green">067</FONT>                  if (field.datatype().intValue() == Schema.Datatype.Constants.SEQUENCE) {<a name="line.67"></a>
+<FONT color="green">068</FONT>                    throw new WrapperException("reference data request cannot handle SEQUENCE data in field " + field.name().toString());<a name="line.68"></a>
+<FONT color="green">069</FONT>                  }<a name="line.69"></a>
+<FONT color="green">070</FONT>                  String data_type = field.datatype().toString();<a name="line.70"></a>
+<FONT color="green">071</FONT>                  if (!data_type.equals("NA")) {<a name="line.71"></a>
+<FONT color="green">072</FONT>                    logger.finest("Setting field data type to " + data_type);<a name="line.72"></a>
+<FONT color="green">073</FONT>                    data_types[j] = data_type;<a name="line.73"></a>
+<FONT color="green">074</FONT>                  }<a name="line.74"></a>
+<FONT color="green">075</FONT>                } else {<a name="line.75"></a>
+<FONT color="green">076</FONT>                  logger.finest("Field data type is " + data_types[j]);<a name="line.76"></a>
+<FONT color="green">077</FONT>                }<a name="line.77"></a>
+<FONT color="green">078</FONT>    <a name="line.78"></a>
+<FONT color="green">079</FONT>                field_value = field.getValueAsString();<a name="line.79"></a>
+<FONT color="green">080</FONT>                logger.finest("Setting field value to " + field_value);<a name="line.80"></a>
+<FONT color="green">081</FONT>                field_data_counter++;<a name="line.81"></a>
+<FONT color="green">082</FONT>              } else {<a name="line.82"></a>
+<FONT color="green">083</FONT>                logger.finest("Skipping field.");<a name="line.83"></a>
+<FONT color="green">084</FONT>              }<a name="line.84"></a>
+<FONT color="green">085</FONT>            }<a name="line.85"></a>
+<FONT color="green">086</FONT>    <a name="line.86"></a>
+<FONT color="green">087</FONT>            result_data[seq][j] = field_value;<a name="line.87"></a>
+<FONT color="green">088</FONT>          } <a name="line.88"></a>
+<FONT color="green">089</FONT>        }<a name="line.89"></a>
+<FONT color="green">090</FONT>      }<a name="line.90"></a>
+<FONT color="green">091</FONT>    }<a name="line.91"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>

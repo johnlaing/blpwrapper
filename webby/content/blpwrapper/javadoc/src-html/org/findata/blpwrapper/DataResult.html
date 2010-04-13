@@ -1,0 +1,112 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    package org.findata.blpwrapper;<a name="line.1"></a>
+<FONT color="green">002</FONT>    <a name="line.2"></a>
+<FONT color="green">003</FONT>    import com.bloomberglp.blpapi.*;<a name="line.3"></a>
+<FONT color="green">004</FONT>    <a name="line.4"></a>
+<FONT color="green">005</FONT>    import java.util.logging.Logger;<a name="line.5"></a>
+<FONT color="green">006</FONT>    <a name="line.6"></a>
+<FONT color="green">007</FONT>    public abstract class DataResult {<a name="line.7"></a>
+<FONT color="green">008</FONT>      public abstract void processResponse(Element response, Logger logger, boolean throwInvalidSecurityError) throws WrapperException;<a name="line.8"></a>
+<FONT color="green">009</FONT>      public abstract String[][] getData() throws WrapperException;<a name="line.9"></a>
+<FONT color="green">010</FONT>      public abstract String[] getColumnNames() throws WrapperException;<a name="line.10"></a>
+<FONT color="green">011</FONT>      public abstract String[] getDataTypes() throws WrapperException;<a name="line.11"></a>
+<FONT color="green">012</FONT>    <a name="line.12"></a>
+<FONT color="green">013</FONT>      public void processSecurityError(Element securityData, Logger logger, boolean throwError) throws WrapperException {<a name="line.13"></a>
+<FONT color="green">014</FONT>        if (securityData.hasElement("securityError")) {<a name="line.14"></a>
+<FONT color="green">015</FONT>          logger.info("securityError info\n" + securityData.getElement("security") + "\n" + securityData.getElement("securityError"));<a name="line.15"></a>
+<FONT color="green">016</FONT>          <a name="line.16"></a>
+<FONT color="green">017</FONT>          if (throwError) {<a name="line.17"></a>
+<FONT color="green">018</FONT>            // Note this will only show the first invalid security.<a name="line.18"></a>
+<FONT color="green">019</FONT>            throw new WrapperException("invalid security " + securityData.getElementAsString("security"));<a name="line.19"></a>
+<FONT color="green">020</FONT>          }<a name="line.20"></a>
+<FONT color="green">021</FONT>        }<a name="line.21"></a>
+<FONT color="green">022</FONT>      }<a name="line.22"></a>
+<FONT color="green">023</FONT>    <a name="line.23"></a>
+<FONT color="green">024</FONT>      public void processFieldExceptions(Element securityData, Logger logger) throws WrapperException {<a name="line.24"></a>
+<FONT color="green">025</FONT>        Element field_exceptions = securityData.getElement("fieldExceptions");<a name="line.25"></a>
+<FONT color="green">026</FONT>        if (field_exceptions.numValues() &gt; 0) {<a name="line.26"></a>
+<FONT color="green">027</FONT>          for (int k = 0; k &lt; field_exceptions.numValues(); k++) {<a name="line.27"></a>
+<FONT color="green">028</FONT>            Element exception = field_exceptions.getValueAsElement(k);<a name="line.28"></a>
+<FONT color="green">029</FONT>            logger.info("fieldError info\n" + securityData.getElement("security") + "\n" + exception.getElement("fieldId"));<a name="line.29"></a>
+<FONT color="green">030</FONT>    <a name="line.30"></a>
+<FONT color="green">031</FONT>            Element errorInfo = exception.getElement("errorInfo");<a name="line.31"></a>
+<FONT color="green">032</FONT>            logger.info("" + errorInfo);<a name="line.32"></a>
+<FONT color="green">033</FONT>            String errorType = errorInfo.getElementAsString("subcategory");<a name="line.33"></a>
+<FONT color="green">034</FONT>            if (errorType.equals("INVALID_FIELD")) {<a name="line.34"></a>
+<FONT color="green">035</FONT>              throw new WrapperException("invalid field " + exception.getElementAsString("fieldId"));<a name="line.35"></a>
+<FONT color="green">036</FONT>            } else if (errorType.equals("NOT_APPLICABLE_TO_REF_DATA")) {<a name="line.36"></a>
+<FONT color="green">037</FONT>              // Not a fatal error. Just return null value.<a name="line.37"></a>
+<FONT color="green">038</FONT>            } else if (errorType.equals("NOT_APPLICABLE_TO_HIST_DATA")) {<a name="line.38"></a>
+<FONT color="green">039</FONT>              // Not a fatal error. Just return null value.<a name="line.39"></a>
+<FONT color="green">040</FONT>            } else {<a name="line.40"></a>
+<FONT color="green">041</FONT>              throw new WrapperException("unknown field error type " + errorType);<a name="line.41"></a>
+<FONT color="green">042</FONT>            }<a name="line.42"></a>
+<FONT color="green">043</FONT>          }<a name="line.43"></a>
+<FONT color="green">044</FONT>        }<a name="line.44"></a>
+<FONT color="green">045</FONT>      }<a name="line.45"></a>
+<FONT color="green">046</FONT>    }<a name="line.46"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>

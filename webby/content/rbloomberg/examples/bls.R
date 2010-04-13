@@ -1,5 +1,5 @@
 library(RBloomberg)
-conn <- blpConnect()
+conn <- blpConnect(log.level = "finest")
 
 
 security <- c("BKIR ID Equity")
@@ -21,4 +21,5 @@ securities <- c("UKX Index", "SPX Index")
 fields <- c("INDX_MEMBERS", "INDX_MEMBERS2", "INDX_MEMBERS3")
 
 bds(conn, securities, fields)[c(1:5, 350:355),]
+
 

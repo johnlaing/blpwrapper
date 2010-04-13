@@ -39,7 +39,7 @@ blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors) {
     missing_java_api_dir_message = paste("Can't find", java_api_dir, "please confirm you have Bloomberg Version 3 Java API installed. If it's in a different location, please report this to RBloomberg package maintainer.")
     if (!file.exists(java_api_dir)) stop(missing_java_api_dir_message)
 
-    version.dir <- sort(list.files(, "^v"), decreasing=TRUE)[1]
+    version.dir <- sort(list.files(java_api_dir, "^[vV]"), decreasing=TRUE)[1]
     if (is.na(version.dir))
       blpapi.jar.file <- paste(java_api_dir, "\\lib\\blpapi3.jar", sep="")
     else

@@ -1,8 +1,8 @@
 Package: RBloomberg
-Version: 0.4-137
+Version: 0.4-138
 Depends: rJava
-Suggests: plm, zoo
+Suggests: zoo
 OS_type: windows
 License: GPL
-File: RBloomberg_0.4-137.zip
+File: RBloomberg_0.4-138.zip
 

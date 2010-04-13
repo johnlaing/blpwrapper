@@ -26,4 +26,9 @@ bdh(conn, c("AMZN US Equity"), c("PX_LAST", "BID"), start.date, end.date,
 bdh(conn, c("AMZN US Equity"), c("PX_LAST", "BID"), start.date, end.date, 
     always.display.tickers = TRUE, dates.as.row.names = FALSE)
 
+bdh(conn, "/SEDOL1/2292612 EQUITY", c("PX_LAST", "BID"), "20090401", "20090410")
+
+# We should get NULL back when there's no data...
+bdh(conn, "/SEDOL1/2292612 EQUITY", c("PX_LAST", "BID"), "20090405", "20090405")
+
 blpDisconnect(conn)

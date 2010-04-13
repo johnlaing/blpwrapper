@@ -75,11 +75,13 @@ If multiple securities are requested, then another column will be included conta
 
 <%= gorgl("examples/blh.Rout") %>
 
-If you wish to have a data frame with tickers as row names and dates as column names, and data for a single field displayed in this grid, then see the example below using the \verb|as.matrix| method from the \verb|plm| library.
+If you wish to have a data frame with tickers as row names and dates as column names, and data for a single field displayed in this grid (or vice versa), then see the examples below.
 
-<%= gorgl("examples/plm.Rout") %>
+<%= gorgl("examples/reshape.Rout") %>
 
 \subsection{Tick Data}
+
+Period start and end times must be expressed as strings in UTC time.
 
 <%= gorgl("../rbloomberg/R/blp.R", "tick-definition") %>
 
@@ -87,12 +89,19 @@ If you wish to have a data frame with tickers as row names and dates as column n
 
 \subsection{Bar Data}
 
+Period start and end times must be expressed as strings in UTC time.
+
 <%= gorgl("../rbloomberg/R/blp.R", "bar-definition") %>
 
 <%= gorgl("examples/bar.Rout") %>
 
 
 \section{Overrides, Options, Tips and Tricks}
+
+\subsection{Ticker Format}
+
+To use a SEDOL or CUSIP to identify a security, you need to prefix the identifier with /SEDOL1/ or /CUSIP/. Bloomberg tickers themselves have an implicit /ticker/ before them. It is possible, though not yet implemented for RBloomberg, to change the default from /ticker/ to /CUSIP/ (or any other prefix) at the session level.
+
 \subsection{Using Overrides}
 
 The Bloomberg API allows you to make certain overrides to change the value that a function returns. We give a few examples here, to determine whether a field you wish to request can be overridden, consult the FLDS screen in your Bloomberg terminal (look for What Overrides Me).

@@ -502,16 +502,13 @@ public class Connection {
   }
 
   public DataResult tick(String security, String[] event_types, String start_date_time, String end_date_time) throws Exception {
-    String[] override_fields = new String[0];
-    String[] override_values = new String[0];
-
     String[] option_names = new String[0];
     String[] option_values = new String[0];
 
-    return(tick(security, event_types, start_date_time, end_date_time, override_fields, override_values, option_names, option_values));
+    return(tick(security, event_types, start_date_time, end_date_time, option_names, option_values));
   }
 
-  public DataResult tick(String security, String[] event_types, String start_date_time, String end_date_time, String[] override_fields, String[] override_values, String[] option_names, String[] option_values) throws Exception {
+  public DataResult tick(String security, String[] event_types, String start_date_time, String end_date_time, String[] option_names, String[] option_values) throws Exception {
     String[] securities = new String[0];
     String[] fields = new String[0];
   
@@ -530,6 +527,9 @@ public class Connection {
     option_values_with_start[len+1] = start_date_time;
     option_names_with_start[len+2] = "endDateTime";
     option_values_with_start[len+2] = end_date_time;
+
+    String[] override_fields = new String[0];
+    String[] override_values = new String[0];
 
     int response_id = (int)sendRefDataRequest(INTRADAY_TICK_RESULT, intraday_tick_request_name, securities, fields, override_fields, override_values, option_names_with_start, option_values_with_start, event_types).value();
     processEventLoop(INTRADAY_TICK_RESULT);
