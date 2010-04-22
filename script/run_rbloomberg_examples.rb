@@ -8,7 +8,7 @@ dir = Dir.new(File.expand_path(File.join(File.dirname(__FILE__), %w[.. webby con
 dir.each do |f|
   next unless f =~ /R$/
   next if f =~ /^._/
-  
+
   original_file = File.join(dir.path, f)
   
   data = File.read(original_file)

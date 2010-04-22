@@ -1,6 +1,7 @@
 ### @export "blpConnect-definition"
 blpConnect <- function(iface="Java", log.level = "warning",
-    blpapi.jar.file = NULL, throw.ticker.errors = TRUE)
+    blpapi.jar.file = NULL, throw.ticker.errors = TRUE,
+    jvm.params = NULL)
 ### @end
 {
   valid.interfaces <- c('Java')
@@ -21,17 +22,32 @@ blpConnect <- function(iface="Java", log.level = "warning",
   }
 
   fn.name <- paste("blpConnect", iface, sep=".")
-  fn.call <- call(fn.name, log.level, blpapi.jar.file, throw.ticker.errors)
+  fn.call <- call(fn.name, log.level, blpapi.jar.file, throw.ticker.errors, jvm.params)
   eval(fn.call)
 }
 
-blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors) {
+blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm.params) {
   cat(R.version.string, "\n")
   cat("rJava Version", read.dcf(system.file("DESCRIPTION", package="rJava"))[1, "Version"], "\n")
   cat("RBloomberg Version", read.dcf(system.file("DESCRIPTION", package="RBloomberg"))[1, "Version"], "\n")
 
   library(rJava)
-  .jinit()
+  if (is.null(jvm.params)) {
+    jinit_value <- .jinit()
+  } else {
+    cat("Using JVM parameters", jvm.params, "\n")
+    jinit_value <- .jinit(parameters = jvm.params)
+  }
+  
+  if (jinit_value == 0) {
+    cat("Java environment initialized successfully.\n")
+  } else if (jinit_value < 0) {
+    stop(paste("Error in creating Java environment. Status code", jinit_value))
+  } else if (jinit_value > 0) {
+    cat("Java environment started, but there may be some problems. Status code", jinit_value, "\n")
+  } else {
+    stop(paste("Should not be here. jinit_value is", jinit_value, "Please report this as a bug"))
+  }
 
   if (is.null(blpapi.jar.file)) {
     cat("Looking for most recent blpapi3.jar file...\n")
@@ -39,18 +55,18 @@ blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors) {
     missing_java_api_dir_message = paste("Can't find", java_api_dir, "please confirm you have Bloomberg Version 3 Java API installed. If it's in a different location, please report this to RBloomberg package maintainer.")
     if (!file.exists(java_api_dir)) stop(missing_java_api_dir_message)
 
-    version.dir <- sort(list.files(java_api_dir, "^[vV]"), decreasing=TRUE)[1]
+    version.dir <- sort(list.files(java_api_dir, "^v", ignore.case=TRUE), decreasing=TRUE)[1]
     if (is.na(version.dir))
-      blpapi.jar.file <- paste(java_api_dir, "\\lib\\blpapi3.jar", sep="")
+      blpapi.jar.file <- paste(java_api_dir, "lib\\blpapi3.jar", sep="\\")
     else
-      blpapi.jar.file <- paste(java_api_dir, version.dir, "\\lib\\blpapi3.jar", sep="")
+      blpapi.jar.file <- paste(java_api_dir, version.dir, "lib\\blpapi3.jar", sep="\\")
     end
   }
 
   if (file.exists(blpapi.jar.file)) {
     .jaddClassPath(blpapi.jar.file)
   } else {
-    stop(paste("blpapi jar file not found at", blpapi.jar.file, "please locate this file and pass correct location to blpConnect as blp.jar.file parameter. This might be a bug, if so please report it."))
+    stop(paste("blpapi jar file not found at", blpapi.jar.file, "please locate this file and pass location including full path to blpConnect as blpapi.jar.file parameter. This might be a bug, if so please report it."))
   }
 
   blpwrapper.jar.file = system.file("java", "blpwrapper.jar", package="RBloomberg")

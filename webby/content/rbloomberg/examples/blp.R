@@ -4,7 +4,7 @@ conn <- blpConnect()
 bdp(conn, "AMZN US Equity", "NAME")
 
 securities <- c("AMZN US Equity", "OCN US Equity")
-fields <- c("NAME", "PX_LAST", "TIME", "SETTLE_DT")
+fields <- c("NAME", "PX_LAST", "TIME", "SETTLE_DT", "HAS_CONVERTIBLES") # Demo different return data types.
 bdp(conn, securities, fields)
 
 securities <- c("AMZN US Equity", "OCN US Equity")

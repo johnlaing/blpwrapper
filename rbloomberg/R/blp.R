@@ -1,6 +1,6 @@
 blp <- function(conn, securities, fields, start = NULL, end = NULL, 
-barsize = NULL, barfields = NULL, retval = NULL, 
-override_fields = NULL, overrides = NULL, currency = NULL) { 
+    barsize = NULL, barfields = NULL, retval = NULL, 
+    override_fields = NULL, overrides = NULL, currency = NULL) { 
   if (is.null(start)) {
     stop("The blp() function has been removed. Please consult documentation for the bdp() function, or the bds() function for making bulk data calls.")
   } else {
@@ -15,8 +15,8 @@ override_fields = NULL, overrides = NULL, currency = NULL) {
 }
 
 blpGetData <- function(conn, securities, fields, start = NULL, end = NULL, 
-barsize = NULL, barfields = NULL, retval = NULL, 
-override_fields = NULL, overrides = NULL, currency = NULL) { 
+    barsize = NULL, barfields = NULL, retval = NULL, 
+    override_fields = NULL, overrides = NULL, currency = NULL) { 
   if (is.null(start)) {
     stop("The blpGetData() function has been removed. Please consult documentation for the bdp() function, or the bds() function for making bulk data calls.")
   } else {
@@ -124,7 +124,8 @@ bds <- function(conn, securities, fields,
 bdh <- function(conn, securities, fields, start_date, end_date = NULL, 
     override_fields = NULL, override_values = NULL, 
     option_names = NULL, option_values = NULL,
-    always.display.tickers = FALSE, dates.as.row.names = (length(securities) == 1))
+    always.display.tickers = FALSE, dates.as.row.names = (length(securities) == 1),
+    include.non.trading.days = NULL)
 ### @end
 {
   fields <- .jarray(fields)
@@ -139,15 +140,31 @@ bdh <- function(conn, securities, fields, start_date, end_date = NULL,
     end_date = format(end_date, format="%Y%m%d")
   }
 
+  combined <- NULL
+  combine.multiple <- (length(securities) > 1)
+
+  if (combine.multiple && is.null(include.non.trading.days)) {
+    include.non.trading.days = TRUE
+    ## TODO Should raise error if set to FALSE?
+  }
+
+  if (is.null(include.non.trading.days)) {
+    # We don't want to call 'if' on a NULL value.
+  } else if (include.non.trading.days) {
+    option_names <- c("nonTradingDayFillOption", "nonTradingDayFillMethod", option_names) 
+    option_values <- c("ALL_CALENDAR_DAYS", "NIL_VALUE", option_values)
+  }
+
   if (!is.null(option_names)) {
     option_names <- .jarray(option_names)
     option_values <- .jarray(option_values)
   }
 
-  combined <- NULL
-  combine.multiple <- (length(securities) > 1)
+  i <- 0
 
   for (security in securities) {
+    i <- i+1
+
     if (is.null(end_date)) {
       if (is.null(override_fields) && is.null(option_names)) {
         result <- conn$blh(security, fields, start_date)
@@ -166,32 +183,63 @@ bdh <- function(conn, securities, fields, start_date, end_date = NULL,
         result <- conn$blh(security, fields, start_date, end_date)
       } else if (is.null(option_names)) {
         result <- conn$blh(security, fields, start_date, end_date, override_fields, override_values)
+      } else if (is.null(override_fields)) {
+        override_fields <- .jarray("IGNORE")
+        override_values <- .jarray("IGNORE")
+
+        result <- conn$blh(security, fields, start_date, end_date, override_fields, override_values, option_names, option_values)
       } else {
         result <- conn$blh(security, fields, start_date, end_date, override_fields, override_values, option_names, option_values)
       }
     }
-    
-    if (dates.as.row.names) {
-      if (combine.multiple) stop("Can't use dates as row names with multiple tickers, dates will not be unique.")
-      result <- process.result(result, "first.column")
-    } else {
-      result <- process.result(result, "none")
-    }
+
+    matrix.data <- result$getData()
+    column.names <- result$getColumnNames()
+    data.types <- result$getDataTypes()
 
     if (combine.multiple || always.display.tickers) {
-      # Prepend data frame with new row containing security ticker.
-      result <- data.frame(ticker = security, result)
+      matrix.data <- cbind(rep(security, dim(matrix.data)[1]), matrix.data)
+      column.names <- c("ticker", column.names)
+      data.types <- c("STRING", data.types)
     }
 
-    if (is.null(combined)) {
-      combined <- result
-    } else {
+    num.dates <- dim(matrix.data)[1]
+    num.tickers <- length(securities)
+    s <- (i-1)*num.dates + 1
+    f <- (i)*num.dates
+
+    if (is.null(combined)) { # First time through loop...
+      if (combine.multiple) {
+        # Allocate storage for expected number of responses.
+        combined <- matrix(, ncol=dim(matrix.data)[2], nrow=num.dates * num.tickers)
+
+        # Store this iteration's results
+        combined[s:f,] <- matrix.data
+      } else { # We're only looping once...
+        combined <- matrix.data
+      }
+    } else { # Not the first time through loop...
       if (!combine.multiple) stop("combine.multiple should be true if we are running through loop more than once")
-      combined <- rbind(combined, result)
+      combined[s:f,] <- matrix.data
     }
   }
 
-  return(combined)
+  if (is.null(combined)) {
+    return(NULL)
+  } else {
+    if (dates.as.row.names) {
+      if (combine.multiple) stop("Can't use dates as row names with multiple tickers, dates will not be unique.")
+      if (always.display.tickers) {
+        rownames(combined) <- matrix.data[,2]
+      } else {
+        rownames(combined) <- matrix.data[,1]
+      }
+    }
+
+    colnames(combined) <- column.names
+    combined <- convert.data.to.type(combined, data.types)
+    return(combined)
+  }
 }
 
 ### @export "bar-definition"
@@ -232,8 +280,11 @@ process.result <- function(result, row.name.source = "none") {
 
   colnames(matrix.data) <- result$getColumnNames()
 
+  convert.data.to.type(matrix.data, result$getDataTypes())
+}
+
+convert.data.to.type <- function(matrix.data, data_types) {
   df.data <- as.data.frame(matrix.data)
-  data_types <- result$getDataTypes()
 
   if (dim(df.data)[2] > 0) {
     convert.to.type(df.data, data_types)
@@ -245,7 +296,7 @@ process.result <- function(result, row.name.source = "none") {
 convert.to.type <- function(df.data, data_types) {
   for (i in 1:(dim(df.data)[2])) {
     string_values = as.vector(df.data[,i])
-    
+
     new_values <- switch(data_types[i],
         FLOAT64 = as.numeric(string_values),
         INT32 = as.numeric(string_values),
@@ -254,6 +305,7 @@ convert.to.type <- function(df.data, data_types) {
         DATE = string_values,
         DATETIME = string_values,
         NOT_APPLICABLE = string_values,
+        CHAR = string_values == 'Y', # Assumes CHAR is only used for Boolean values and can be trusted to return 'Y' or 'N'.
         stop(paste("unknown type", data_types[i]))
         )
     df.data[,i] <- new_values

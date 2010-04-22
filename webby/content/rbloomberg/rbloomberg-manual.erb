@@ -48,6 +48,19 @@ The result of running these three commands should be something like this:
 
 <%= gorgl("../rbloomberg/R/blpConnect.R", "blpConnect-definition") %>
 
+You can pass parameters for the JVM via jvm.params, which should be a vector of strings, each of which contains a single directive. Consult the documentation for the .jinit function in the rJava package for further details. You can list available parameters via \verb|java -X|.
+
+<%= gorgl("examples/java-options.txt") %>
+
+Here is an example of configuring for verbose garbage collection information:
+<%= gorgl("examples/memory.R") %>
+
+The resulting .gc file looks like:
+
+<%= gorgl("examples/rbloomberg.gc") %>
+
+and can be viewed with a GC viewer. An open source GC viewer is available from \href{http://www.tagtraum.com/gcviewer.html}{here}.
+
 \section{Requesting Data}
 \subsection{Reference Data} 
 
@@ -70,6 +83,8 @@ Bulk data fields can return multiple fields and rows in response to a single req
 For historical data, fetching a single security at a time is currently supported. Dates can be in string form using Bloomberg's YYYYMMDD format, or using any date/time class which responds to strftime. End dates are optional, if omitted all data from start time to current time will be requested.
 
 If multiple securities are requested, then another column will be included containing the security ticker. If you wish to include this column when requesting a single security, which may be necessary if you don't know in advance whether your query will be for one or multiple securities, then pass \verb|always.display.tickers = TRUE|. By default, the dates will be used as row names unless multiple tickers are requested. To disable this, pass \verb|dates.as.row.names = FALSE|. Setting \verb|dates.as.row.names=TRUE| when requesting multiple tickers will result in an error.
+
+You can specify that a row be returned for all dates in the requested period, even when markets or closed or otherwise no data is available, by specifying \verb|include.non.trading.days=TRUE|. If you request multiple securities, this is automatically set to TRUE. You can use \verb|na.omit| or \verb|na.exclude| to remove these rows. See examples below for more fine-grained control available by passing options directly to API.
 
 <%= gorgl("../rbloomberg/R/blp.R", "bdh-definition") %>
 
