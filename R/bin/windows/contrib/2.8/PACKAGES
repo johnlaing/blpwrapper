@@ -1,7 +1,0 @@
-Package: RBloomberg
-Version: 0.4-140
-Depends: rJava
-Suggests: zoo
-OS_type: windows
-License: GPL
-

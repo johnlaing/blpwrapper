@@ -11,6 +11,10 @@ class Blpwrapper
     @conn = Connection.new
   end
 
+  def set_throw_invalid_ticker_error(setting = true)
+    @conn.setThrowInvalidTickerError(setting)
+  end
+
   def show_errors
     begin
       yield
@@ -41,15 +45,27 @@ class Blpwrapper
     end
   end
 
-  def blh(security, fields, start_date, end_date = nil, return_format = :array)
+  def blh(security, fields, start_date, end_date = nil, return_format = :array, option_names = nil, option_values = nil)
     show_errors do
       fields = [fields] unless fields.is_a?(Array)
       start_date = start_date.strftime("%Y%m%d") if start_date.respond_to?(:strftime)
-      if end_date.nil?
-        result = DataResult.new(@conn.blh(security.to_java_string, fields.to_java(:string), start_date.to_java_string))
+      if option_names.nil?
+        if end_date.nil?
+          result = DataResult.new(@conn.blh(security.to_java_string, fields.to_java(:string), start_date.to_java_string))
+        else
+          end_date = end_date.strftime("%Y%m%d") if end_date.respond_to?(:strftime)
+          result = DataResult.new(@conn.blh(security.to_java_string, fields.to_java(:string), start_date.to_java_string, end_date.to_java_string))
+        end
       else
-        end_date = end_date.strftime("%Y%m%d") if end_date.respond_to?(:strftime)
-        result = DataResult.new(@conn.blh(security.to_java_string, fields.to_java(:string), start_date.to_java_string, end_date.to_java_string))
+        override_fields = ["IGNORE"].to_java(:string)
+        override_values = ["IGNORE"].to_java(:string)
+
+        if end_date.nil?
+          result = DataResult.new(@conn.blh(security.to_java_string, fields.to_java(:string), start_date.to_java_string, override_fields, override_values, option_names.to_java(:string), option_values.to_java(:string)))
+        else
+          end_date = end_date.strftime("%Y%m%d") if end_date.respond_to?(:strftime)
+          result = DataResult.new(@conn.blh(security.to_java_string, fields.to_java(:string), start_date.to_java_string, end_date.to_java_string, override_fields, override_values, option_names.to_java(:string), option_values.to_java(:string)))
+        end
       end
       result.return_as(return_format)
     end
@@ -60,8 +76,8 @@ class Blpwrapper
       fields = [fields] unless fields.is_a?(Array)
       date = date.strftime("%Y%m%d") if date.respond_to?(:strftime)
 
-      override_fields = [].to_java(:string)
-      override_values = [].to_java(:string)
+      override_fields = ["IGNORE"].to_java(:string)
+      override_values = ["IGNORE"].to_java(:string)
 
       option_names = ["nonTradingDayFillOption", "nonTradingDayFillMethod"].to_java(:string)
       option_values = ["ALL_CALENDAR_DAYS", "PREVIOUS_VALUE"].to_java(:string)

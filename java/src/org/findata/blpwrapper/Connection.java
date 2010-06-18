@@ -87,7 +87,7 @@ public class Connection {
     logger.setLevel(log_level);
 
     if (logger.getHandlers().length == 0) {
-      FileHandler handler = new FileHandler("%h/org.findata.blpwrapper.%g.log", 10*MB, 100, true);
+      FileHandler handler = new FileHandler("%h/org.findata.blpwrapper.%g.log", 100*MB, 100, true);
       handler.setFormatter(new SimpleFormatter());
       logger.addHandler(handler);
     }
@@ -318,6 +318,7 @@ public class Connection {
     while (msgIter.hasNext()) {
       Message message = msgIter.next();
       int response_id = (int)message.correlationID().value();
+      logger.fine("Response id " + response_id);
       DataResult result;
 
       switch(result_type) {

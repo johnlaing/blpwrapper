@@ -30,14 +30,29 @@ public class IntradayBarDataResult extends DataResult {
 
   public void processResponse(Element response, Logger logger, boolean throwInvalidTickerError) throws WrapperException {
     Element barDataArray = response.getElement("barData").getElement("barTickData");
+    
+    int initial_offset;
 
-    result_data = new String[barDataArray.numValues()][returned_fields.length];
+    if (result_data == null) {
+      logger.fine("Initializing result_data for IntradayBarDataResult");
+
+      initial_offset = 0;
+      result_data = new String[barDataArray.numValues()][returned_fields.length];
+    } else {
+      logger.fine("Extending existing result_data for IntradayBarDataResult");
+      
+      initial_offset = result_data.length;
+      int combined_length = barDataArray.numValues() + initial_offset;
+      String[][] combined_result_data = new String[combined_length][returned_fields.length];
+      System.arraycopy(result_data, 0, combined_result_data, 0, initial_offset);
+      result_data = combined_result_data;
+    }
 
     for (int i = 0; i < barDataArray.numValues(); i++) {
       Element barData = barDataArray.getValueAsElement(i);
       
       for (int j = 0; j < returned_fields.length; j++) {
-        result_data[i][j] = barData.getElementAsString(returned_fields[j]);
+        result_data[initial_offset+i][j] = barData.getElementAsString(returned_fields[j]);
       }
     }
   }

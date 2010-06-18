@@ -51,6 +51,7 @@ blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm
 
   if (is.null(blpapi.jar.file)) {
     cat("Looking for most recent blpapi3.jar file...\n")
+    
     java_api_dir = "C:\\blp\\API\\APIv3\\JavaAPI"
     missing_java_api_dir_message = paste("Can't find", java_api_dir, "please confirm you have Bloomberg Version 3 Java API installed. If it's in a different location, please report this to RBloomberg package maintainer.")
     if (!file.exists(java_api_dir)) stop(missing_java_api_dir_message)
@@ -61,12 +62,16 @@ blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm
     else
       blpapi.jar.file <- paste(java_api_dir, version.dir, "lib\\blpapi3.jar", sep="\\")
     end
+
+    if (!file.exists(blpapi.jar.file)){
+      blpapi.jar.file <- "C:\\blp\\API\\blpapi3.jar" # Last resort - Bloomberg website downloads get installed here.
+    }
   }
 
   if (file.exists(blpapi.jar.file)) {
     .jaddClassPath(blpapi.jar.file)
   } else {
-    stop(paste("blpapi jar file not found at", blpapi.jar.file, "please locate this file and pass location including full path to blpConnect as blpapi.jar.file parameter. This might be a bug, if so please report it."))
+    stop(paste("blpapi3.jar file not found at", blpapi.jar.file, "please locate blpapi3.jar file and pass location including full path to blpConnect as blpapi.jar.file parameter. This might be a bug, if so please report it. Or try reinstalling the Java API from UPGR or WAPI pages."))
   }
 
   blpwrapper.jar.file = system.file("java", "blpwrapper.jar", package="RBloomberg")

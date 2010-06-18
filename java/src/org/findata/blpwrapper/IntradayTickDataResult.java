@@ -31,13 +31,29 @@ public class IntradayTickDataResult extends DataResult {
   public void processResponse(Element response, Logger logger, boolean throwInvalidTickerError) throws WrapperException {
     Element tickDataArray = response.getElement("tickData").getElement("tickData");
 
-    result_data = new String[tickDataArray.numValues()][returned_fields.length];
+    int initial_offset;
+
+    if (result_data == null) {
+      logger.fine("Initializing result_data for IntradayTickDataResult");
+
+      initial_offset = 0;
+      result_data = new String[tickDataArray.numValues()][returned_fields.length];
+    } else {
+      logger.fine("Extending existing result_data for IntradayTickDataResult");
+      
+      initial_offset = result_data.length;
+      int combined_length = tickDataArray.numValues() + initial_offset;
+      String[][] combined_result_data = new String[combined_length][returned_fields.length];
+      System.arraycopy(result_data, 0, combined_result_data, 0, initial_offset);
+      result_data = combined_result_data;
+    }
+
 
     for (int i = 0; i < tickDataArray.numValues(); i++) {
       Element tickData = tickDataArray.getValueAsElement(i);
       
       for (int j = 0; j < returned_fields.length; j++) {
-        result_data[i][j] = tickData.getElementAsString(returned_fields[j]);
+        result_data[initial_offset+i][j] = tickData.getElementAsString(returned_fields[j]);
       }
     }
   }
