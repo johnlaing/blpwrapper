@@ -1,0 +1,8 @@
+---
+title: Javadocs
+layout: web
+created_at: 2010-06-25 16:30:28.827851 +01:00
+filter:
+  - erb
+---
+<p>Javadocs for blpwrapper. You can also view <a href="/javadoc/" target="_top">without frames</a> (well, without this findata.org frame, it'll still have javadoc frames...)</p>

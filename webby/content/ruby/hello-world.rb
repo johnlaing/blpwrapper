@@ -1,7 +1,7 @@
 require 'java'
 
 $CLASSPATH << 'C:\\blp\\API\\APIv3\\JavaAPI\\v3.3.1.0\\lib\\blpapi3.jar'
-$CLASSPATH << "java\\blpwrapper.jar"
+$CLASSPATH << "blpwrapper.jar"
 
 include_class "org.findata.blpwrapper.Connection"
 

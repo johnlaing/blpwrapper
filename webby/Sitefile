@@ -1,9 +1,8 @@
+require 'gorgyrella'
 require "../script/check_rbloomberg_version.rb"
 
 # Webby configuration
 SITE.create_mode = 'directory'
-
-task :default => [:clobber, :build, :pdf]
 
 def r_project_version
   File.read("../rbloomberg/DESCRIPTION") =~ /^Version:\s*([0-9.-]+)\s*$/
@@ -25,4 +24,3 @@ task :copy do
   `mv output/rbloomberg/rbloomberg-manual.pdf output/rbloomberg/#{rbloomberg_manual_filename}`
 end
 
-require "gorgyrella"

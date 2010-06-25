@@ -1,7 +1,7 @@
 import sys
 
 sys.path.append('C:\\blp\API\APIv3\JavaAPI\lib\\blpapi3.jar')
-sys.path.append("..\java\\blpwrapper.jar")
+sys.path.append("blpwrapper.jar")
 
 from org.findata.blpwrapper import Connection
 

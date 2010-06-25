@@ -25,15 +25,18 @@ filter:    erb
 <body>
 <div id="wrap">
 <div id="top">
-<h2><a href="/" title="Back to main page">findata.org</a></h2>
+<h2><a href="/" target="_top" title="Back to main page">findata.org</a></h2>
 <div id="menu">
 <ul>
     <% [
         ['/blpwrapper', 'blpwrapper'],
         ['/rbloomberg', 'RBloomberg'],
+        ['/python', 'Python'],
+        ['/ruby', 'Ruby'],
+        ['/javadocs', 'javadocs'],
         ['/commits', 'Changelog']
         ].each do |a, t| -%>
-    <li><a href="<%= a %>"><%= t %></a></li>
+    <li><a href="<%= a %>" target="_top"><%= t %></a></li>
     <% end -%>
 </ul>
 </div>

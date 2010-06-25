@@ -1,0 +1,22 @@
+---
+title: Ruby
+layout: web
+created_at: 2010-06-25 15:40:34.232284 +01:00
+filter:
+  - erb
+  - textile
+---
+<% content_for(:sidebar) do %>
+    <ul id="nav">
+      <li><a href="/blpwrapper.jar">Download blpwrapper.jar</a></li>
+    </ul>
+<% end %>
+
+You can use the blpwrapper classes from within JRuby, here's a hello world:
+
+<%= gorgt("hello-world.rb", "1") %>
+
+This will output:
+
+<%= gorgt("hello-world.out", "1") %>
+

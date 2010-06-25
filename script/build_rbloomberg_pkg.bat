@@ -23,7 +23,7 @@ move RBloomberg_*.zip R\bin\windows\contrib\2.9\
 "C:\Program Files\R\R-2.10.1\bin\R.exe" CMD BUILD --binary rbloomberg
 move RBloomberg_*.zip R\bin\windows\contrib\2.10\
 
-"C:\Program Files\R\R-2.11.0\bin\R.exe" CMD build --binary rbloomberg
+"C:\Program Files\R\R-2.11.1\bin\R.exe" CMD build --binary rbloomberg
 move RBloomberg_*.zip R\bin\windows\contrib\2.11\
 
 R CMD BATCH script\package.R
