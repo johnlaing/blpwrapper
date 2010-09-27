@@ -1,5 +1,5 @@
 Package: RBloomberg
-Version: 0.4-142
+Version: 0.4-143
 Depends: rJava
 Suggests: zoo
 OS_type: windows

@@ -266,12 +266,21 @@ public class Connection {
     while (cont) {
       Event event = session.nextEvent();
 
-      switch (event.eventType().intValue()) {
-        case Event.EventType.Constants.SESSION_STATUS:       processSessionStatusEvent(event); cont=await_response; break;
-        case Event.EventType.Constants.SERVICE_STATUS:       processServiceStatusEvent(event); cont=await_response; break;
-        case Event.EventType.Constants.RESPONSE:             processResponseEvent(result_type, event); cont=false; break;
-        case Event.EventType.Constants.PARTIAL_RESPONSE:     processResponseEvent(result_type, event); break;
-        default: throw new WrapperException(event.eventType());
+      String event_type_string = event.eventType().toString();
+
+      if (event_type_string == "SESSION_STATUS") {
+        processSessionStatusEvent(event);
+        cont = await_response;
+      } else if (event_type_string == "SERVICE_STATUS") {
+        processServiceStatusEvent(event); 
+        cont = await_response;
+      } else if (event_type_string == "RESPONSE") {
+        processResponseEvent(result_type, event);
+        cont = false;
+      } else if (event_type_string == "PARTIAL_RESPONSE") {
+        processResponseEvent(result_type, event);
+      } else {
+        throw new WrapperException(event.eventType());
       }
     }
   }

@@ -9,7 +9,7 @@ filter:
 
 \tableofcontents
 
-\section{About RBloomberg} % (fold)
+\section{About RBloomberg}
 \label{sec:about}
 
 RBloomberg is an R package which handles fetching data from the Bloomberg financial data application. RBloomberg was written by Robert Sams, see the package README for additional contributors and acknowledgements. RBloomberg is released under a GPL open source license.
@@ -20,23 +20,42 @@ To download the latest version of this document, please visit the \href{http://f
 
 Please download the Bloomberg API Developer Guide PDF via WAPI or DOCS 2041121 as this has additional useful documentation. Appendix A provides details on options that can be set for data requests.
 
-% section about (end)
-
-\section{Installation and Requirements} % (fold)
+\section{Installation and Requirements}
 \label{sec:installation_and_requirements}
 
-\subsection{Installation} % (fold)
-\label{sub:installation}
+\subsection{Prerequisites}
 
 RBloomberg will only work on a Bloomberg workstation. RBloomberg uses the Java Version 3 API, and depends on the rJava package. Java must also be installed.
+
+To check if you have the Version 3 API installed, go to \verb|C:\blp\API|. You should see a folder named \verb|APIv3|. To make sure it's working, you can navigate to \verb|C:blp\API\bin| and run the \verb|BBAPIDemo| app. If you don't see this folder, or if you want to make sure you have the latest version of the API installed, then go to the WAPI page within your Bloomberg terminal to install the latest version.
+
+\vspace{10mm}
+\includegraphics{wapi.png}
+\vspace{10mm}
+
+You probably want the Desktop API.
+
+\vspace{10mm}
+\includegraphics[width=5in]{api.png}
+\vspace{10mm}
+
+Ensure that the Java API is included in the installation.
+
+\vspace{10mm}
+\includegraphics{install.png}
+\vspace{10mm}
+
+To check whether you have Java installed, you can open a command prompt (Start; All Programs; Accessories; Command Prompt) and type \verb|java -version|.
+
+\subsection{Installation}
 
 To install RBloomberg:
 
 \begin{verbatim}
   install.packages("RBloomberg", repos="http://r.findata.org")
-\end{verbatim}
+  \end{verbatim}
 
-% subsection installation (end)
+This should automatically install the rJava dependency for you.
 
 \subsection{Hello, World}
 

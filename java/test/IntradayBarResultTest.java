@@ -16,7 +16,7 @@ public class IntradayBarResultTest extends TestCase {
     String security = "C US Equity";
     String field = "TRADE";
 
-    IntradayBarDataResult result = (IntradayBarDataResult)conn.bar(security, field, "2010-03-01 15:00:00.000", "2010-03-01 17:00:00.000", "15");
+    IntradayBarDataResult result = (IntradayBarDataResult)conn.bar(security, field, "2010-09-21 15:00:00.000", "2010-09-21 17:00:00.000", "15");
     System.out.println(result.getData()[0][0]);
     System.out.println(result.getData()[0][1]);
     System.out.println(result.getData()[0][2]);

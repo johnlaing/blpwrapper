@@ -37,7 +37,9 @@ public class FieldInfoResult extends DataResult {
           result_data[i][j] = field_info.getElementAsString(returned_fields[j]);
         }
       } catch (com.bloomberglp.blpapi.NotFoundException e) {
-        throw new WrapperException("field " + field.getElementAsString("id") + " not found");
+        if (throwInvalidSecurityError) {
+          throw new WrapperException("field " + field.getElementAsString("id") + " not found");
+        }
       }
     }
   }
