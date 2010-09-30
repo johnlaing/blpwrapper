@@ -32,15 +32,18 @@ blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm
   cat("RBloomberg Version", read.dcf(system.file("DESCRIPTION", package="RBloomberg"))[1, "Version"], "\n")
 
   library(rJava)
+
   if (is.null(jvm.params)) {
-    jinit_value <- .jinit()
+    jinit_value <- try(.jinit())
   } else {
     cat("Using JVM parameters", jvm.params, "\n")
-    jinit_value <- .jinit(parameters = jvm.params)
+    jinit_value <- try(.jinit(parameters = jvm.params))
   }
   
   if (jinit_value == 0) {
     cat("Java environment initialized successfully.\n")
+  } else if (class(jinit_value) == "try-error") {
+    stop("Java environment not initialized. Please consult the rJava documentation. You may need to upgrade or install Java.")
   } else if (jinit_value < 0) {
     stop(paste("Error in creating Java environment. Status code", jinit_value))
   } else if (jinit_value > 0) {
