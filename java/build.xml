@@ -12,7 +12,7 @@
   <path id="project.classpath">
     <pathelement location="${build.prod.dir}" />
     <pathelement location="${build.test.dir}" />
-    <pathelement location="C:\blp\API\APIv3\JavaAPI\lib\blpapi3.jar" />
+    <pathelement location="C:\blp\API\blpapi3.jar" />
     <fileset dir="${vendor.lib.dir}">
       <include name="*.jar"/>
     </fileset>
