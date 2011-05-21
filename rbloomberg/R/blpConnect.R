@@ -72,6 +72,7 @@ blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm
   }
 
   if (file.exists(blpapi.jar.file)) {
+    cat("Adding", blpapi.jar.file, "to Java classpath\n") 
     .jaddClassPath(blpapi.jar.file)
   } else {
     stop(paste("blpapi3.jar file not found at", blpapi.jar.file, "please locate blpapi3.jar file and pass location including full path to blpConnect as blpapi.jar.file parameter. This might be a bug, if so please report it. Or try reinstalling the Java API from UPGR or WAPI pages."))
