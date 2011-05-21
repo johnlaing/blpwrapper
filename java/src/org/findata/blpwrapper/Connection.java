@@ -269,8 +269,7 @@ public class Connection {
       String event_type_string = event.eventType().toString();
 
       if (event_type_string == "SESSION_STATUS") {
-        processSessionStatusEvent(event);
-        cont = await_response;
+        cont = processSessionStatusEvent(event);
       } else if (event_type_string == "SERVICE_STATUS") {
         processServiceStatusEvent(event); 
         cont = await_response;
@@ -285,8 +284,9 @@ public class Connection {
     }
   }
 
-  private void processSessionStatusEvent(Event event) throws WrapperException {
+  private boolean processSessionStatusEvent(Event event) throws WrapperException {
     MessageIterator msgIter = event.messageIterator();
+    boolean cont = false;
 
     while(msgIter.hasNext()) {
       Message message = msgIter.next();
@@ -294,6 +294,9 @@ public class Connection {
 
       if (response.name().equals("SessionStarted")) {
         logger.info("Session Started");
+	cont = true;
+      } else if (response.name().equals("SessionConnectionUp")) {
+        logger.info("Session Connection Up");
       } else if (response.name().equals("SessionStartupFailure")) {
         logger.warning("" + response);
         Element reason = response.getElement(0);
@@ -303,6 +306,7 @@ public class Connection {
         throw new WrapperException("Session not started. See logs. Please report this to blpwrapper maintainer.");
       }
     }
+    return cont;
   }
 
   private void processServiceStatusEvent(Event event) throws WrapperException {
