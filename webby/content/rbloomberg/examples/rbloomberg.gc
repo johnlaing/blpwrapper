@@ -1,3 +1,3 @@
-0.474: [GC 0.475: [DefNew: 3328K->281K(3712K), 0.0070881 secs] 3328K->281K(7808K), 0.0072199 secs] [Times: user=0.00 sys=0.02, real=0.02 secs] 
-1.289: [GC 1.289: [DefNew: 3609K->384K(3712K), 0.0084491 secs] 3609K->722K(7808K), 0.0085550 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
-1.862: [GC 1.862: [DefNew: 3711K->57K(3712K), 0.0038647 secs] 4050K->672K(7808K), 0.0039701 secs] [Times: user=0.00 sys=0.01, real=0.02 secs] 
+0.417: [GC 0.417: [DefNew: 3328K->296K(3712K), 0.0035315 secs] 3328K->296K(11648K), 0.0036748 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+1.063: [GC 1.063: [DefNew: 3624K->321K(3712K), 0.0042056 secs] 3624K->584K(11648K), 0.0043698 secs] [Times: user=0.00 sys=0.02, real=0.02 secs] 
+1.985: [GC 1.985: [DefNew: 3649K->125K(3712K), 0.0032742 secs] 3912K->682K(11648K), 0.0034158 secs] [Times: user=0.02 sys=0.00, real=0.02 secs] 

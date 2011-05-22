@@ -23,6 +23,14 @@ override_fields <- c("EQY_FUND_DT")
 overrides <- c("20061231")
 bdp(conn, securities, fields, override_fields, overrides)
 
+fields <- c("CRNCY_ADJ_PX_LAST")
+override_fields <- c("EQY_FUND_CRNCY")
+overrides <- c("JPY")
+bdp(conn, securities, fields, override_fields, overrides)
+overrides <- c("CHF")
+bdp(conn, securities, fields, override_fields, overrides)
+
+# Retrieve by SEDOL
 bdp(conn, "/SEDOL1/2292612 EQUITY", "NAME")
 
 blpDisconnect(conn)
