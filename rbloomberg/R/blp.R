@@ -194,11 +194,13 @@ bdh <- function(conn, securities, fields, start_date, end_date = NULL,
     }
 
     matrix.data <- result$getData()
-    if (!is.null(matrix.data)) {
-      matrix.data <- .jevalArray(matrix.data, simplify = TRUE)
-    }
     column.names <- result$getColumnNames()
     data.types <- result$getDataTypes()
+    if (is.null(matrix.data)) {
+      matrix.data <- matrix(, nrow=0, ncol=length(column.names))
+    } else {
+      matrix.data <- .jevalArray(matrix.data, simplify = TRUE)
+    }
 
     if (combine.multiple || always.display.tickers) {
       matrix.data <- cbind(rep(security, dim(matrix.data)[1]), matrix.data)
@@ -206,24 +208,12 @@ bdh <- function(conn, securities, fields, start_date, end_date = NULL,
       data.types <- c("STRING", data.types)
     }
 
-    num.dates <- dim(matrix.data)[1]
-    num.tickers <- length(securities)
-    s <- (i-1)*num.dates + 1
-    f <- (i)*num.dates
-
     if (is.null(combined)) { # First time through loop...
-      if (combine.multiple) {
-        # Allocate storage for expected number of responses.
-        combined <- matrix(, ncol=dim(matrix.data)[2], nrow=num.dates * num.tickers)
-
-        # Store this iteration's results
-        combined[s:f,] <- matrix.data
-      } else { # We're only looping once...
-        combined <- matrix.data
-      }
+      # Initialize matrix with this iteration's results
+      combined <- rbind(combined, matrix.data)
     } else { # Not the first time through loop...
       if (!combine.multiple) stop("combine.multiple should be true if we are running through loop more than once")
-      combined[s:f,] <- matrix.data
+      combined <- rbind(combined, matrix.data)
     }
   }
 
