@@ -194,6 +194,9 @@ bdh <- function(conn, securities, fields, start_date, end_date = NULL,
     }
 
     matrix.data <- result$getData()
+    if (!is.null(matrix.data)) {
+      matrix.data <- .jevalArray(matrix.data, simplify = TRUE)
+    }
     column.names <- result$getColumnNames()
     data.types <- result$getDataTypes()
 
@@ -268,7 +271,7 @@ tick <- function(conn, security, fields, start_date_time, end_date_time,
 }
 
 process.result <- function(result, row.name.source = "none") {
-  matrix.data <- result$getData()
+  matrix.data <- .jevalArray(result$getData(), simplify = TRUE)
   if (is.null(matrix.data)) return(NULL)
 
   rownames(matrix.data) <- switch(row.name.source,
