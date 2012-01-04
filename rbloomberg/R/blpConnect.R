@@ -1,7 +1,7 @@
 ### @export "blpConnect-definition"
 blpConnect <- function(iface="Java", log.level = "warning",
     blpapi.jar.file = NULL, throw.ticker.errors = TRUE,
-    jvm.params = NULL)
+    jvm.params = NULL, verbose = TRUE)
 ### @end
 {
   valid.interfaces <- c('Java')
@@ -22,38 +22,48 @@ blpConnect <- function(iface="Java", log.level = "warning",
   }
 
   fn.name <- paste("blpConnect", iface, sep=".")
-  fn.call <- call(fn.name, log.level, blpapi.jar.file, throw.ticker.errors, jvm.params)
+  fn.call <- call(fn.name, log.level, blpapi.jar.file, throw.ticker.errors, jvm.params, verbose)
   eval(fn.call)
 }
 
-blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm.params) {
-  cat(R.version.string, "\n")
-  cat("rJava Version", read.dcf(system.file("DESCRIPTION", package="rJava"))[1, "Version"], "\n")
-  cat("RBloomberg Version", read.dcf(system.file("DESCRIPTION", package="RBloomberg"))[1, "Version"], "\n")
+blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm.params, verbose) {
+  if (verbose) {
+    cat(R.version.string, "\n")
+    cat("rJava Version", read.dcf(system.file("DESCRIPTION", package="rJava"))[1, "Version"], "\n")
+    cat("RBloomberg Version", read.dcf(system.file("DESCRIPTION", package="RBloomberg"))[1, "Version"], "\n")
+  }
 
   library(rJava)
 
   if (is.null(jvm.params)) {
     jinit_value <- try(.jinit())
   } else {
-    cat("Using JVM parameters", jvm.params, "\n")
+    if (verbose) {
+      cat("Using JVM parameters", jvm.params, "\n")
+    }
     jinit_value <- try(.jinit(parameters = jvm.params))
   }
   
   if (jinit_value == 0) {
-    cat("Java environment initialized successfully.\n")
+    if (verbose) {
+      cat("Java environment initialized successfully.\n")
+    }
   } else if (class(jinit_value) == "try-error") {
     stop("Java environment not initialized. Please consult the rJava documentation. You may need to upgrade or install Java.")
   } else if (jinit_value < 0) {
     stop(paste("Error in creating Java environment. Status code", jinit_value))
   } else if (jinit_value > 0) {
-    cat("Java environment started, but there may be some problems. Status code", jinit_value, "\n")
+    if (verbose) {
+      cat("Java environment started, but there may be some problems. Status code", jinit_value, "\n")
+    }
   } else {
     stop(paste("Should not be here. jinit_value is", jinit_value, "Please report this as a bug"))
   }
 
   if (is.null(blpapi.jar.file)) {
-    cat("Looking for most recent blpapi3.jar file...\n")
+    if (verbose) {
+      cat("Looking for most recent blpapi3.jar file...\n")
+    }
     
     java_api_dir = "C:\\blp\\API\\APIv3\\JavaAPI"
     missing_java_api_dir_message = paste("Can't find", java_api_dir, "please confirm you have Bloomberg Version 3 Java API installed. If it's in a different location, please report this to RBloomberg package maintainer.")
@@ -72,7 +82,9 @@ blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm
   }
 
   if (file.exists(blpapi.jar.file)) {
-    cat("Adding", blpapi.jar.file, "to Java classpath\n") 
+    if (verbose) {
+      cat("Adding", blpapi.jar.file, "to Java classpath\n") 
+    }
     .jaddClassPath(blpapi.jar.file)
   } else {
     stop(paste("blpapi3.jar file not found at", blpapi.jar.file, "please locate blpapi3.jar file and pass location including full path to blpConnect as blpapi.jar.file parameter. This might be a bug, if so please report it. Or try reinstalling the Java API from UPGR or WAPI pages."))
@@ -105,7 +117,9 @@ blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm
   } 
   conn$setThrowInvalidTickerError(throw.ticker.errors.java)
 
-  cat("Bloomberg API Version", J("com.bloomberglp.blpapi.VersionInfo")$versionString(), "\n")
+  if (verbose) {
+    cat("Bloomberg API Version", J("com.bloomberglp.blpapi.VersionInfo")$versionString(), "\n")
+  }
 
   return(conn)
 }
