@@ -8,7 +8,7 @@ $versions = ls -name $R\R-*
 
 ## Build 64-bit versions
 foreach ($version in $versions) {
-    $short_version = echo $version | sed 's/\.[0-9]$//'
+    $short_version = echo $version | sed 's/^R-//;s/\.[0-9]$//'
     mkdir R/bin/windows64/contrib/$short_version/
 
     & "$R\$version\bin\x64\R.exe" CMD INSTALL --build rbloomberg
@@ -21,10 +21,10 @@ foreach ($version in $versions) {
 
 ## Now build 32-bit versions
 foreach ($version in $versions) {
-    $short_version = echo $version | sed 's/\.[0-9]$//'
+    $short_version = echo $version | sed 's/^R-//;s/\.[0-9]$//'
     mkdir R/bin/windows/contrib/$short_version/
 
-    & "$R\$version\bin\x64\R.exe" CMD INSTALL --build rbloomberg
+    & "$R\$version\bin\i386\R.exe" CMD INSTALL --build rbloomberg
     if ($LastExitCode -ne 0) {exit}
     mv RBloomberg_*.zip R/bin/windows/contrib/$short_version/
 
