@@ -1,1 +1,1 @@
-rsync -v -r --delete R/ anaslist@ananelson.com:/home/anaslist/sites/r.findata.org
+rsync -v -r --delete R/ jlaing@findata.org:/home/jlaing/sites/r.findata.org
