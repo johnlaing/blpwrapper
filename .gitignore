@@ -7,3 +7,4 @@ script/upload*
 .RData
 bloombergapi.jar
 build
+R/bin
