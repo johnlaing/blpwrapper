@@ -1,4 +1,4 @@
-library(RBloomberg)
+library(Rbbg)
 conn <- blpConnect(log.level = "finest")
 tick(conn, "RYA ID Equity", "TRADE", "2012-04-16 09:30:00.000", "2012-04-16 09:40:00.000")
 

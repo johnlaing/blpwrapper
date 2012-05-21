@@ -1,4 +1,4 @@
-library(RBloomberg)
+library(Rbbg)
 
 conn <- blpConnect(throw.ticker.errors = FALSE)
 bdp(conn, "THIS IS NOT A VALID TICKER", "NAME")

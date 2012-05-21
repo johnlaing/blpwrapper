@@ -1,4 +1,4 @@
-library(RBloomberg)
+library(Rbbg)
 conn <- blpConnect()
 
 bdh(conn, "GOLDS Comdty", "PX_LAST", "20090101", "20090107")

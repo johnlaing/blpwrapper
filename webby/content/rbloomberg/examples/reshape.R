@@ -1,4 +1,4 @@
-library(RBloomberg)
+library(Rbbg)
 conn <- blpConnect()
 
 Sys.setenv(TZ="GMT")

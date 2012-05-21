@@ -13,7 +13,7 @@ foreach ($version in $versions) {
 
     & "$R\$version\bin\x64\R.exe" CMD INSTALL --build rbloomberg
     if ($LastExitCode -ne 0) {exit}
-    mv RBloomberg_*.zip R/bin/windows64/contrib/$short_version/
+    mv Rbbg_*.zip R/bin/windows64/contrib/$short_version/
 
     Rscript -e "require(tools); write_PACKAGES('R/bin/windows64/contrib/$short_version/', type='win.binary')"
     if ($LastExitCode -ne 0) {exit}
@@ -26,7 +26,7 @@ foreach ($version in $versions) {
 
     & "$R\$version\bin\i386\R.exe" CMD INSTALL --build rbloomberg
     if ($LastExitCode -ne 0) {exit}
-    mv RBloomberg_*.zip R/bin/windows/contrib/$short_version/
+    mv Rbbg_*.zip R/bin/windows/contrib/$short_version/
 
     Rscript -e "require(tools); write_PACKAGES('R/bin/windows/contrib/$short_version/', type='win.binary')"
     if ($LastExitCode -ne 0) {exit}

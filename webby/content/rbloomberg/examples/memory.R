@@ -1,4 +1,4 @@
-library(RBloomberg)
+library(Rbbg)
 
 add.equity.label <- function(ticker) {
   paste(ticker, "Equity")
