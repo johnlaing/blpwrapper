@@ -1,10 +1,10 @@
-Package: RBloomberg
-Version: 0.4-151
+Package: Rbbg
+Version: 0.4-152
 Date: 2012-04-16
-Title: R/Bloomberg
+Title: R/bbg
 Author: Robert Sams <robert@sanctumfi.com>, Ana Nelson <ana@ananelson.com>
 Maintainer: John Laing <john.laing@gmail.com>
-Description: Fetch data from Bloomberg 
+Description: Fetch data from financial data provider nicknamed bbg
 License: GPL
 Depends: rJava
 Suggests: zoo
