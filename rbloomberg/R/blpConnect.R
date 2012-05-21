@@ -30,7 +30,7 @@ blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm
   if (verbose) {
     cat(R.version.string, "\n")
     cat("rJava Version", read.dcf(system.file("DESCRIPTION", package="rJava"))[1, "Version"], "\n")
-    cat("RBloomberg Version", read.dcf(system.file("DESCRIPTION", package="RBloomberg"))[1, "Version"], "\n")
+    cat("Rbbg Version", read.dcf(system.file("DESCRIPTION", package="Rbbg"))[1, "Version"], "\n")
   }
 
   library(rJava)
@@ -66,7 +66,7 @@ blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm
     }
     
     java_api_dir = "C:\\blp\\API\\APIv3\\JavaAPI"
-    missing_java_api_dir_message = paste("Can't find", java_api_dir, "please confirm you have Bloomberg Version 3 Java API installed. If it's in a different location, please report this to RBloomberg package maintainer.")
+    missing_java_api_dir_message = paste("Can't find", java_api_dir, "please confirm you have Bloomberg Version 3 Java API installed. If it's in a different location, please report this to Rbbg package maintainer.")
     if (!file.exists(java_api_dir)) stop(missing_java_api_dir_message)
 
     version.dir <- sort(list.files(java_api_dir, "^v", ignore.case=TRUE), decreasing=TRUE)[1]
@@ -90,7 +90,7 @@ blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm
     stop(paste("blpapi3.jar file not found at", blpapi.jar.file, "please locate blpapi3.jar file and pass location including full path to blpConnect as blpapi.jar.file parameter. This might be a bug, if so please report it. Or try reinstalling the Java API from UPGR or WAPI pages."))
   }
 
-  blpwrapper.jar.file = system.file("java", "blpwrapper.jar", package="RBloomberg")
+  blpwrapper.jar.file = system.file("java", "blpwrapper.jar", package="Rbbg")
 
   if (file.exists(blpwrapper.jar.file)) {
     .jaddClassPath(blpwrapper.jar.file)
