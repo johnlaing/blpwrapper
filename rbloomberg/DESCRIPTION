@@ -2,7 +2,7 @@ Package: Rbbg
 Version: 0.4-153
 Date: 2012-04-16
 Title: R/bbg
-Author: Robert Sams <robert@sanctumfi.com>, Ana Nelson <ana@ananelson.com>
+Author: Robert Sams <rmsams@gmail.com>, Ana Nelson <ana@ananelson.com>
 Maintainer: John Laing <john.laing@gmail.com>
 Description: Fetch data from financial data provider nicknamed bbg
 License: GPL
