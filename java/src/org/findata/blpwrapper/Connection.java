@@ -35,6 +35,7 @@ public class Connection {
   private boolean apifields_service_open = false;
 
   private boolean throw_invalid_ticker_error = true;
+  private boolean cache_responses = true;
 
   public static final int REFERENCE_DATA_RESULT = 1;
   public static final int BULK_DATA_RESULT = 2;
@@ -359,7 +360,11 @@ public class Connection {
   public DataResult fieldInfo(String[] fields) throws Exception {
     int response_id = (int)sendApiDataRequest(FIELD_INFO_RESULT, fields).value();
     processEventLoop(FIELD_INFO_RESULT);
-    return((DataResult)response_cache.get(response_id));
+    DataResult data_result = (DataResult)response_cache.get(response_id);
+    if (!cache_responses) {
+      response_cache.set(response_id, null);
+    }
+    return(data_result);
   }
 
   public DataResult blp(String[] securities, String[] fields) throws Exception {
@@ -379,7 +384,11 @@ public class Connection {
   public DataResult blp(String[] securities, String[] fields, String[] override_fields, String[] override_values, String[] option_names, String[] option_values) throws Exception {
     int response_id = (int)sendRefDataRequest(REFERENCE_DATA_RESULT, refdata_request_name, securities, fields, override_fields, override_values, option_names, option_values).value();
     processEventLoop(REFERENCE_DATA_RESULT);
-    return((DataResult)response_cache.get(response_id));
+    DataResult data_result = (DataResult)response_cache.get(response_id);
+    if (!cache_responses) {
+      response_cache.set(response_id, null);
+    }
+    return(data_result);
   }
 
   public DataResult blh(String security, String[] fields, String start_date, String end_date) throws Exception {
@@ -465,7 +474,11 @@ public class Connection {
 
     int response_id = (int)sendRefDataRequest(HISTORICAL_DATA_RESULT, histdata_request_name, securities, fields, override_fields, override_values, option_names, option_values).value();
     processEventLoop(HISTORICAL_DATA_RESULT);
-    return((DataResult)response_cache.get(response_id));
+    DataResult data_result = (DataResult)response_cache.get(response_id);
+    if (!cache_responses) {
+      response_cache.set(response_id, null);
+    }
+    return(data_result);
   }
   
   /**
@@ -512,7 +525,11 @@ public class Connection {
 
     int response_id = (int)sendRefDataRequest(BULK_DATA_RESULT, refdata_request_name, securities, fields, override_fields, override_values, option_names, option_values).value();
     processEventLoop(BULK_DATA_RESULT);
-    return((DataResult)response_cache.get(response_id));
+    DataResult data_result = (DataResult)response_cache.get(response_id);
+    if (!cache_responses) {
+      response_cache.set(response_id, null);
+    }
+    return(data_result);
   }
 
   public DataResult tick(String security, String[] event_types, String start_date_time, String end_date_time) throws Exception {
@@ -547,7 +564,11 @@ public class Connection {
 
     int response_id = (int)sendRefDataRequest(INTRADAY_TICK_RESULT, intraday_tick_request_name, securities, fields, override_fields, override_values, option_names_with_start, option_values_with_start, event_types).value();
     processEventLoop(INTRADAY_TICK_RESULT);
-    return((DataResult)response_cache.get(response_id));
+    DataResult data_result = (DataResult)response_cache.get(response_id);
+    if (!cache_responses) {
+      response_cache.set(response_id, null);
+    }
+    return(data_result);
   }
 
   public DataResult bar(String security, String event_type, String start_date_time, String end_date_time, String interval) throws Exception {
@@ -581,7 +602,11 @@ public class Connection {
 
     int response_id = (int)sendRefDataRequest(INTRADAY_BAR_RESULT, intraday_bar_request_name, securities, fields, override_fields, override_values, option_names_with_start, option_values_with_start).value();
     processEventLoop(INTRADAY_BAR_RESULT);
-    return((DataResult)response_cache.get(response_id));
+    DataResult data_result = (DataResult)response_cache.get(response_id);
+    if (!cache_responses) {
+      response_cache.set(response_id, null);
+    }
+    return(data_result);
   }
 }
 
