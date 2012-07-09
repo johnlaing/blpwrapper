@@ -5,6 +5,6 @@ webby/content/rbloomberg/examples/.RData
 script/upload*
 *.Rout
 .RData
-bloombergapi.jar
+*.jar
 build
 R/bin
