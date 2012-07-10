@@ -7,15 +7,11 @@
   <property name="index.dir" location="index" />
   <property name="src.dir" location="src" />
   <property name="test.dir" location="test" />
-  <property name="vendor.lib.dir" location="vendor/lib" />
 
   <path id="project.classpath">
     <pathelement location="${build.prod.dir}" />
     <pathelement location="${build.test.dir}" />
     <pathelement location="C:\blp\API\blpapi3.jar" />
-    <fileset dir="${vendor.lib.dir}">
-      <include name="*.jar"/>
-    </fileset>
   </path>
 
   <target name="clean">
