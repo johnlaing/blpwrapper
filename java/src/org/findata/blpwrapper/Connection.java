@@ -119,6 +119,10 @@ public class Connection {
     throw_invalid_ticker_error = arg;
   }
 
+  public void setCacheResponses(boolean arg) {
+    cache_responses = arg;
+  }
+
   public CorrelationID nextCorrelationID(int result_type, String[] securities, String[] fields) throws Exception {
     DataResult result;
     switch(result_type) {

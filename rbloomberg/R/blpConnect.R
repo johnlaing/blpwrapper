@@ -1,7 +1,7 @@
 ### @export "blpConnect-definition"
 blpConnect <- function(iface="Java", log.level = "warning",
     blpapi.jar.file = NULL, throw.ticker.errors = TRUE,
-    jvm.params = NULL, verbose = TRUE)
+    jvm.params = NULL, verbose = TRUE, cache.responses = TRUE)
 ### @end
 {
   valid.interfaces <- c('Java')
@@ -22,11 +22,11 @@ blpConnect <- function(iface="Java", log.level = "warning",
   }
 
   fn.name <- paste("blpConnect", iface, sep=".")
-  fn.call <- call(fn.name, log.level, blpapi.jar.file, throw.ticker.errors, jvm.params, verbose)
+  fn.call <- call(fn.name, log.level, blpapi.jar.file, throw.ticker.errors, jvm.params, verbose, cache.responses)
   eval(fn.call)
 }
 
-blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm.params, verbose) {
+blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm.params, verbose, cache.responses) {
   if (verbose) {
     cat(R.version.string, "\n")
     cat("rJava Version", read.dcf(system.file("DESCRIPTION", package="rJava"))[1, "Version"], "\n")
@@ -110,12 +110,8 @@ blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm
 
   conn <- .jnew("org/findata/blpwrapper/Connection", java.log.level)
   
-  if (throw.ticker.errors) {
-    throw.ticker.errors.java = .jnew("java/lang/Boolean", TRUE)$booleanValue()
-  } else {
-    throw.ticker.errors.java = .jnew("java/lang/Boolean", FALSE)$booleanValue()
-  } 
-  conn$setThrowInvalidTickerError(throw.ticker.errors.java)
+  conn$setThrowInvalidTickerError(.jnew("java/lang/Boolean", throw.ticker.errors)$booleanValue())
+  conn$setCacheResponses(.jnew("java/lang/Boolean", cache.responses)$booleanValue())
 
   if (verbose) {
     cat("Bloomberg API Version", J("com.bloomberglp.blpapi.VersionInfo")$versionString(), "\n")
