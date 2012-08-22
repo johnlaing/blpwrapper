@@ -8,8 +8,8 @@
   supported.
 }
 \usage{
-blpConnect(iface = "Java", log.level = "warning", blpapi.jar.file = NULL, throw.ticker.errors = TRUE, jvm.params = NULL, verbose = TRUE)
-blpConnect.Java(log.level, blpapi.jar.file, throw.ticker.errors, jvm.params, verbose)
+blpConnect(iface = "Java", log.level = "warning", blpapi.jar.file = NULL, throw.ticker.errors = TRUE, jvm.params = NULL, verbose = TRUE, cache.responses = FALSE)
+blpConnect.Java(log.level, blpapi.jar.file, throw.ticker.errors, jvm.params, verbose, cache.responses)
 blpDisconnect(conn)
 }
 \arguments{
@@ -19,6 +19,7 @@ blpDisconnect(conn)
   \item{throw.ticker.errors}{logical. Should errors be thrown for invalid tickers?}
   \item{jvm.params = NULL}{Parameters passed to the Java Virtual Machine}
   \item{verbose = TRUE}{logical. Should output be written to the console on connection?}
+  \item{cache.responses = FALSE}{logical. Should responses be kept in memory? If TRUE, large data sets can cause the JVM to run out of memory.}
   \item{conn}{Connection object}
 }
 \details{

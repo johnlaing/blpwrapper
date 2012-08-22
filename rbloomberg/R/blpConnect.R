@@ -1,7 +1,7 @@
 ### @export "blpConnect-definition"
 blpConnect <- function(iface="Java", log.level = "warning",
     blpapi.jar.file = NULL, throw.ticker.errors = TRUE,
-    jvm.params = NULL, verbose = TRUE, cache.responses = TRUE)
+    jvm.params = NULL, verbose = TRUE, cache.responses = FALSE)
 ### @end
 {
   valid.interfaces <- c('Java')
