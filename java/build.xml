@@ -25,7 +25,7 @@
   </target>
 
   <target name="compile" depends="clean, prepare">
-    <javac srcdir="${src.dir}" destdir="${build.prod.dir}">
+    <javac srcdir="${src.dir}" destdir="${build.prod.dir}" target="5" source="5">
       <compilerarg value="-Xlint" />
       <classpath refid="project.classpath" />
     </javac>
