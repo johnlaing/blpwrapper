@@ -1,0 +1,9 @@
+# Default NAMESPACE ripped from the 2.15 version
+
+# Export all names
+exportPattern(".")
+
+# Import all packages listed as Imports or Depends
+import(
+  rJava
+)

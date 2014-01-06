@@ -8,4 +8,4 @@ Description: Fetch data from financial data provider nicknamed bbg
 License: GPL
 Depends: rJava
 Suggests: zoo
-OS_type: windows
+OS_type: windows,linux
