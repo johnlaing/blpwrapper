@@ -7,15 +7,18 @@
   <property name="index.dir" location="index" />
   <property name="src.dir" location="src" />
   <property name="test.dir" location="test" />
+  <property name="jar.file" location="blpwrapper.jar" />
+  <property name="blpapi.jar.file" location="/opt/bloomberg/APIv3/blpapi3.jar" />
 
   <path id="project.classpath">
     <pathelement location="${build.prod.dir}" />
     <pathelement location="${build.test.dir}" />
-    <pathelement location="C:\blp\API\blpapi3.jar" />
+    <pathelement location="/opt/vendor.libs/bloomberg/APIv3/blpapi3.jar" />
   </path>
 
   <target name="clean">
-    <delete dir="${build.prod.dir}" />
+    <delete dir="${build.dir}" />
+    <delete file="${jar.file}" />
   </target>
 
   <target name="prepare">
@@ -52,7 +55,7 @@
   </target>
 
   <target name="jar" depends="compile">
-    <jar basedir="${build.prod.dir}" destfile="blpwrapper.jar" />
+    <jar basedir="${build.prod.dir}" destfile="${jar.file}" />
   </target>
 
   <target name="doc">
