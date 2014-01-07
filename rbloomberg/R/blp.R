@@ -1,35 +1,3 @@
-blp <- function(conn, securities, fields, start = NULL, end = NULL, 
-    barsize = NULL, barfields = NULL, retval = NULL, 
-    override_fields = NULL, overrides = NULL, currency = NULL) { 
-  if (is.null(start)) {
-    stop("The blp() function has been removed. Please consult documentation for the bdp() function, or the bds() function for making bulk data calls.")
-  } else {
-    if (is.null(barsize)){
-      stop("The blp() function has been removed. Please consult documentation for the bdh() function.")
-    } else if (barsize == 0) {
-      stop("The blp() function has been removed. Please consult documentation for the tick() function.")
-    } else {
-      stop("The blp() function has been removed. Please consult documentation for the bar() function.")
-    }
-  }
-}
-
-blpGetData <- function(conn, securities, fields, start = NULL, end = NULL, 
-    barsize = NULL, barfields = NULL, retval = NULL, 
-    override_fields = NULL, overrides = NULL, currency = NULL) { 
-  if (is.null(start)) {
-    stop("The blpGetData() function has been removed. Please consult documentation for the bdp() function, or the bds() function for making bulk data calls.")
-  } else {
-    if (is.null(barsize)){
-      stop("The blpGetData() function has been removed. Please consult documentation for the bdh() function.")
-    } else if (barsize == 0) {
-      stop("The blpGetData() function has been removed. Please consult documentation for the tick() function.")
-    } else {
-      stop("The blpGetData() function has been removed. Please consult documentation for the bar() function.")
-    }
-  }
-}
-
 ### @export "bdp-definition"
 bdp <- function(conn, securities, fields,
     override_fields = NULL, override_values = NULL, 
