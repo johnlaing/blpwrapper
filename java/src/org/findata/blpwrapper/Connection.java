@@ -15,6 +15,7 @@ import java.util.logging.SimpleFormatter;
 public class Connection {
   private SessionOptions session_options;
   private Session session;
+  private Identity identity = null;
 
   private Logger logger;
 
@@ -33,6 +34,9 @@ public class Connection {
 
   private String apifields_service_name = "//blp/apiflds";
   private boolean apifields_service_open = false;
+
+  private String authorization_service_name = "//blp/apiauth";
+  private boolean authorization_service_open = false;
 
   private boolean throw_invalid_ticker_error = true;
   private boolean cache_responses = true;
@@ -123,6 +127,35 @@ public class Connection {
     cache_responses = arg;
   }
 
+  public void authenticate(String uuid, String ip) throws java.io.IOException, java.lang.InterruptedException, WrapperException {
+    Service service = getAuthorizationService();
+    Request request = service.createAuthorizationRequest();
+    request.set("uuid", uuid);
+    request.set("ipAddress", ip);
+
+    Identity lcl_identity = session.createIdentity();
+    response_cache.add(null);
+    CorrelationID reqid = new CorrelationID(response_cache.size()-1);
+    session.sendAuthorizationRequest(request, lcl_identity, reqid);
+
+    while (true) {
+      Event event = session.nextEvent();
+      String event_type = event.eventType().toString();
+      if (event_type == "RESPONSE") {
+        MessageIterator msgIter = event.messageIterator();
+        Message message = msgIter.next();
+        if (message.messageType().equals("AuthorizationSuccess")) {
+          identity = lcl_identity;
+        } else {
+          System.out.println("authorization failed");
+        }
+        break;
+      } else if (event_type != "SERVICE_STATUS" && event_type != "SESSION_STATUS") {
+        throw new WrapperException(event.eventType());
+      }
+    }
+  }
+
   public CorrelationID nextCorrelationID(int result_type, String[] securities, String[] fields) throws Exception {
     DataResult result;
     switch(result_type) {
@@ -155,6 +188,13 @@ public class Connection {
     return(session.getService(apifields_service_name));
   }
 
+  private Service getAuthorizationService() throws java.io.IOException, java.lang.InterruptedException {
+    if (!authorization_service_open) {
+      authorization_service_open = session.openService(authorization_service_name);
+    }
+    return(session.getService(authorization_service_name));
+  }
+
   private CorrelationID sendApiDataRequest(int result_type, String[] field_identifiers) throws Exception {
     Service service = getApiDataService();
     Request request = service.createRequest("FieldInfoRequest");
@@ -165,7 +205,11 @@ public class Connection {
 
     String[] mock_fields = {""};
     CorrelationID correlation_id = nextCorrelationID(result_type, field_identifiers, mock_fields);
-    session.sendRequest(request, correlation_id);
+    if (identity == null) {
+      session.sendRequest(request, correlation_id);
+    } else {
+      session.sendRequest(request, identity, correlation_id);
+    }
     return(correlation_id);
   }
 
@@ -257,7 +301,11 @@ public class Connection {
     }
 
     CorrelationID correlation_id = nextCorrelationID(result_type, securities, fields);
-    session.sendRequest(request, correlation_id);
+    if (identity == null) {
+      session.sendRequest(request, correlation_id);
+    } else {
+      session.sendRequest(request, identity, correlation_id);
+    }
     return(correlation_id);
   }
 

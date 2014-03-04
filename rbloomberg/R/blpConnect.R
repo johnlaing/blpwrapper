@@ -141,3 +141,7 @@ find.blpapi.jar.file <- function(verbose) {
 
     return(blpapi.jar.file)
 }
+
+blpAuthenticate <- function(conn, uuid, ip) {
+    conn$authenticate(as.character(uuid), as.character(ip))
+}
