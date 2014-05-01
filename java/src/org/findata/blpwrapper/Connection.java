@@ -91,7 +91,7 @@ public class Connection {
     logger.setUseParentHandlers(false);
     logger.setLevel(log_level);
 
-    if (logger.getHandlers().length == 0) {
+    if (logger.getHandlers().length == 0 && logger.getLevel() != Level.OFF) {
       FileHandler handler = new FileHandler("%h/org.findata.blpwrapper.%g.log", 100*MB, 100, true);
       handler.setFormatter(new SimpleFormatter());
       logger.addHandler(handler);

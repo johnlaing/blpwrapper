@@ -89,6 +89,7 @@ blpConnect.Java <- function(log.level, blpapi.jar.file, throw.ticker.errors, jvm
     fine = java.logging.levels$FINE,
     info = java.logging.levels$INFO,
     warning = java.logging.levels$WARNING,
+    off = java.logging.levels$OFF,
     stop(paste("log level ", log.level, "not recognized"))
   )
 
