@@ -204,10 +204,17 @@ bdh <- function(conn, securities, fields, start_date, end_date = NULL,
 }
 
 ### @export "bar-definition"
-bar <- function(conn, security, field, start_date_time, end_date_time, interval)
+bar <- function(conn, security, field, start_date_time, end_date_time, interval,
+    option_names = NULL, option_values = NULL)
 ### @end
 {
-  result <- conn$bar(security, field, start_date_time, end_date_time, interval)
+  if (is.null(option_names)) {
+    result <- conn$bar(security, field, start_date_time, end_date_time, interval)
+  } else {
+    option_names <- .jarray(option_names)
+    option_values <- .jarray(option_values)
+    result <- conn$bar(security, field, start_date_time, end_date_time, interval, option_names, option_values)
+  }
   return(process.result(result, "first.column"))
 }
 
